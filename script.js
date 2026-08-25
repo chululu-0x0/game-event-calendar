@@ -23,12 +23,24 @@ function formatShortRange(a,b){const s=toDate(a),e=toDate(b);return `${s.getMont
 function remain(end){const ms=toDate(end)-today,h=Math.floor(ms/36e5),d=Math.floor(ms/864e5);if(ms<=0)return{prefix:"",big:"終了",tone:"orange"};if(h<24)return{prefix:"あと",big:`${h}時間`,tone:"orange"};if(d<2)return{prefix:"明日",big:"終了",tone:"pink"};return{prefix:"残り",big:`${d}日`,tone:d<=3?"pink":"blue"}}
 function frame9(cls,html){return `<div class="frame9 ${cls}"><div class="frame9-grid"><div class="f f1"></div><div class="f f2"></div><div class="f f3"></div><div class="f f4"></div><div class="f f5">${html}</div><div class="f f6"></div><div class="f f7"></div><div class="f f8"></div><div class="f f9"></div></div></div>`}
 
+function openChipTab(label){
+  return `<div class="game-chip-tab-open">
+    <div class="game-chip-open-grid">
+      <span class="f f1"></span><span class="f f2"></span><span class="f f3"></span>
+      <span class="f f4"></span><span class="f f5"></span><span class="f f6"></span>
+    </div>
+    <span class="game-chip-text">${label}</span>
+  </div>`;
+}
+
 function renderOngoing(){
   ongoingList.innerHTML="";
   eventData.forEach(group=>{
     const section=document.createElement("section");
     section.className=`game-section ${group.color}`;
-    const tab=frame9("frame-chip game-chip-tab",`<span class="game-chip-text">${group.game}</span>`);
+    const tabWidth=Math.max(112,group.game.length*19+40);
+    section.style.setProperty("--game-tab-w",`${tabWidth}px`);
+    const tab=openChipTab(group.game);
     const card=frame9("frame-card game-card",`<div class="game-events"></div>`);
     section.innerHTML=tab+frame9("frame-chip game-shell",card);
     const eventsEl=section.querySelector(".game-events");

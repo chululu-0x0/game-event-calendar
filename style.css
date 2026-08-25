@@ -3,7 +3,7 @@
   --text:#282d60;--text-soft:#686d9f;
   --chrome-dark:#686bc6;--pink-dark:#e95886;
   --line:#8c8ec3;
-  --slice-main:16px;--slice-chip:16px;--slice-card:16px;--slice-tab:16px;
+  --slice-main:16px;--slice-chip:8px;--slice-card:8px;--slice-tab:8px;
   --day-width:52px;--left-col-width:104px;
   --content-bg-image:none;
 }
@@ -22,7 +22,7 @@ button{font:inherit}
 
 /* top tabs use frame-tab-active 1-9 */
 .top-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:4px 4px 0}
-.top-tab{appearance:none;position:relative;height:50px;padding:0;border:0;background:transparent;cursor:pointer}
+.top-tab{appearance:none;position:relative;height:44px;padding:0;border:0;background:transparent;cursor:pointer}
 .tab-skin{position:absolute;inset:0}
 .slice9-grid{width:100%;height:100%;display:grid;grid-template-columns:var(--slice-tab) 1fr var(--slice-tab);grid-template-rows:var(--slice-tab) 1fr var(--slice-tab)}
 .tab-skin .f{display:block;width:100%;height:100%;min-width:0;min-height:0;background-repeat:no-repeat;background-size:100% 100%;image-rendering:pixelated}
@@ -60,14 +60,135 @@ button{font:inherit}
 .frame-card{--slice-size:var(--slice-card)}
 .frame-card>.frame9-grid>.f1{background-image:url("assets/ui/frames/frame-card-event-1.png")}.frame-card>.frame9-grid>.f2{background-image:url("assets/ui/frames/frame-card-event-2.png")}.frame-card>.frame9-grid>.f3{background-image:url("assets/ui/frames/frame-card-event-3.png")}.frame-card>.frame9-grid>.f4{background-image:url("assets/ui/frames/frame-card-event-4.png")}.frame-card>.frame9-grid>.f5{background-image:url("assets/ui/frames/frame-card-event-5.png")}.frame-card>.frame9-grid>.f6{background-image:url("assets/ui/frames/frame-card-event-6.png")}.frame-card>.frame9-grid>.f7{background-image:url("assets/ui/frames/frame-card-event-7.png")}.frame-card>.frame9-grid>.f8{background-image:url("assets/ui/frames/frame-card-event-8.png")}.frame-card>.frame9-grid>.f9{background-image:url("assets/ui/frames/frame-card-event-9.png")}
 
-/* game group nesting */
-.game-list{display:flex;flex-direction:column;gap:22px;padding-top:10px}
-.game-section{position:relative;padding-top:18px}
-.game-shell>.frame9-grid>.f5{padding:12px 9px 9px}
-.game-chip-tab{position:absolute;z-index:8;top:0;left:8px;width:auto;min-width:128px;max-width:calc(100% - 34px);pointer-events:none}
-.game-chip-tab>.frame9-grid{min-height:39px}.game-chip-tab>.frame9-grid>.f5{padding:3px 13px 4px;display:flex;align-items:center;white-space:nowrap}
-.game-chip-text{display:flex;align-items:center;gap:7px;color:#4a4e9a;font-size:17px;font-weight:700}.game-chip-text:before{content:"◆";font-size:11px;color:#373d8b}
-.game-card>.frame9-grid>.f5{padding:3px 7px 4px}.game-events{min-width:0}
+/* game group nesting
+   sketch:
+     ┌ tab (bottom open)
+     │
+     └──── outer chip frame ────
+          ┌ inner event card ┐
+          │ event
+          │ --------
+          │ event
+          └──────────────────┘
+
+   tabは1〜6のみ。7〜9は使わない。
+   外枠側もタブと接する上辺をcenter画像で消して、
+   一体化して見せる。
+*/
+.game-list{display:flex;flex-direction:column;gap:24px;padding-top:10px}
+.game-section{
+  position:relative;
+  padding-top:28px;
+  --game-tab-w:128px;
+}
+
+/* 外枠 */
+.game-shell{
+  position:relative;
+  z-index:1;
+}
+.game-shell>.frame9-grid>.f5{
+  padding:12px 9px 9px;
+}
+
+/* タブ直下の外枠上辺を消す「つなぎ」。
+   frame-chip-game-5 の面で上辺を塗りつぶすので、
+   タブと外枠がひと続きに見える。 */
+.game-shell::before{
+  content:"";
+  position:absolute;
+  z-index:5;
+  left:8px;
+  top:0;
+  width:var(--game-tab-w);
+  height:8px;
+  background:url("assets/ui/frames/frame-chip-game-5.png") repeat;
+  background-size:8px 8px;
+  image-rendering:pixelated;
+  pointer-events:none;
+}
+
+/* 左上タブ。下辺は完全に開放 */
+.game-chip-tab-open{
+  position:absolute;
+  z-index:8;
+  left:8px;
+  top:0;
+  width:var(--game-tab-w);
+  height:34px;
+  pointer-events:none;
+}
+
+.game-chip-open-grid{
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-columns:8px minmax(0,1fr) 8px;
+  grid-template-rows:8px minmax(0,1fr);
+}
+
+.game-chip-open-grid .f{
+  display:block;
+  min-width:0;
+  min-height:0;
+  width:100%;
+  height:100%;
+  background-repeat:no-repeat;
+  background-size:100% 100%;
+  image-rendering:pixelated;
+}
+
+.game-chip-open-grid .f2{
+  background-repeat:repeat-x;
+  background-size:auto 100%;
+}
+.game-chip-open-grid .f4,
+.game-chip-open-grid .f6{
+  background-repeat:repeat-y;
+  background-size:100% auto;
+}
+.game-chip-open-grid .f5{
+  background-repeat:repeat;
+}
+
+.game-chip-open-grid .f1{background-image:url("assets/ui/frames/frame-chip-game-1.png")}
+.game-chip-open-grid .f2{background-image:url("assets/ui/frames/frame-chip-game-2.png")}
+.game-chip-open-grid .f3{background-image:url("assets/ui/frames/frame-chip-game-3.png")}
+.game-chip-open-grid .f4{background-image:url("assets/ui/frames/frame-chip-game-4.png")}
+.game-chip-open-grid .f5{background-image:url("assets/ui/frames/frame-chip-game-5.png")}
+.game-chip-open-grid .f6{background-image:url("assets/ui/frames/frame-chip-game-6.png")}
+
+.game-chip-text{
+  position:absolute;
+  z-index:2;
+  left:14px;
+  right:10px;
+  top:8px;
+  bottom:0;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  overflow:hidden;
+  white-space:nowrap;
+  color:#4a4e9a;
+  font-size:17px;
+  font-weight:700;
+}
+.game-chip-text:before{
+  content:"◆";
+  font-size:10px;
+  color:#373d8b;
+}
+
+/* さらに内側にイベント用カード */
+.game-card{
+  position:relative;
+  z-index:2;
+}
+.game-card>.frame9-grid>.f5{
+  padding:3px 7px 4px;
+}
+.game-events{min-width:0}
 
 /* event rows */
 .event-row{appearance:none;width:100%;border:0;background:transparent;color:inherit;display:grid;grid-template-columns:66px minmax(0,1fr) 82px;gap:10px;align-items:center;min-height:112px;padding:12px 4px;text-align:left;cursor:pointer}
@@ -86,7 +207,7 @@ button{font:inherit}
 .detail-overlay{position:fixed;inset:0;z-index:80;background:#2427586b;opacity:0;pointer-events:none}.detail-overlay.open{opacity:1;pointer-events:auto}.detail-sheet{position:fixed;z-index:81;top:0;right:0;width:min(92vw,470px);height:100dvh;padding:12px 8px 12px 0;transform:translateX(100%);transition:.23s;overflow:auto}.detail-sheet.open{transform:none}.detail-panel>.frame9-grid{min-height:calc(100dvh - 24px)}.detail-panel>.frame9-grid>.f5{padding:17px}.detail-head{display:flex;justify-content:space-between}.detail-title{margin:4px 0}.detail-close{width:40px;height:40px}.detail-remain{font-family:"DotGothic16";font-size:39px;color:var(--pink-dark)}.detail-section{padding:13px 0;border-top:2px solid #6769a659}.detail-bottom-btn{width:100%;min-height:44px;background:#ff8dad;color:#fff;border:2px solid #686dc2;font-weight:700}
 
 @media(max-width:420px){
-  :root{--slice-main:16px;--slice-chip:16px;--slice-card:16px;--slice-tab:16px;--day-width:48px;--left-col-width:94px}
-  .top-chrome{padding-left:12px;padding-right:12px}.title-icon{width:40px;height:40px}.title-row h1{font-size:25px}.top-tab{height:46px}.top-tab-label{font-size:14px;padding:0 10px}.content-inner{padding-left:9px;padding-right:9px}
-  .game-chip-tab{min-width:112px}.game-chip-text{font-size:15px}.event-row{grid-template-columns:56px minmax(0,1fr) 68px;gap:8px;min-height:102px}.event-icon{width:54px;height:54px;font-size:25px}.event-title{font-size:16px}.event-remain{min-width:62px}.remain-big{font-size:34px}.progress-label{font-size:10px}.event-range{font-size:12px}
+  :root{--slice-main:16px;--slice-chip:8px;--slice-card:8px;--slice-tab:8px;--day-width:48px;--left-col-width:94px}
+  .top-chrome{padding-left:12px;padding-right:12px}.title-icon{width:40px;height:40px}.title-row h1{font-size:25px}.top-tab{height:42px}.top-tab-label{font-size:14px;padding:0 10px}.content-inner{padding-left:9px;padding-right:9px}
+  .game-chip-text{font-size:15px}.event-row{grid-template-columns:56px minmax(0,1fr) 68px;gap:8px;min-height:102px}.event-icon{width:54px;height:54px;font-size:25px}.event-title{font-size:16px}.event-remain{min-width:62px}.remain-big{font-size:34px}.progress-label{font-size:10px}.event-range{font-size:12px}
 }
