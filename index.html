@@ -1,208 +1,175 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>ゲームイベントメモ</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-shell">
+<div class="app-shell">
 
-    <!-- =====================================================
-         固定：上部ゲームUI
-    ====================================================== -->
-    <header class="top-chrome">
-      <div class="checker-line checker-line-top" aria-hidden="true"></div>
+  <header class="top-chrome">
+    <div class="checker-line checker-line-top" aria-hidden="true"></div>
 
-      <div class="title-row">
-        <div class="title-icon" aria-hidden="true">📑</div>
-        <h1>ゲームイベントメモ</h1>
-      </div>
+    <div class="title-row">
+      <div class="title-icon" aria-hidden="true">📑</div>
+      <h1>ゲームイベントメモ</h1>
+    </div>
 
-      <nav class="top-tabs" aria-label="メイン画面">
-        <button class="top-tab active" data-screen="ongoing">開催中</button>
-        <button class="top-tab" data-screen="calendar">イベントカレンダー</button>
-      </nav>
+    <nav class="top-tabs" aria-label="メイン画面">
+      <button class="top-tab active" data-screen="ongoing" type="button">
+        <span class="tab-skin" aria-hidden="true">
+          <span class="slice9-grid">
+            <span class="f f1"></span><span class="f f2"></span><span class="f f3"></span>
+            <span class="f f4"></span><span class="f f5"></span><span class="f f6"></span>
+            <span class="f f7"></span><span class="f f8"></span><span class="f f9"></span>
+          </span>
+        </span>
+        <span class="top-tab-label">開催中</span>
+      </button>
 
-      <div class="checker-line checker-line-bottom" aria-hidden="true"></div>
-    </header>
+      <button class="top-tab" data-screen="calendar" type="button">
+        <span class="tab-skin" aria-hidden="true">
+          <span class="slice9-grid">
+            <span class="f f1"></span><span class="f f2"></span><span class="f f3"></span>
+            <span class="f f4"></span><span class="f f5"></span><span class="f f6"></span>
+            <span class="f f7"></span><span class="f f8"></span><span class="f f9"></span>
+          </span>
+        </span>
+        <span class="top-tab-label">イベントカレンダー</span>
+      </button>
+    </nav>
 
-    <!-- =====================================================
-         中央だけスクロール
-         背景画像もこの領域に固定される
-    ====================================================== -->
-    <main id="contentScroll" class="content-scroll">
-      <div class="content-inner">
+    <div class="lace-divider" aria-hidden="true"></div>
+  </header>
 
-        <!-- 開催中 -->
-        <section id="screen-ongoing" class="screen active">
-          <div class="today-row">
-            <div class="today-title">
-              <span>本日</span>
-              <span class="today-calendar-icon" aria-hidden="true">▣</span>
-              <strong id="todayLabel"></strong>
-            </div>
-            <button id="refreshMockBtn" class="mini-action-btn" type="button">更新</button>
+  <main id="contentScroll" class="content-scroll">
+    <div class="content-inner">
+
+      <section id="screen-ongoing" class="screen active">
+        <div class="today-row">
+          <div class="today-title">
+            <span>本日</span>
+            <span class="today-calendar-icon">▣</span>
+            <strong id="todayLabel"></strong>
           </div>
+          <button id="refreshMockBtn" class="mini-action-btn" type="button">更新</button>
+        </div>
+        <div id="ongoingList" class="game-list"></div>
+      </section>
 
-          <div id="ongoingList" class="game-list"></div>
-        </section>
-
-        <!-- カレンダー -->
-        <section id="screen-calendar" class="screen">
-          <div class="calendar-toolbar">
-            <div>
-              <span class="section-kicker">イベントカレンダー</span>
-              <div class="toolbar-sub">ゲームごとの開催期間</div>
-            </div>
-            <button id="todayJumpBtn" class="mini-action-btn" type="button">今日へ</button>
+      <section id="screen-calendar" class="screen">
+        <div class="calendar-toolbar">
+          <div>
+            <span class="section-kicker">イベントカレンダー</span>
+            <div class="toolbar-sub">ゲームごとの開催期間</div>
           </div>
+          <button id="todayJumpBtn" class="mini-action-btn" type="button">今日へ</button>
+        </div>
 
-          <section class="frame9 frame9-panel calendar-panel">
-            <div class="frame9-grid">
-              <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-              <div class="f f4"></div>
-              <div class="f f5">
-                <div class="calendar-board">
-                  <div class="calendar-grid">
-                    <div class="calendar-left">
-                      <div class="calendar-corner">ゲーム</div>
-                      <div id="calendarGameRows"></div>
+        <section class="frame9 frame-main calendar-panel">
+          <div class="frame9-grid">
+            <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+            <div class="f f4"></div>
+            <div class="f f5">
+              <div class="calendar-board">
+                <div class="calendar-grid">
+                  <div class="calendar-left">
+                    <div class="calendar-corner">ゲーム</div>
+                    <div id="calendarGameRows"></div>
+                  </div>
+                  <div class="calendar-right">
+                    <div id="calendarHeaderScroll" class="calendar-scroll header-scroll">
+                      <div id="calendarHeader" class="calendar-header-track"></div>
                     </div>
-
-                    <div class="calendar-right">
-                      <div id="calendarHeaderScroll" class="calendar-scroll header-scroll">
-                        <div id="calendarHeader" class="calendar-header-track"></div>
-                      </div>
-
-                      <div id="calendarBodyScroll" class="calendar-scroll body-scroll">
-                        <div id="todayLine" class="today-line"></div>
-                        <div id="calendarBody" class="calendar-body-track"></div>
-                      </div>
+                    <div id="calendarBodyScroll" class="calendar-scroll body-scroll">
+                      <div id="todayLine" class="today-line"></div>
+                      <div id="calendarBody" class="calendar-body-track"></div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="f f6"></div>
-              <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
             </div>
-          </section>
+            <div class="f f6"></div>
+            <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+          </div>
         </section>
+      </section>
 
-        <!-- お気に入り -->
-        <section id="screen-favorites" class="screen">
-          <section class="frame9 frame9-panel simple-panel">
-            <div class="frame9-grid">
-              <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-              <div class="f f4"></div>
-              <div class="f f5">
-                <span class="section-kicker">お気に入り</span>
-                <h2>お気に入りイベント</h2>
-                <p>ここは後からお気に入り登録したイベントを並べる予定の仮画面です。</p>
-              </div>
-              <div class="f f6"></div>
-              <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+      <section id="screen-favorites" class="screen">
+        <section class="frame9 frame-main simple-panel">
+          <div class="frame9-grid">
+            <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+            <div class="f f4"></div>
+            <div class="f f5">
+              <span class="section-kicker">お気に入り</span>
+              <h2>お気に入りイベント</h2>
+              <p>お気に入り登録したイベントを並べる予定の仮画面です。</p>
             </div>
-          </section>
+            <div class="f f6"></div>
+            <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+          </div>
         </section>
+      </section>
 
-        <!-- 設定 -->
-        <section id="screen-settings" class="screen">
-          <section class="frame9 frame9-panel simple-panel">
-            <div class="frame9-grid">
-              <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-              <div class="f f4"></div>
-              <div class="f f5">
-                <span class="section-kicker">設定</span>
-                <h2>設定</h2>
-                <p>背景画像やゲームごとの表示設定などを追加する予定の仮画面です。</p>
-              </div>
-              <div class="f f6"></div>
-              <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+      <section id="screen-settings" class="screen">
+        <section class="frame9 frame-main simple-panel">
+          <div class="frame9-grid">
+            <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+            <div class="f f4"></div>
+            <div class="f f5">
+              <span class="section-kicker">設定</span>
+              <h2>設定</h2>
+              <p>背景画像や表示設定を追加する予定の仮画面です。</p>
             </div>
-          </section>
+            <div class="f f6"></div>
+            <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+          </div>
         </section>
+      </section>
 
-      </div>
-    </main>
+    </div>
+  </main>
 
-    <!-- =====================================================
-         固定：下部ゲームUI
-    ====================================================== -->
-    <nav class="bottom-chrome" aria-label="下部ナビゲーション">
-      <div class="checker-line bottom-checker" aria-hidden="true"></div>
+  <nav class="bottom-chrome" aria-label="下部ナビゲーション">
+    <button class="bottom-nav-btn active" data-screen="ongoing"><span class="bottom-icon">▤</span><span>開催中</span></button>
+    <button class="bottom-nav-btn" data-screen="calendar"><span class="bottom-icon">▦</span><span>カレンダー</span></button>
+    <button class="bottom-nav-btn" data-screen="favorites"><span class="bottom-icon">☆</span><span>お気に入り</span></button>
+    <button class="bottom-nav-btn" data-screen="settings"><span class="bottom-icon">⚙</span><span>設定</span></button>
+  </nav>
+</div>
 
-      <button class="bottom-nav-btn active" data-screen="ongoing" type="button">
-        <span class="bottom-icon">▤</span>
-        <span>開催中</span>
-      </button>
-
-      <button class="bottom-nav-btn" data-screen="calendar" type="button">
-        <span class="bottom-icon">▦</span>
-        <span>カレンダー</span>
-      </button>
-
-      <button class="bottom-nav-btn" data-screen="favorites" type="button">
-        <span class="bottom-icon">☆</span>
-        <span>お気に入り</span>
-      </button>
-
-      <button class="bottom-nav-btn" data-screen="settings" type="button">
-        <span class="bottom-icon">⚙</span>
-        <span>設定</span>
-      </button>
-    </nav>
-  </div>
-
-  <!-- 詳細 -->
-  <div id="detailOverlay" class="detail-overlay"></div>
-
-  <aside id="detailSheet" class="detail-sheet" aria-hidden="true">
-    <section class="frame9 frame9-panel detail-panel">
-      <div class="frame9-grid">
-        <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-        <div class="f f4"></div>
-        <div class="f f5">
-          <div class="detail-head">
-            <div>
-              <div id="detailGame" class="detail-game">ゲーム</div>
-              <h2 id="detailTitle" class="detail-title">イベント名</h2>
-            </div>
-            <button id="closeDetailBtn" class="detail-close" type="button">×</button>
+<div id="detailOverlay" class="detail-overlay"></div>
+<aside id="detailSheet" class="detail-sheet" aria-hidden="true">
+  <section class="frame9 frame-main detail-panel">
+    <div class="frame9-grid">
+      <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+      <div class="f f4"></div>
+      <div class="f f5">
+        <div class="detail-head">
+          <div>
+            <div id="detailGame" class="detail-game">ゲーム</div>
+            <h2 id="detailTitle" class="detail-title">イベント名</h2>
           </div>
-
-          <div id="detailRemain" class="detail-remain"></div>
-          <div id="detailDate" class="detail-date"></div>
-
-          <div class="detail-section">
-            <div class="detail-label">関連</div>
-            <div id="detailRelated"></div>
-          </div>
-
-          <div class="detail-section">
-            <div class="detail-label">メモ</div>
-            <p id="detailMemo"></p>
-          </div>
-
-          <div class="detail-section">
-            <div class="detail-label">出典</div>
-            <a id="detailSource" href="#" target="_blank" rel="noopener noreferrer">Wikiを開く</a>
-          </div>
-
-          <button id="closeDetailBtnBottom" class="detail-bottom-btn" type="button">閉じる</button>
+          <button id="closeDetailBtn" class="detail-close">×</button>
         </div>
-        <div class="f f6"></div>
-        <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+        <div id="detailRemain" class="detail-remain"></div>
+        <div id="detailDate" class="detail-date"></div>
+        <div class="detail-section"><div class="detail-label">関連</div><div id="detailRelated"></div></div>
+        <div class="detail-section"><div class="detail-label">メモ</div><p id="detailMemo"></p></div>
+        <div class="detail-section"><div class="detail-label">出典</div><a id="detailSource" href="#" target="_blank" rel="noopener noreferrer">Wikiを開く</a></div>
+        <button id="closeDetailBtnBottom" class="detail-bottom-btn">閉じる</button>
       </div>
-    </section>
-  </aside>
+      <div class="f f6"></div>
+      <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+    </div>
+  </section>
+</aside>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

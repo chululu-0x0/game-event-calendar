@@ -1,74 +1,26 @@
-game-event-calendar / レイアウト再構成版
+game-event-calendar / 素材追加調整 v3
 
-今回の変更内容
-==============================
+今回の反映:
+- frame-card-event-1～9：開催中の内側カード
+- frame-chip-game-1～9：ゲーム外枠 + 左上のゲーム名タブ
+- frame-tab-active-1～9：上段「開催中 / イベントカレンダー」
+- lace-line.png：上段と中央の境目にrepeat-x
 
-1. 「イベントチェック」「チェック結果」を一旦削除
-2. 最初の画面を「本日のイベント一覧」に集中
-3. 上部の
-   - ゲームイベントメモ
-   - 開催中
-   - イベントカレンダー
-   を残した
-4. 下部ナビを画像に寄せて
-   - 開催中
-   - カレンダー
-   - お気に入り
-   - 設定
-   の4つにした
-5. 上部と下部は固定
-6. スクロールするのは中央部分だけ
-7. 中央背景も固定され、イベント一覧だけが上下移動する構造
-8. ゲームごとに1つの大きな枠
-9. 「原神」「スターレイル」などは付箋・見出しタブ風
-10. ゲーム枠の中ではイベントごとの個別枠をなくし、
-    区切り線でイベントを分離
-11. 現在GitHubにある
-    frame-panel-main-1.png ～ frame-panel-main-9.png
-    をゲーム枠やカレンダー枠に引き続き使用
+開催中は、
+[chip外枠]
+  ├─ 左上にchipタブ
+  └─ 内側にevent-card
+       └─ イベント内容
+という3層構造です。
 
+新素材は8x8なのでCSSでは16px（2倍）で使用しています。
+lace-line.png は16x16原寸で横に繰り返しています。
 
-背景画像を追加する方法
-==============================
+非選択タブはまだ素材がないため、active素材をCSS filterで一時的に淡い青紫へ変換しています。
 
-style.css の先頭にある
+差し替え:
+- index.html
+- style.css
+- script.js
 
---content-bg-image: none;
-
-を例えば
-
---content-bg-image: url("assets/ui/backgrounds/background-main.png");
-
-に変更してください。
-
-その場合の推奨配置:
-
-assets/
-  ui/
-    frames/
-      frame-panel-main-1.png
-      ...
-      frame-panel-main-9.png
-
-    backgrounds/
-      background-main.png
-
-
-重要
-==============================
-
-今回は背景画像そのものはまだ入っていません。
-CSS側だけ、あとから画像を置けばすぐ使える状態にしています。
-
-frame-panel-main-1～9 は既にGitHubに置かれているものを
-そのまま参照します。このZIPにPNGは入れていません。
-
-
-差し替えるファイル
-==============================
-
-index.html
-style.css
-script.js
-
-の3つです。
+画像素材はGitHub上の既存ファイルをそのまま参照します。
