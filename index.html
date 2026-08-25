@@ -63,41 +63,25 @@
       </section>
 
       <section id="screen-calendar" class="screen">
-        <div class="calendar-toolbar">
-          <div>
-            <span class="section-kicker">イベントカレンダー</span>
-            <div class="toolbar-sub">ゲームごとの開催期間</div>
-          </div>
-          <button id="todayJumpBtn" class="mini-action-btn" type="button">今日へ</button>
-        </div>
+        <div class="calendar-board calendar-board-full">
+          <div class="calendar-grid">
+            <div class="calendar-left">
+              <div class="calendar-corner">ゲーム</div>
+              <div id="calendarGameRows"></div>
+            </div>
 
-        <section class="frame9 frame-main calendar-panel">
-          <div class="frame9-grid">
-            <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-            <div class="f f4"></div>
-            <div class="f f5">
-              <div class="calendar-board">
-                <div class="calendar-grid">
-                  <div class="calendar-left">
-                    <div class="calendar-corner">ゲーム</div>
-                    <div id="calendarGameRows"></div>
-                  </div>
-                  <div class="calendar-right">
-                    <div id="calendarHeaderScroll" class="calendar-scroll header-scroll">
-                      <div id="calendarHeader" class="calendar-header-track"></div>
-                    </div>
-                    <div id="calendarBodyScroll" class="calendar-scroll body-scroll">
-                      <div id="todayLine" class="today-line"></div>
-                      <div id="calendarBody" class="calendar-body-track"></div>
-                    </div>
-                  </div>
-                </div>
+            <div class="calendar-right">
+              <div id="calendarHeaderScroll" class="calendar-scroll header-scroll">
+                <div id="calendarHeader" class="calendar-header-track"></div>
+              </div>
+
+              <div id="calendarBodyScroll" class="calendar-scroll body-scroll">
+                <div id="todayLine" class="today-line"></div>
+                <div id="calendarBody" class="calendar-body-track"></div>
               </div>
             </div>
-            <div class="f f6"></div>
-            <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
           </div>
-        </section>
+        </div>
       </section>
 
       <section id="screen-favorites" class="screen">

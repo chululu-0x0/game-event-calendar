@@ -74,7 +74,7 @@ function renderCalendar(){
   const dayWidth=parseInt(getComputedStyle(document.documentElement).getPropertyValue("--day-width"));
   const startDate=new Date("2025-05-18T00:00:00"),endDate=new Date("2025-06-08T00:00:00"),days=[];
   for(let d=new Date(startDate);d<=endDate;d.setDate(d.getDate()+1))days.push(new Date(d));
-  calendarHeader.innerHTML="";calendarBody.innerHTML="";calendarGameRows.innerHTML="";
+  calendarHeader.innerHTML="";calendarBody.innerHTML="";calendarGameRows.innerHTML="";calendarGameRows.style.setProperty("--game-count",eventData.length);calendarBody.style.setProperty("--game-count",eventData.length);
   days.forEach(d=>{const c=document.createElement("div"),is=d.toDateString()===today.toDateString();c.className=`day-cell ${is?"today":""}`;c.innerHTML=`<span class="day-month">${d.getMonth()+1}月</span><span>${d.getDate()}</span>`;calendarHeader.appendChild(c)});
   calendarBody.style.width=`${days.length*dayWidth}px`;
   eventData.forEach(group=>{
@@ -93,4 +93,4 @@ function syncCalendar(){let lock=false;calendarBodyScroll.addEventListener("scro
 
 todayLabel.textContent=formatTodayLabel(today);renderOngoing();renderCalendar();syncCalendar();
 $$(".top-tab,.bottom-nav-btn").forEach(b=>b.addEventListener("click",()=>setScreen(b.dataset.screen)));
-$("#refreshMockBtn").addEventListener("click",renderOngoing);$("#todayJumpBtn").addEventListener("click",jumpToToday);$("#closeDetailBtn").addEventListener("click",closeDetail);$("#closeDetailBtnBottom").addEventListener("click",closeDetail);detailOverlay.addEventListener("click",closeDetail);setScreen("ongoing");
+$("#refreshMockBtn").addEventListener("click",renderOngoing);$("#closeDetailBtn").addEventListener("click",closeDetail);$("#closeDetailBtnBottom").addEventListener("click",closeDetail);detailOverlay.addEventListener("click",closeDetail);setScreen("ongoing");

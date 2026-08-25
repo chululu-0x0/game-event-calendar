@@ -6,6 +6,12 @@
   --slice-main:16px;--slice-chip:8px;--slice-card:8px;--slice-tab:8px;
   --day-width:52px;--left-col-width:104px;
   --content-bg-image:none;
+
+  /* Layout tuning */
+  --chrome-fill:#bcc8f2;
+  --content-pad-x:14px;
+  --content-pad-top:10px;
+  --content-pad-bottom:14px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden}
@@ -14,22 +20,22 @@ button{font:inherit}
 .app-shell{width:min(100%,var(--shell-max));height:100dvh;margin:0 auto;display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden;background:#f9f4ee;box-shadow:-5px 0 #5b5eb680,5px 0 #5b5eb680}
 
 /* fixed top */
-.top-chrome{position:relative;z-index:20;padding:calc(12px + env(safe-area-inset-top)) 18px 23px;background:linear-gradient(#aabaf4,#d7e1ff 48%,#edf0ff);border-left:4px solid var(--chrome-dark);border-right:4px solid var(--chrome-dark)}
+.top-chrome{position:relative;z-index:20;padding:calc(8px + env(safe-area-inset-top)) 14px 18px;background:var(--chrome-fill);border-left:4px solid var(--chrome-dark);border-right:4px solid var(--chrome-dark)}
 .checker-line{position:absolute;left:0;right:0;height:7px;background:conic-gradient(from 90deg,#ffffffb3 0 25%,#747ad199 0 50%,#ffffffb3 0 75%,#747ad199 0) 0 0/8px 8px;image-rendering:pixelated}.checker-line-top{top:calc(3px + env(safe-area-inset-top))}
-.title-row{display:flex;align-items:center;justify-content:center;gap:13px;min-height:58px;padding-top:5px}
-.title-row h1{margin:0;font-family:"DotGothic16",monospace;font-size:clamp(25px,5.5vw,34px);white-space:nowrap;text-shadow:2px 2px #ffffffd9}
-.title-icon{width:46px;height:46px;display:grid;place-items:center;background:#f3efff;border:3px solid #5154ad;box-shadow:3px 3px #777bc8,inset -3px -3px #c0c5f2;font-size:26px}
+.title-row{display:flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding-top:3px}
+.title-row h1{margin:0;font-family:"DotGothic16",monospace;font-size:clamp(21px,4.5vw,27px);white-space:nowrap;text-shadow:2px 2px #ffffffd9}
+.title-icon{width:38px;height:38px;display:grid;place-items:center;background:#f3efff;border:2px solid #5154ad;box-shadow:2px 2px #777bc8,inset -2px -2px #c0c5f2;font-size:21px}
 
 /* top tabs use frame-tab-active 1-9 */
-.top-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:4px 4px 0}
-.top-tab{appearance:none;position:relative;height:44px;padding:0;border:0;background:transparent;cursor:pointer}
+.top-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:2px 2px 0}
+.top-tab{appearance:none;position:relative;height:32px;padding:0;border:0;background:transparent;cursor:pointer}
 .tab-skin{position:absolute;inset:0}
 .slice9-grid{width:100%;height:100%;display:grid;grid-template-columns:var(--slice-tab) 1fr var(--slice-tab);grid-template-rows:var(--slice-tab) 1fr var(--slice-tab)}
 .tab-skin .f{display:block;width:100%;height:100%;min-width:0;min-height:0;background-repeat:no-repeat;background-size:100% 100%;image-rendering:pixelated}
 .tab-skin .f2,.tab-skin .f8{background-repeat:repeat-x;background-size:auto 100%}.tab-skin .f4,.tab-skin .f6{background-repeat:repeat-y;background-size:100% auto}.tab-skin .f5{background-repeat:repeat}
 .tab-skin .f1{background-image:url("assets/ui/frames/frame-tab-active-1.png")}.tab-skin .f2{background-image:url("assets/ui/frames/frame-tab-active-2.png")}.tab-skin .f3{background-image:url("assets/ui/frames/frame-tab-active-3.png")}.tab-skin .f4{background-image:url("assets/ui/frames/frame-tab-active-4.png")}.tab-skin .f5{background-image:url("assets/ui/frames/frame-tab-active-5.png")}.tab-skin .f6{background-image:url("assets/ui/frames/frame-tab-active-6.png")}.tab-skin .f7{background-image:url("assets/ui/frames/frame-tab-active-7.png")}.tab-skin .f8{background-image:url("assets/ui/frames/frame-tab-active-8.png")}.tab-skin .f9{background-image:url("assets/ui/frames/frame-tab-active-9.png")}
 .top-tab:not(.active) .tab-skin .f{filter:saturate(.28) brightness(1.34) hue-rotate(18deg)}
-.top-tab-label{position:relative;z-index:2;height:100%;display:flex;align-items:center;justify-content:center;padding:0 14px;color:#fff;font-weight:700;font-size:16px;text-shadow:1px 1px #9d36608c}
+.top-tab-label{position:relative;z-index:2;height:100%;display:flex;align-items:center;justify-content:center;padding:0 10px;color:#fff;font-weight:700;font-size:14px;text-shadow:1px 1px #9d36608c}
 .top-tab:not(.active) .top-tab-label{color:#4d518b;text-shadow:1px 1px #fff}
 
 /* lace border between top and center */
@@ -37,10 +43,10 @@ button{font:inherit}
 
 /* center scroll */
 .content-scroll{min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background-image:linear-gradient(#fff9f2ba,#fff9f2ba),var(--content-bg-image),linear-gradient(#fff8ee,#f9f4ef);background-position:center;background-size:cover;background-repeat:no-repeat;background-attachment:scroll}
-.content-inner{min-height:100%;padding:18px 16px 28px}.screen{display:none}.screen.active{display:block}
-.today-row,.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;padding:5px 7px 12px;margin-bottom:11px;border-bottom:2px solid #6265a48c}
+.content-inner{height:100%;min-height:100%;padding:var(--content-pad-top) var(--content-pad-x) var(--content-pad-bottom)}.screen{display:none}.screen.active{display:block}
+.today-row,.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:42px;padding:2px 4px 7px;margin-bottom:7px;border-bottom:2px solid #6265a48c}
 .today-title{display:flex;align-items:center;gap:9px}.today-title>span:first-child{font-weight:700;font-size:17px}.today-title strong{font-size:16px}.today-calendar-icon{font-size:20px;color:#545896}
-.mini-action-btn{border:2px solid var(--chrome-dark);background:#f4f6ffe0;color:#464a87;font-weight:700;padding:7px 12px;box-shadow:2px 2px #595dab38}
+.mini-action-btn{border:2px solid var(--chrome-dark);background:#f4f6ffe0;color:#464a87;font-weight:700;padding:5px 9px;box-shadow:2px 2px #595dab38;font-size:13px}
 
 /* generic 9-slice */
 .frame9{width:100%;position:relative}
@@ -84,7 +90,7 @@ button{font:inherit}
     タブ高さ32px、外枠との重なり8pxにして
     すべて8pxグリッド上へ揃える。
   */
-  padding-top:32px;
+  padding-top:24px;
 
   --game-tab-w:128px;
   --chip-unit:8px;
@@ -272,32 +278,289 @@ button{font:inherit}
 .detail-overlay{position:fixed;inset:0;z-index:80;background:#2427586b;opacity:0;pointer-events:none}.detail-overlay.open{opacity:1;pointer-events:auto}.detail-sheet{position:fixed;z-index:81;top:0;right:0;width:min(92vw,470px);height:100dvh;padding:12px 8px 12px 0;transform:translateX(100%);transition:.23s;overflow:auto}.detail-sheet.open{transform:none}.detail-panel>.frame9-grid{min-height:calc(100dvh - 24px)}.detail-panel>.frame9-grid>.f5{padding:17px}.detail-head{display:flex;justify-content:space-between}.detail-title{margin:4px 0}.detail-close{width:40px;height:40px}.detail-remain{font-family:"DotGothic16";font-size:39px;color:var(--pink-dark)}.detail-section{padding:13px 0;border-top:2px solid #6769a659}.detail-bottom-btn{width:100%;min-height:44px;background:#ff8dad;color:#fff;border:2px solid #686dc2;font-weight:700}
 
 @media(max-width:420px){
-  :root{--slice-main:16px;--slice-chip:8px;--slice-card:8px;--slice-tab:8px;--day-width:48px;--left-col-width:94px}
-  .top-chrome{padding-left:12px;padding-right:12px}.title-icon{width:40px;height:40px}.title-row h1{font-size:25px}.top-tab{height:42px}.top-tab-label{font-size:14px;padding:0 10px}.content-inner{padding-left:9px;padding-right:9px}
-  .game-chip-text{font-size:15px}.event-row{grid-template-columns:56px minmax(0,1fr) 68px;gap:8px;min-height:102px}.event-icon{width:54px;height:54px;font-size:25px}.event-title{font-size:16px}.event-remain{min-width:62px}.remain-big{font-size:34px}.progress-label{font-size:10px}.event-range{font-size:12px}
+  :root{
+    --slice-main:16px;
+    --slice-chip:8px;
+    --slice-card:8px;
+    --slice-tab:8px;
+    --day-width:48px;
+    --left-col-width:90px;
+    --content-pad-x:10px;
+    --content-pad-top:7px;
+    --content-pad-bottom:10px;
+  }
+
+  .top-chrome{
+    padding:
+      calc(6px + env(safe-area-inset-top))
+      9px
+      18px;
+  }
+
+  .title-row{
+    min-height:40px;
+  }
+
+  .title-icon{
+    width:34px;
+    height:34px;
+    font-size:19px;
+  }
+
+  .title-row h1{
+    font-size:21px;
+  }
+
+  .top-tab{
+    height:32px;
+  }
+
+  .top-tab-label{
+    font-size:13px;
+    padding:0 7px;
+  }
+
+  .game-list{
+    padding-left:8px;
+    padding-right:8px;
+  }
+
+  .game-chip-text{
+    font-size:15px;
+  }
+
+  .event-row{
+    grid-template-columns:48px minmax(0,1fr) 60px;
+    gap:6px;
+    min-height:86px;
+    padding:6px 2px;
+  }
+
+  .event-icon{
+    width:46px;
+    height:46px;
+    font-size:22px;
+  }
+
+  .event-title{
+    font-size:15px;
+  }
+
+  .progress-label{
+    font-size:9px;
+  }
+
+  .event-range{
+    font-size:11px;
+  }
+
+  .event-remain{
+    min-width:58px;
+  }
+
+  .event-remain .remain-big,
+  .remain-big{
+    font-size:29px;
+  }
+
+  .bottom-chrome{
+    min-height:calc(50px + env(safe-area-inset-bottom));
+    padding:3px 1px calc(3px + env(safe-area-inset-bottom));
+  }
+
+  .bottom-icon{
+    font-size:22px;
+  }
+
+  .bottom-nav-btn{
+    font-size:9px;
+  }
 }
 
 
 /* =========================================================
-   CHIP接続修正 v6
+   Compact layout v7
    ========================================================= */
 
-/*
-  frame-chip-game-8.png は現在、
-  上辺用の frame-chip-game-2.png と同じ向き。
-  そのまま下辺に置くと7・8・9の横線位置がずれるため、
-  8番だけCSSで上下反転して下辺向きにする。
-*/
+/* タブ左辺から外枠左辺へ縦線をそのまま接続 */
+.game-shell > .frame9-grid > .f1{
+  background-image:url("assets/ui/frames/frame-chip-game-4.png");
+}
+
+/* 下辺中央を下向きにする */
 .game-shell > .frame9-grid > .f8{
   transform:scaleY(-1);
   transform-origin:center;
 }
 
-/*
-  event-card側も8番が上辺向きだった場合に備えて同じ処理。
-  素材側で8番が正しく下辺向きなら、この指定は削除してOK。
-*/
-.frame-card > .frame9-grid > .f8{
-  transform:scaleY(-1);
-  transform-origin:center;
+
+/* 外枠を少し中央へ寄せ、背景の見える幅を増やす */
+.game-list{
+  gap:18px;
+  padding:6px 10px 0;
+}
+
+/* 外枠と内側カードの空間を縮める */
+.game-shell > .frame9-grid > .f5{
+  padding:5px 4px 4px;
+}
+
+.game-card > .frame9-grid > .f5{
+  padding:1px 4px 2px;
+}
+
+/* イベント1行を情報密度高めに */
+.event-row{
+  grid-template-columns:52px minmax(0,1fr) 70px;
+  gap:7px;
+  min-height:92px;
+  padding:7px 3px;
+}
+
+.event-row + .event-row{
+  border-top-width:1px;
+}
+
+.event-icon{
+  width:50px;
+  height:50px;
+  border-width:2px;
+  font-size:24px;
+}
+
+.event-title{
+  font-size:16px;
+  line-height:1.22;
+  margin-bottom:4px;
+}
+
+.progress-line{
+  gap:6px;
+  margin-bottom:3px;
+}
+
+.progress-mini{
+  height:9px;
+}
+
+.progress-label{
+  font-size:11px;
+}
+
+.event-range{
+  font-size:12px;
+  line-height:1.3;
+}
+
+.event-remain{
+  min-width:66px;
+}
+
+.event-remain .remain-prefix,
+.remain-prefix{
+  font-size:13px;
+}
+
+.event-remain .remain-big,
+.remain-big{
+  font-size:32px;
+}
+
+
+/* カレンダーは中央スクロール領域を端まで使う */
+#screen-calendar{
+  width:calc(100% + (var(--content-pad-x) * 2));
+  min-height:calc(100% + var(--content-pad-top) + var(--content-pad-bottom));
+  margin:
+    calc(var(--content-pad-top) * -1)
+    calc(var(--content-pad-x) * -1)
+    calc(var(--content-pad-bottom) * -1);
+}
+
+.calendar-board-full{
+  width:100%;
+  height:100%;
+  min-height:100%;
+  overflow:hidden;
+  background:#fffdf5;
+}
+
+.calendar-board-full .calendar-grid{
+  height:100%;
+  min-height:100%;
+}
+
+/* 左のゲームタイトル列 / 上の日付列を固定した表として広げる */
+.calendar-left{
+  height:100%;
+}
+
+#calendarGameRows{
+  height:calc(100% - 56px);
+  display:grid;
+  grid-template-rows:repeat(var(--game-count,3), minmax(96px,1fr));
+}
+
+.calendar-game-cell{
+  min-height:0;
+}
+
+.calendar-right{
+  height:100%;
+  display:grid;
+  grid-template-rows:56px minmax(0,1fr);
+}
+
+.header-scroll{
+  height:56px;
+}
+
+.body-scroll{
+  height:100%;
+}
+
+.calendar-body-track{
+  height:100%;
+  min-height:0;
+  display:grid;
+  grid-template-rows:repeat(var(--game-count,3), minmax(96px,1fr));
+}
+
+.calendar-row{
+  height:auto;
+  min-height:96px;
+}
+
+
+.bottom-chrome{
+  min-height:calc(54px + env(safe-area-inset-bottom));
+  padding:4px 2px calc(4px + env(safe-area-inset-bottom));
+  background:var(--chrome-fill);
+  border-top-width:3px;
+  box-shadow:none;
+}
+
+.bottom-nav-btn{
+  gap:1px;
+  font-size:10px;
+}
+
+.bottom-icon{
+  font-size:24px;
+}
+
+
+@media(max-width:620px){
+  .app-shell{
+    width:100%;
+    max-width:none;
+    box-shadow:none;
+  }
+
+  .top-chrome,
+  .bottom-chrome{
+    border-left:0;
+    border-right:0;
+    background:var(--chrome-fill);
+  }
 }
