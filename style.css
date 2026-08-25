@@ -84,7 +84,7 @@ button{font:inherit}
     タブ高さ32px、外枠との重なり8pxにして
     すべて8pxグリッド上へ揃える。
   */
-  padding-top:24px;
+  padding-top:32px;
 
   --game-tab-w:128px;
   --chip-unit:8px;
@@ -275,4 +275,29 @@ button{font:inherit}
   :root{--slice-main:16px;--slice-chip:8px;--slice-card:8px;--slice-tab:8px;--day-width:48px;--left-col-width:94px}
   .top-chrome{padding-left:12px;padding-right:12px}.title-icon{width:40px;height:40px}.title-row h1{font-size:25px}.top-tab{height:42px}.top-tab-label{font-size:14px;padding:0 10px}.content-inner{padding-left:9px;padding-right:9px}
   .game-chip-text{font-size:15px}.event-row{grid-template-columns:56px minmax(0,1fr) 68px;gap:8px;min-height:102px}.event-icon{width:54px;height:54px;font-size:25px}.event-title{font-size:16px}.event-remain{min-width:62px}.remain-big{font-size:34px}.progress-label{font-size:10px}.event-range{font-size:12px}
+}
+
+
+/* =========================================================
+   CHIP接続修正 v6
+   ========================================================= */
+
+/*
+  frame-chip-game-8.png は現在、
+  上辺用の frame-chip-game-2.png と同じ向き。
+  そのまま下辺に置くと7・8・9の横線位置がずれるため、
+  8番だけCSSで上下反転して下辺向きにする。
+*/
+.game-shell > .frame9-grid > .f8{
+  transform:scaleY(-1);
+  transform-origin:center;
+}
+
+/*
+  event-card側も8番が上辺向きだった場合に備えて同じ処理。
+  素材側で8番が正しく下辺向きなら、この指定は削除してOK。
+*/
+.frame-card > .frame9-grid > .f8{
+  transform:scaleY(-1);
+  transform-origin:center;
 }
