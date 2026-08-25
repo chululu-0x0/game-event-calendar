@@ -38,8 +38,17 @@ function renderOngoing(){
   eventData.forEach(group=>{
     const section=document.createElement("section");
     section.className=`game-section ${group.color}`;
-    const tabWidth=Math.max(112,group.game.length*19+40);
-    section.style.setProperty("--game-tab-w",`${tabWidth}px`);
+    /*
+      8px素材なのでタブ幅も8px単位に丸める。
+      文字数が変わっても横へ伸ばせる。
+    */
+    const rawTabWidth=Math.max(112,group.game.length*19+40);
+    const tabWidth=Math.ceil(rawTabWidth/8)*8;
+
+    section.style.setProperty(
+      "--game-tab-w",
+      `${tabWidth}px`
+    );
     const tab=openChipTab(group.game);
     const card=frame9("frame-card game-card",`<div class="game-events"></div>`);
     section.innerHTML=tab+frame9("frame-chip game-shell",card);
