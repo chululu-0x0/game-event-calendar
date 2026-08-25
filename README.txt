@@ -1,31 +1,17 @@
-# Pixel Frame v2
+game-event-calendar / Pixel Frame v3
 
-今回の修正では、`clip-path + border` 方式をやめて、
-外枠を「濃い色のピクセル形の背景」として描画し、その上に
-少し小さい内側の面を重ねる方式に変更しています。
+今回の修正:
+1. 大枠の角に出ていた隙間を修正
+   - 外側を4px刻み3段
+   - 内側を3px inset + 3px刻み3段
+   - 外側と内側の階段位置が同じ座標に揃うように変更
 
-## 差し替えるファイル
+2. アイコン・ボタンの角が消える問題を修正
+   - inset box-shadow 方式を廃止
+   - 小さい要素も「外側の枠 + 内側の面」の2レイヤーで描画
+   - 2段のピクセル角に統一
 
-- `pixel-corners.css`
+差し替え:
+GitHub の pixel-corners.css を、このZIP内の pixel-corners.css で上書きしてください。
 
-GitHub 上の既存 `pixel-corners.css` を、このファイルで丸ごと上書きしてください。
-
-`index.html` はすでに
-
-```html
-<link rel="stylesheet" href="pixel-corners.css" />
-```
-
-を読み込んでいるため、今回は変更不要です。
-
-## 調整しやすい値
-
-```css
---px-step: 5px;
---px-step-small: 4px;
---px-frame: 3px;
-```
-
-- `--px-step`: 大きい枠の1段ぶん
-- `--px-step-small`: ボタンなど小さい枠の1段ぶん
-- `--px-frame`: 外枠の太さ
+index.html / style.css / script.js は今回は変更不要です。

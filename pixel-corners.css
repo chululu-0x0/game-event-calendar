@@ -1,29 +1,24 @@
 /*
-  game-event-calendar
-  Pixel frame v2
+  game-event-calendar / pixel-corners.css
+  Pixel frame v3
 
-  外枠を border では描かず、
-  「外側の濃いピクセル形」+「少し小さい内側の面」
-  を重ねて描く方式です。
-
-  左上の角イメージ:
-        ■■■■■■■
-      ■■
-    ■■
-  ■■
-  ■■
-  ■■
+  修正点:
+  - 外枠と内側を「同じ階段位置」に合わせ、角の隙間をなくす
+  - border / inset box-shadow ではなく、外側の形 + 内側の面で描画
+  - 小さいアイコン・ボタンにも2段のピクセル角を適用
 */
 
 :root {
-  --px-step: 5px;
-  --px-step-small: 4px;
-  --px-frame: 3px;
+  --pixel-border: var(--line-strong);
+  --pixel-border-soft: var(--line);
 }
 
-/* -------------------------------------------------
-   共通: 3段のピクセル階段形
-------------------------------------------------- */
+/* =========================================================
+   LARGE PIXEL FRAME
+   外側: 4px刻み × 3段
+   内側: 3px inset。角位置を外側に揃える
+   ========================================================= */
+
 .pixel-panel,
 .event-card,
 .detail-sheet-inner,
@@ -33,136 +28,165 @@
 .candidate-item,
 .setting-row,
 .event-bar {
-  --pixel-shape: polygon(
-    calc(var(--px-step) * 3) 0,
-    calc(100% - (var(--px-step) * 3)) 0,
-
-    calc(100% - (var(--px-step) * 3)) var(--px-step),
-    calc(100% - (var(--px-step) * 2)) var(--px-step),
-
-    calc(100% - (var(--px-step) * 2)) calc(var(--px-step) * 2),
-    calc(100% - var(--px-step)) calc(var(--px-step) * 2),
-
-    calc(100% - var(--px-step)) calc(var(--px-step) * 3),
-    100% calc(var(--px-step) * 3),
-
-    100% calc(100% - (var(--px-step) * 3)),
-    calc(100% - var(--px-step)) calc(100% - (var(--px-step) * 3)),
-
-    calc(100% - var(--px-step)) calc(100% - (var(--px-step) * 2)),
-    calc(100% - (var(--px-step) * 2)) calc(100% - (var(--px-step) * 2)),
-
-    calc(100% - (var(--px-step) * 2)) calc(100% - var(--px-step)),
-    calc(100% - (var(--px-step) * 3)) calc(100% - var(--px-step)),
-
-    calc(100% - (var(--px-step) * 3)) 100%,
-    calc(var(--px-step) * 3) 100%,
-
-    calc(var(--px-step) * 3) calc(100% - var(--px-step)),
-    calc(var(--px-step) * 2) calc(100% - var(--px-step)),
-
-    calc(var(--px-step) * 2) calc(100% - (var(--px-step) * 2)),
-    var(--px-step) calc(100% - (var(--px-step) * 2)),
-
-    var(--px-step) calc(100% - (var(--px-step) * 3)),
-    0 calc(100% - (var(--px-step) * 3)),
-
-    0 calc(var(--px-step) * 3),
-    var(--px-step) calc(var(--px-step) * 3),
-
-    var(--px-step) calc(var(--px-step) * 2),
-    calc(var(--px-step) * 2) calc(var(--px-step) * 2),
-
-    calc(var(--px-step) * 2) var(--px-step),
-    calc(var(--px-step) * 3) var(--px-step)
-  );
-
-  border-radius: 0 !important;
-  clip-path: var(--pixel-shape);
-}
-
-/* -------------------------------------------------
-   大きいパネル:
-   本体 = 外枠色
-   ::before = 内側の面
-------------------------------------------------- */
-.pixel-panel {
-  --pixel-fill: var(--panel);
   border: 0 !important;
-  background: var(--line-strong) !important;
+  border-radius: 0 !important;
   position: relative;
   isolation: isolate;
 
-  box-shadow:
-    4px 0 0 rgba(122, 120, 190, 0.08),
-    0 4px 0 rgba(122, 120, 190, 0.12) !important;
+  /* 左上なら
+           ─────
+        ──
+      ──
+    ──
+  */
+  clip-path: polygon(
+    12px 0,
+    calc(100% - 12px) 0,
+
+    calc(100% - 12px) 4px,
+    calc(100% - 8px) 4px,
+
+    calc(100% - 8px) 8px,
+    calc(100% - 4px) 8px,
+
+    calc(100% - 4px) 12px,
+    100% 12px,
+
+    100% calc(100% - 12px),
+    calc(100% - 4px) calc(100% - 12px),
+
+    calc(100% - 4px) calc(100% - 8px),
+    calc(100% - 8px) calc(100% - 8px),
+
+    calc(100% - 8px) calc(100% - 4px),
+    calc(100% - 12px) calc(100% - 4px),
+
+    calc(100% - 12px) 100%,
+    12px 100%,
+
+    12px calc(100% - 4px),
+    8px calc(100% - 4px),
+
+    8px calc(100% - 8px),
+    4px calc(100% - 8px),
+
+    4px calc(100% - 12px),
+    0 calc(100% - 12px),
+
+    0 12px,
+    4px 12px,
+
+    4px 8px,
+    8px 8px,
+
+    8px 4px,
+    12px 4px
+  );
 }
 
-.pixel-panel.soft {
-  --pixel-fill: var(--panel-soft);
+/*
+  outer top start = 12px
+  inner inset = 3px
+  inner local top start = 9px
+  → 同じ座標12pxに揃うため、隙間が出にくい
+*/
+.pixel-panel::before,
+.event-card::before,
+.detail-block::before,
+.complete-check-row::before,
+.accordion::before,
+.candidate-item::before,
+.setting-row::before,
+.event-bar::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: 0;
+  pointer-events: none;
+
+  clip-path: polygon(
+    9px 0,
+    calc(100% - 9px) 0,
+
+    calc(100% - 9px) 3px,
+    calc(100% - 6px) 3px,
+
+    calc(100% - 6px) 6px,
+    calc(100% - 3px) 6px,
+
+    calc(100% - 3px) 9px,
+    100% 9px,
+
+    100% calc(100% - 9px),
+    calc(100% - 3px) calc(100% - 9px),
+
+    calc(100% - 3px) calc(100% - 6px),
+    calc(100% - 6px) calc(100% - 6px),
+
+    calc(100% - 6px) calc(100% - 3px),
+    calc(100% - 9px) calc(100% - 3px),
+
+    calc(100% - 9px) 100%,
+    9px 100%,
+
+    9px calc(100% - 3px),
+    6px calc(100% - 3px),
+
+    6px calc(100% - 6px),
+    3px calc(100% - 6px),
+
+    3px calc(100% - 9px),
+    0 calc(100% - 9px),
+
+    0 9px,
+    3px 9px,
+
+    3px 6px,
+    6px 6px,
+
+    6px 3px,
+    9px 3px
+  );
+}
+
+/* 実コンテンツを内側面より前へ */
+.pixel-panel > *,
+.event-card > *,
+.detail-block > *,
+.complete-check-row > *,
+.accordion > *,
+.candidate-item > *,
+.setting-row > *,
+.event-bar > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================================================
+   LARGE FRAME COLORS
+   ========================================================= */
+
+.pixel-panel {
+  background: var(--pixel-border) !important;
+  box-shadow:
+    4px 0 0 rgba(115, 119, 216, .10),
+    0 4px 0 rgba(115, 119, 216, .12) !important;
 }
 
 .pixel-panel::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-
-  /* 外枠を3px残す */
-  inset: var(--px-frame);
-
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: var(--pixel-fill);
-
-  /* 内側にも階段角を作る */
-  clip-path: polygon(
-    calc(var(--px-step) * 2) 0,
-    calc(100% - (var(--px-step) * 2)) 0,
-
-    calc(100% - (var(--px-step) * 2)) var(--px-step),
-    calc(100% - var(--px-step)) var(--px-step),
-
-    calc(100% - var(--px-step)) calc(var(--px-step) * 2),
-    100% calc(var(--px-step) * 2),
-
-    100% calc(100% - (var(--px-step) * 2)),
-    calc(100% - var(--px-step)) calc(100% - (var(--px-step) * 2)),
-
-    calc(100% - var(--px-step)) calc(100% - var(--px-step)),
-    calc(100% - (var(--px-step) * 2)) calc(100% - var(--px-step)),
-
-    calc(100% - (var(--px-step) * 2)) 100%,
-    calc(var(--px-step) * 2) 100%,
-
-    calc(var(--px-step) * 2) calc(100% - var(--px-step)),
-    var(--px-step) calc(100% - var(--px-step)),
-
-    var(--px-step) calc(100% - (var(--px-step) * 2)),
-    0 calc(100% - (var(--px-step) * 2)),
-
-    0 calc(var(--px-step) * 2),
-    var(--px-step) calc(var(--px-step) * 2),
-
-    var(--px-step) var(--px-step),
-    calc(var(--px-step) * 2) var(--px-step)
-  );
-
-  pointer-events: none;
+  background: var(--panel);
 }
 
-/* -------------------------------------------------
-   イベントカード等:
-   同じく背景レイヤーで外枠を作る
-------------------------------------------------- */
+.pixel-panel.soft::before {
+  background: var(--panel-soft);
+}
+
 .event-card,
 .detail-block,
 .complete-check-row,
 .accordion,
 .candidate-item,
 .setting-row {
-  border: 0 !important;
-  position: relative;
-  isolation: isolate;
   background: #d7dbff !important;
 }
 
@@ -172,110 +196,35 @@
 .accordion::before,
 .candidate-item::before,
 .setting-row::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 2px;
   background: #fffefa;
-  clip-path: polygon(
-    calc(var(--px-step-small) * 2) 0,
-    calc(100% - (var(--px-step-small) * 2)) 0,
-    calc(100% - (var(--px-step-small) * 2)) var(--px-step-small),
-    calc(100% - var(--px-step-small)) var(--px-step-small),
-    calc(100% - var(--px-step-small)) calc(var(--px-step-small) * 2),
-    100% calc(var(--px-step-small) * 2),
-
-    100% calc(100% - (var(--px-step-small) * 2)),
-    calc(100% - var(--px-step-small)) calc(100% - (var(--px-step-small) * 2)),
-    calc(100% - var(--px-step-small)) calc(100% - var(--px-step-small)),
-    calc(100% - (var(--px-step-small) * 2)) calc(100% - var(--px-step-small)),
-
-    calc(100% - (var(--px-step-small) * 2)) 100%,
-    calc(var(--px-step-small) * 2) 100%,
-    calc(var(--px-step-small) * 2) calc(100% - var(--px-step-small)),
-    var(--px-step-small) calc(100% - var(--px-step-small)),
-    var(--px-step-small) calc(100% - (var(--px-step-small) * 2)),
-    0 calc(100% - (var(--px-step-small) * 2)),
-
-    0 calc(var(--px-step-small) * 2),
-    var(--px-step-small) calc(var(--px-step-small) * 2),
-    var(--px-step-small) var(--px-step-small),
-    calc(var(--px-step-small) * 2) var(--px-step-small)
-  );
-  pointer-events: none;
 }
 
-/* -------------------------------------------------
-   カレンダーのイベントバー
-   色ごとの border-color を外枠色として使う
-------------------------------------------------- */
-.event-bar {
-  border: 0 !important;
-  isolation: isolate;
+/* イベントカードの境界が横線だけに見えないよう影は控えめに */
+.event-card {
+  box-shadow: 3px 3px 0 rgba(115, 119, 216, .07) !important;
 }
 
-.event-bar.blue {
-  background: #85aef7 !important;
-}
-.event-bar.blue::before {
-  background: #e8f3ff;
-}
+/* =========================================================
+   CALENDAR EVENT BAR
+   ========================================================= */
 
-.event-bar.purple {
-  background: #a98df0 !important;
-}
-.event-bar.purple::before {
-  background: #efe6ff;
-}
+.event-bar.blue { background: #85aef7 !important; }
+.event-bar.blue::before { background: #e8f3ff; }
 
-.event-bar.pink {
-  background: #f398bb !important;
-}
-.event-bar.pink::before {
-  background: #ffe6f0;
-}
+.event-bar.purple { background: #a98df0 !important; }
+.event-bar.purple::before { background: #efe6ff; }
 
-.event-bar.yellow {
-  background: #f2c36f !important;
-}
-.event-bar.yellow::before {
-  background: #fff2d6;
-}
+.event-bar.pink { background: #f398bb !important; }
+.event-bar.pink::before { background: #ffe6f0; }
 
-.event-bar::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: 2px;
-  clip-path: polygon(
-    calc(var(--px-step-small) * 2) 0,
-    calc(100% - (var(--px-step-small) * 2)) 0,
-    calc(100% - (var(--px-step-small) * 2)) var(--px-step-small),
-    calc(100% - var(--px-step-small)) var(--px-step-small),
-    calc(100% - var(--px-step-small)) calc(var(--px-step-small) * 2),
-    100% calc(var(--px-step-small) * 2),
-    100% calc(100% - (var(--px-step-small) * 2)),
-    calc(100% - var(--px-step-small)) calc(100% - (var(--px-step-small) * 2)),
-    calc(100% - var(--px-step-small)) calc(100% - var(--px-step-small)),
-    calc(100% - (var(--px-step-small) * 2)) calc(100% - var(--px-step-small)),
-    calc(100% - (var(--px-step-small) * 2)) 100%,
-    calc(var(--px-step-small) * 2) 100%,
-    calc(var(--px-step-small) * 2) calc(100% - var(--px-step-small)),
-    var(--px-step-small) calc(100% - var(--px-step-small)),
-    var(--px-step-small) calc(100% - (var(--px-step-small) * 2)),
-    0 calc(100% - (var(--px-step-small) * 2)),
-    0 calc(var(--px-step-small) * 2),
-    var(--px-step-small) calc(var(--px-step-small) * 2),
-    var(--px-step-small) var(--px-step-small),
-    calc(var(--px-step-small) * 2) var(--px-step-small)
-  );
-  pointer-events: none;
-}
+.event-bar.yellow { background: #f2c36f !important; }
+.event-bar.yellow::before { background: #fff2d6; }
 
-/* -------------------------------------------------
-   ボタン・小アイコン:
-   外枠を消さず、内側方向に描く
-------------------------------------------------- */
+/* =========================================================
+   SMALL PIXEL FRAME
+   小さいボタン・アイコン: 4px刻み × 2段
+   ========================================================= */
+
 .top-tab,
 .bottom-nav-btn,
 .primary-btn,
@@ -286,50 +235,202 @@
 .event-icon,
 .calendar-game-icon,
 .event-bar .bar-icon {
-  border-radius: 0 !important;
-  clip-path: polygon(
-    calc(var(--px-step-small) * 2) 0,
-    calc(100% - (var(--px-step-small) * 2)) 0,
-    calc(100% - (var(--px-step-small) * 2)) var(--px-step-small),
-    calc(100% - var(--px-step-small)) var(--px-step-small),
-    calc(100% - var(--px-step-small)) calc(var(--px-step-small) * 2),
-    100% calc(var(--px-step-small) * 2),
-
-    100% calc(100% - (var(--px-step-small) * 2)),
-    calc(100% - var(--px-step-small)) calc(100% - (var(--px-step-small) * 2)),
-    calc(100% - var(--px-step-small)) calc(100% - var(--px-step-small)),
-    calc(100% - (var(--px-step-small) * 2)) calc(100% - var(--px-step-small)),
-    calc(100% - (var(--px-step-small) * 2)) 100%,
-
-    calc(var(--px-step-small) * 2) 100%,
-    calc(var(--px-step-small) * 2) calc(100% - var(--px-step-small)),
-    var(--px-step-small) calc(100% - var(--px-step-small)),
-    var(--px-step-small) calc(100% - (var(--px-step-small) * 2)),
-    0 calc(100% - (var(--px-step-small) * 2)),
-
-    0 calc(var(--px-step-small) * 2),
-    var(--px-step-small) calc(var(--px-step-small) * 2),
-    var(--px-step-small) var(--px-step-small),
-    calc(var(--px-step-small) * 2) var(--px-step-small)
-  );
-
-  /* border は要素内側に見えるので前回のように外周で欠けにくい */
-  box-shadow: inset 0 0 0 2px var(--line-strong);
   border: 0 !important;
+  border-radius: 0 !important;
+  position: relative;
+  isolation: isolate;
+
+  clip-path: polygon(
+    8px 0,
+    calc(100% - 8px) 0,
+
+    calc(100% - 8px) 4px,
+    calc(100% - 4px) 4px,
+
+    calc(100% - 4px) 8px,
+    100% 8px,
+
+    100% calc(100% - 8px),
+    calc(100% - 4px) calc(100% - 8px),
+
+    calc(100% - 4px) calc(100% - 4px),
+    calc(100% - 8px) calc(100% - 4px),
+
+    calc(100% - 8px) 100%,
+    8px 100%,
+
+    8px calc(100% - 4px),
+    4px calc(100% - 4px),
+
+    4px calc(100% - 8px),
+    0 calc(100% - 8px),
+
+    0 8px,
+    4px 8px,
+
+    4px 4px,
+    8px 4px
+  );
 }
 
-/* アイコン枠は少し薄い色 */
+/* 小枠は pseudo-element を使って外枠を確実に残す */
+.top-tab::before,
+.bottom-nav-btn::before,
+.primary-btn::before,
+.ghost-btn::before,
+.register-btn::before,
+.close-detail-btn::before,
+.header-icon::before,
+.event-icon::before,
+.calendar-game-icon::before,
+.event-bar .bar-icon::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  z-index: 0;
+  pointer-events: none;
+
+  clip-path: polygon(
+    6px 0,
+    calc(100% - 6px) 0,
+
+    calc(100% - 6px) 2px,
+    calc(100% - 2px) 2px,
+
+    calc(100% - 2px) 6px,
+    100% 6px,
+
+    100% calc(100% - 6px),
+    calc(100% - 2px) calc(100% - 6px),
+
+    calc(100% - 2px) calc(100% - 2px),
+    calc(100% - 6px) calc(100% - 2px),
+
+    calc(100% - 6px) 100%,
+    6px 100%,
+
+    6px calc(100% - 2px),
+    2px calc(100% - 2px),
+
+    2px calc(100% - 6px),
+    0 calc(100% - 6px),
+
+    0 6px,
+    2px 6px,
+
+    2px 2px,
+    6px 2px
+  );
+}
+
+.top-tab > *,
+.bottom-nav-btn > *,
+.primary-btn > *,
+.ghost-btn > *,
+.register-btn > *,
+.close-detail-btn > *,
+.header-icon > *,
+.event-icon > *,
+.calendar-game-icon > *,
+.event-bar .bar-icon > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ボタンの外枠色 */
+.top-tab,
+.bottom-nav-btn,
+.primary-btn,
+.ghost-btn,
+.register-btn,
+.close-detail-btn {
+  background: var(--pixel-border) !important;
+}
+
+/* 通常ボタン内側 */
+.top-tab::before { background: #f7f8ff; }
+.ghost-btn::before { background: linear-gradient(180deg, #f8f9ff, #eceefe); }
+.bottom-nav-btn::before { background: #f8f8ff; }
+.close-detail-btn::before { background: #fff3f8; }
+
+/* active / primary */
+.top-tab.active::before,
+.primary-btn::before,
+.register-btn::before {
+  background: linear-gradient(180deg, var(--pink-2), var(--pink));
+}
+
+.bottom-nav-btn.active::before {
+  background: linear-gradient(180deg, #ffe5f0, #ffd0e1);
+}
+
+/* ボタン本体が外枠色になったので文字を最前面に */
+.top-tab,
+.bottom-nav-btn,
+.primary-btn,
+.ghost-btn,
+.register-btn,
+.close-detail-btn {
+  color: var(--text);
+}
+
+.top-tab.active,
+.primary-btn,
+.register-btn {
+  color: #fff;
+}
+
+.bottom-nav-btn.active {
+  color: var(--danger);
+}
+
+/* 小アイコンの外枠と内側 */
 .header-icon,
 .event-icon,
 .calendar-game-icon,
 .event-bar .bar-icon {
-  box-shadow: inset 0 0 0 2px var(--line);
+  background: var(--pixel-border-soft) !important;
 }
 
-/* -------------------------------------------------
+.header-icon::before {
+  background: linear-gradient(180deg, #edf0ff, #dfe2ff);
+}
+
+.event-icon::before {
+  background: linear-gradient(180deg, #eaf2ff, #d7e2ff);
+}
+
+.calendar-game-icon::before {
+  background: linear-gradient(180deg, #ebf3ff, #d8e2ff);
+}
+
+.event-bar .bar-icon::before {
+  background: rgba(255,255,255,.72);
+}
+
+/*
+  header-icon 等はテキストそのものが直下の text node なので、
+  ::before が文字を覆わないよう mix-blend などは使わず、
+  疑似要素を背景として扱う。
+*/
+.header-icon,
+.event-icon,
+.calendar-game-icon,
+.event-bar .bar-icon {
+  z-index: 0;
+}
+
+.header-icon::after,
+.event-icon::after,
+.calendar-game-icon::after {
+  /* 擬似要素を追加しない。既存文字は通常描画で前に来る */
+  content: none;
+}
+
+/* =========================================================
    丸さを残すもの
-   ゲージ・タグ・今日ラベルは可読性優先
-------------------------------------------------- */
+   ========================================================= */
+
 .progress-mini,
 .progress-mini-fill,
 .progress-bar,
@@ -338,28 +439,22 @@
 .detail-block-title,
 .tag,
 .today-line::before {
-  clip-path: none;
+  clip-path: none !important;
 }
 
-/* 元CSSの丸角を確実に無効化 */
-.pixel-panel,
-.event-card,
-.detail-sheet-inner,
-.detail-block,
-.complete-check-row,
-.accordion,
-.candidate-item,
-.setting-row,
-.event-bar,
-.top-tab,
-.bottom-nav-btn,
-.primary-btn,
-.ghost-btn,
-.register-btn,
-.close-detail-btn,
-.header-icon,
-.event-icon,
-.calendar-game-icon,
-.event-bar .bar-icon {
-  border-radius: 0 !important;
+/* 読みやすさのため、これらの既存丸角は維持 */
+.game-group-title,
+.detail-block-title,
+.tag,
+.today-line::before,
+.progress-mini,
+.progress-mini-fill,
+.progress-bar,
+.progress-fill {
+  /* style.css 側の border-radius をそのまま使用 */
+}
+
+/* モバイルでは大枠の段差が大きすぎないよう維持 */
+@media (max-width: 420px) {
+  /* 形は同じ。視覚上の段差は4pxで固定 */
 }
