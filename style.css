@@ -44,23 +44,24 @@ button{font:inherit}
   min-width:0;
   min-height:0;
   background-repeat:no-repeat;
-  background-size:32px 32px;
-  background-position:left top;
+  background-size:100% 100%;
   image-rendering:pixelated;
 }
+
 .tab-skin .f2,
 .tab-skin .f8{
   background-repeat:repeat-x;
-  background-size:32px 32px;
+  background-size:auto 100%;
 }
+
 .tab-skin .f4,
 .tab-skin .f6{
   background-repeat:repeat-y;
-  background-size:32px 32px;
+  background-size:100% auto;
 }
+
 .tab-skin .f5{
   background-repeat:repeat;
-  background-size:32px 32px;
 }
 .tab-skin .f1{background-image:url("assets/ui/frames/frame-tab-active-a1.png")}.tab-skin .f2{background-image:url("assets/ui/frames/frame-tab-active-a2.png")}.tab-skin .f3{background-image:url("assets/ui/frames/frame-tab-active-a3.png")}.tab-skin .f4{background-image:url("assets/ui/frames/frame-tab-active-a4.png")}.tab-skin .f5{background-image:url("assets/ui/frames/frame-tab-active-a5.png")}.tab-skin .f6{background-image:url("assets/ui/frames/frame-tab-active-a6.png")}.tab-skin .f7{background-image:url("assets/ui/frames/frame-tab-active-a7.png")}.tab-skin .f8{background-image:url("assets/ui/frames/frame-tab-active-a8.png")}.tab-skin .f9{background-image:url("assets/ui/frames/frame-tab-active-a9.png")}
 .top-tab:not(.active) .tab-skin .f{filter:saturate(.28) brightness(1.34) hue-rotate(18deg)}
@@ -594,22 +595,4 @@ button{font:inherit}
   }
 }
 
-
-/* =========================================================
-   frame-tab-active-a 32px 等倍表示補強
-   ========================================================= */
-.top-tabs,
-.top-tab,
-.tab-skin,
-.slice9-grid{
-  transform:none;
-}
-
-.tab-skin{
-  overflow:hidden;
-}
-
-.tab-skin .f{
-  image-rendering:pixelated;
-}
 
