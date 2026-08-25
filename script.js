@@ -77,7 +77,6 @@ const eventData = [
 const screens = {
   ongoing: document.getElementById("screen-ongoing"),
   calendar: document.getElementById("screen-calendar"),
-  check: document.getElementById("screen-check"),
   favorites: document.getElementById("screen-favorites"),
   settings: document.getElementById("screen-settings")
 };
@@ -87,6 +86,7 @@ const bottomNavBtns = document.querySelectorAll(".bottom-nav-btn");
 
 const ongoingList = document.getElementById("ongoingList");
 const todayLabel = document.getElementById("todayLabel");
+const contentScroll = document.getElementById("contentScroll");
 
 const calendarHeader = document.getElementById("calendarHeader");
 const calendarBody = document.getElementById("calendarBody");
@@ -108,20 +108,26 @@ const detailRelated = document.getElementById("detailRelated");
 const detailMemo = document.getElementById("detailMemo");
 const detailSource = document.getElementById("detailSource");
 
-let activeMainTab = "ongoing";
-let activeSubScreen = "check";
+function toDate(str) {
+  return new Date(str);
+}
 
 function formatTodayLabel(date) {
   const week = ["日", "月", "火", "水", "木", "金", "土"];
   return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}（${week[date.getDay()]}）`;
 }
 
-function toDate(str) { return new Date(str); }
-
 function formatRange(start, end) {
   const s = toDate(start);
   const e = toDate(end);
+
   return `${String(s.getMonth() + 1).padStart(2, "0")}/${String(s.getDate()).padStart(2, "0")} ～ ${String(e.getMonth() + 1).padStart(2, "0")}/${String(e.getDate()).padStart(2, "0")} ${String(e.getHours()).padStart(2, "0")}:${String(e.getMinutes()).padStart(2, "0")}`;
+}
+
+function formatShortRange(start, end) {
+  const s = toDate(start);
+  const e = toDate(end);
+  return `${s.getMonth() + 1}/${s.getDate()} ～ ${e.getMonth() + 1}/${e.getDate()}`;
 }
 
 function getRemainingLabel(endStr) {
@@ -130,110 +136,155 @@ function getRemainingLabel(endStr) {
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  if (diffMs <= 0) return { text: "終了", big: "", tone: "orange" };
-  if (diffHours < 24) return { text: "あと", big: `${diffHours}時間`, tone: "orange" };
-  if (diffDays < 2) return { text: "明日", big: "終了", tone: "pink" };
-  return { text: "残り", big: `${diffDays}日`, tone: diffDays <= 3 ? "pink" : "blue" };
+  if (diffMs <= 0) {
+    return { prefix: "", big: "終了", tone: "orange" };
+  }
+
+  if (diffHours < 24) {
+    return { prefix: "あと", big: `${diffHours}時間`, tone: "orange" };
+  }
+
+  if (diffDays < 2) {
+    return { prefix: "明日", big: "終了", tone: "pink" };
+  }
+
+  return {
+    prefix: "残り",
+    big: `${diffDays}日`,
+    tone: diffDays <= 3 ? "pink" : "blue"
+  };
 }
 
-function getProgressColorClass(color) {
-  if (color === "blue") return "blue";
-  return "";
+function getProgressColorClass(groupColor) {
+  return groupColor === "blue" ? "blue" : "";
 }
 
 function renderOngoing() {
   ongoingList.innerHTML = "";
 
   eventData.forEach(group => {
-    const groupEl = document.createElement("section");
-    groupEl.className = "frame9 frame9-panel game-group";
-    groupEl.innerHTML = `
+    const section = document.createElement("section");
+    section.className = `frame9 frame9-panel game-section ${group.color}`;
+
+    section.innerHTML = `
+      <div class="game-sticky-label">${group.game}</div>
+
       <div class="frame9-grid">
-        <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+        <div class="f f1"></div>
+        <div class="f f2"></div>
+        <div class="f f3"></div>
+
         <div class="f f4"></div>
+
         <div class="f f5">
-          <div class="game-group-title"><span>${group.icon}</span><span>${group.game}</span></div>
-          <div class="events-list"></div>
+          <div class="game-events"></div>
         </div>
+
         <div class="f f6"></div>
-        <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+
+        <div class="f f7"></div>
+        <div class="f f8"></div>
+        <div class="f f9"></div>
       </div>
     `;
 
-    const eventsList = groupEl.querySelector(".events-list");
+    const eventsEl = section.querySelector(".game-events");
 
     group.events
       .slice()
       .sort((a, b) => new Date(a.end) - new Date(b.end))
       .forEach(event => {
         const remain = getRemainingLabel(event.end);
+        const eventBtn = document.createElement("button");
 
-        const wrap = document.createElement("section");
-        wrap.className = "frame9 frame9-panel event-card-wrap";
-        wrap.innerHTML = `
-          <div class="frame9-grid">
-            <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-            <div class="f f4"></div>
-            <div class="f f5">
-              <div class="event-card">
-                <div class="event-icon">${group.icon}</div>
-                <div class="event-main">
-                  <div class="event-title-row">
-                    <div class="event-title">${event.title}</div>
-                  </div>
-                  <div class="event-range">${formatRange(event.start, event.end)}</div>
-                  <div class="progress-wrap">
-                    <div class="progress-mini">
-                      <div class="progress-mini-fill ${getProgressColorClass(group.color)}" style="width:${event.progress}%"></div>
-                    </div>
-                    <div class="progress-label">進行度 ${event.progress}%</div>
-                  </div>
-                </div>
-                <div class="event-remain ${remain.tone === "blue" ? "blue" : remain.tone === "orange" ? "orange" : ""}">
-                  <span>${remain.text}</span>
-                  <span class="big">${remain.big}</span>
-                </div>
-              </div>
-            </div>
-            <div class="f f6"></div>
-            <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
-          </div>
+        eventBtn.type = "button";
+        eventBtn.className = "event-row";
+
+        const toneClass =
+          remain.tone === "blue"
+            ? "blue"
+            : remain.tone === "orange"
+              ? "orange"
+              : "";
+
+        eventBtn.innerHTML = `
+          <span class="event-icon" aria-hidden="true">${group.icon}</span>
+
+          <span class="event-main">
+            <span class="event-title">${event.title}</span>
+
+            <span class="progress-line">
+              <span class="progress-mini">
+                <span
+                  class="progress-mini-fill ${getProgressColorClass(group.color)}"
+                  style="width:${event.progress}%"
+                ></span>
+              </span>
+
+              <span class="progress-label">進行度 ${event.progress}%</span>
+            </span>
+
+            <span class="event-range">${formatRange(event.start, event.end)}</span>
+          </span>
+
+          <span class="event-remain ${toneClass}">
+            <span class="remain-prefix">${remain.prefix}</span>
+            <span class="remain-big">${remain.big}</span>
+          </span>
         `;
 
-        wrap.addEventListener("click", () => openDetail({ ...event, game: group.game }));
-        eventsList.appendChild(wrap);
+        eventBtn.addEventListener("click", () => {
+          openDetail({
+            ...event,
+            game: group.game
+          });
+        });
+
+        eventsEl.appendChild(eventBtn);
       });
 
-    ongoingList.appendChild(groupEl);
+    ongoingList.appendChild(section);
   });
 }
 
 function renderCalendar() {
-  const dayWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--day-width"));
+  const dayWidth = parseInt(
+    getComputedStyle(document.documentElement)
+      .getPropertyValue("--day-width")
+  );
+
   const startDate = new Date("2025-05-18T00:00:00");
   const endDate = new Date("2025-06-08T00:00:00");
 
   const days = [];
-  for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+
+  for (
+    let d = new Date(startDate);
+    d <= endDate;
+    d.setDate(d.getDate() + 1)
+  ) {
     days.push(new Date(d));
   }
 
   calendarHeader.innerHTML = "";
-  calendarGameRows.innerHTML = "";
   calendarBody.innerHTML = "";
+  calendarGameRows.innerHTML = "";
 
-  days.forEach(d => {
+  days.forEach(date => {
     const cell = document.createElement("div");
+
     const isToday =
-      d.getFullYear() === today.getFullYear() &&
-      d.getMonth() === today.getMonth() &&
-      d.getDate() === today.getDate();
+      date.getFullYear() === today.getFullYear() &&
+      date.getMonth() === today.getMonth() &&
+      date.getDate() === today.getDate();
 
     cell.className = `day-cell ${isToday ? "today" : ""}`;
+
     cell.innerHTML = `
-      <div class="day-month">${d.getMonth() + 1}月</div>
-      <div class="day-number">${d.getDate()}</div>
+      <span class="day-month">${date.getMonth() + 1}月</span>
+      <span class="day-number">${date.getDate()}</span>
     `;
+
     calendarHeader.appendChild(cell);
   });
 
@@ -243,10 +294,12 @@ function renderCalendar() {
   eventData.forEach(group => {
     const leftCell = document.createElement("div");
     leftCell.className = "calendar-game-cell";
+
     leftCell.innerHTML = `
-      <div class="calendar-game-icon">${group.icon}</div>
-      <div class="calendar-game-name">${group.game}</div>
+      <span class="calendar-game-icon">${group.icon}</span>
+      <span class="calendar-game-name">${group.game}</span>
     `;
+
     calendarGameRows.appendChild(leftCell);
 
     const row = document.createElement("div");
@@ -256,156 +309,196 @@ function renderCalendar() {
       const start = toDate(event.start);
       const end = toDate(event.end);
 
-      const startOffsetDays = Math.floor((start - startDate) / (1000 * 60 * 60 * 24));
-      const endOffsetDays = Math.ceil((end - startDate) / (1000 * 60 * 60 * 24));
-      const left = Math.max(0, startOffsetDays * dayWidth + 6);
-      const width = Math.max(dayWidth * 1.4, (endOffsetDays - startOffsetDays + 1) * dayWidth - 12);
-      const top = 14 + index * 48;
+      const startOffsetDays = Math.floor(
+        (start - startDate) / (1000 * 60 * 60 * 24)
+      );
+
+      const endOffsetDays = Math.ceil(
+        (end - startDate) / (1000 * 60 * 60 * 24)
+      );
+
+      const left = Math.max(0, startOffsetDays * dayWidth + 5);
+
+      const width = Math.max(
+        dayWidth * 1.5,
+        (endOffsetDays - startOffsetDays + 1) * dayWidth - 10
+      );
+
+      const top = 13 + index * 48;
 
       const bar = document.createElement("button");
+      bar.type = "button";
       bar.className = `event-bar ${group.color}`;
+
       bar.style.left = `${left}px`;
       bar.style.top = `${top}px`;
       bar.style.width = `${width}px`;
+
       bar.innerHTML = `
         <span class="bar-icon">${group.icon}</span>
+
         <span class="event-bar-title">
           <span>${event.title}</span>
           <small>${formatShortRange(event.start, event.end)}</small>
         </span>
       `;
-      bar.addEventListener("click", () => openDetail({ ...event, game: group.game }));
+
+      bar.addEventListener("click", () => {
+        openDetail({
+          ...event,
+          game: group.game
+        });
+      });
+
       row.appendChild(bar);
     });
 
     calendarBody.appendChild(row);
   });
 
-  const todayOffsetDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+  const todayOffsetDays = Math.floor(
+    (today - startDate) / (1000 * 60 * 60 * 24)
+  );
+
   todayLine.style.left = `${todayOffsetDays * dayWidth + dayWidth / 2}px`;
-  todayLine.style.height = `${calendarBody.offsetHeight}px`;
 
   requestAnimationFrame(() => {
-    jumpToToday();
+    todayLine.style.height = `${calendarBody.offsetHeight}px`;
   });
 }
 
-function formatShortRange(start, end) {
-  const s = toDate(start);
-  const e = toDate(end);
-  return `${s.getMonth() + 1}/${s.getDate()} ～ ${e.getMonth() + 1}/${e.getDate()}`;
+function jumpToToday() {
+  const dayWidth = parseInt(
+    getComputedStyle(document.documentElement)
+      .getPropertyValue("--day-width")
+  );
+
+  const startDate = new Date("2025-05-18T00:00:00");
+
+  const todayOffsetDays = Math.floor(
+    (today - startDate) / (1000 * 60 * 60 * 24)
+  );
+
+  const target =
+    todayOffsetDays * dayWidth -
+    calendarBodyScroll.clientWidth / 2 +
+    dayWidth / 2;
+
+  calendarBodyScroll.scrollTo({
+    left: Math.max(0, target),
+    behavior: "smooth"
+  });
 }
 
 function openDetail(event) {
   const remain = getRemainingLabel(event.end);
 
-  detailTitle.textContent = event.title;
   detailGame.textContent = event.game;
-  detailRemain.textContent = remain.big ? `${remain.text} ${remain.big}` : remain.text;
-  detailDate.textContent = `${formatRange(event.start, event.end)}`;
+  detailTitle.textContent = event.title;
+  detailRemain.textContent =
+    remain.prefix
+      ? `${remain.prefix} ${remain.big}`
+      : remain.big;
+
+  detailDate.textContent = formatRange(event.start, event.end);
   detailRelated.textContent = event.related || "関連イベントなし";
   detailMemo.textContent = event.memo || "メモはありません。";
   detailSource.textContent = event.source || "Wikiを開く";
   detailSource.href = event.source || "#";
 
-  detailSheet.classList.add("open");
   detailOverlay.classList.add("open");
-  document.body.style.overflow = "hidden";
+  detailSheet.classList.add("open");
+  detailSheet.setAttribute("aria-hidden", "false");
 }
 
 function closeDetail() {
-  detailSheet.classList.remove("open");
   detailOverlay.classList.remove("open");
-  document.body.style.overflow = "";
+  detailSheet.classList.remove("open");
+  detailSheet.setAttribute("aria-hidden", "true");
 }
 
-function setMainTab(tab) {
-  activeMainTab = tab;
-  topTabs.forEach(btn => {
-    const active = btn.dataset.mainTab === tab;
-    btn.classList.toggle("active", active);
-    btn.classList.toggle("frame-btn-active", active);
+function setScreen(name) {
+  Object.entries(screens).forEach(([key, element]) => {
+    element.classList.toggle("active", key === name);
   });
 
-  screens.ongoing.classList.toggle("active", tab === "ongoing");
-  screens.calendar.classList.toggle("active", tab === "calendar");
+  topTabs.forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.screen === name
+    );
+  });
 
-  hideSubScreens();
+  bottomNavBtns.forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.screen === name
+    );
+  });
 
-  if (tab === "calendar") {
+  contentScroll.scrollTop = 0;
+
+  if (name === "calendar") {
     renderCalendar();
+
+    requestAnimationFrame(() => {
+      jumpToToday();
+    });
   }
 }
 
-function hideSubScreens() {
-  screens.check.classList.remove("active");
-  screens.favorites.classList.remove("active");
-  screens.settings.classList.remove("active");
-}
-
-function setSubScreen(name) {
-  bottomNavBtns.forEach(btn => {
-    const active = btn.dataset.subScreen === name;
-    btn.classList.toggle("active", active);
-    btn.classList.toggle("frame-btn-active", active);
-  });
-
-  hideSubScreens();
-  screens[name].classList.add("active");
-
-  screens.ongoing.classList.toggle("active", activeMainTab === "ongoing");
-  screens.calendar.classList.toggle("active", activeMainTab === "calendar");
-}
-
 function syncCalendarScroll() {
+  let syncing = false;
+
   calendarBodyScroll.addEventListener("scroll", () => {
+    if (syncing) return;
+
+    syncing = true;
     calendarHeaderScroll.scrollLeft = calendarBodyScroll.scrollLeft;
+    syncing = false;
   });
 
   calendarHeaderScroll.addEventListener("scroll", () => {
+    if (syncing) return;
+
+    syncing = true;
     calendarBodyScroll.scrollLeft = calendarHeaderScroll.scrollLeft;
-  });
-}
-
-function jumpToToday() {
-  const dayWidth = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--day-width"));
-  const startDate = new Date("2025-05-18T00:00:00");
-  const todayOffsetDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-  const targetX = todayOffsetDays * dayWidth - (calendarBodyScroll.clientWidth / 2) + (dayWidth / 2);
-
-  calendarBodyScroll.scrollTo({
-    left: Math.max(0, targetX),
-    behavior: "smooth"
+    syncing = false;
   });
 }
 
 function init() {
   todayLabel.textContent = formatTodayLabel(today);
+
   renderOngoing();
   renderCalendar();
   syncCalendarScroll();
 
-  topTabs.forEach(btn => {
-    btn.addEventListener("click", () => {
-      setMainTab(btn.dataset.mainTab);
+  topTabs.forEach(button => {
+    button.addEventListener("click", () => {
+      setScreen(button.dataset.screen);
     });
   });
 
-  bottomNavBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      setSubScreen(btn.dataset.subScreen);
+  bottomNavBtns.forEach(button => {
+    button.addEventListener("click", () => {
+      setScreen(button.dataset.screen);
     });
   });
+
+  document
+    .getElementById("refreshMockBtn")
+    .addEventListener("click", renderOngoing);
+
+  document
+    .getElementById("todayJumpBtn")
+    .addEventListener("click", jumpToToday);
 
   closeDetailBtn.addEventListener("click", closeDetail);
   closeDetailBtnBottom.addEventListener("click", closeDetail);
   detailOverlay.addEventListener("click", closeDetail);
 
-  document.getElementById("todayJumpBtn").addEventListener("click", jumpToToday);
-  document.getElementById("refreshMockBtn").addEventListener("click", renderOngoing);
-
-  setMainTab("ongoing");
-  setSubScreen("check");
+  setScreen("ongoing");
 }
 
 init();

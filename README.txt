@@ -1,50 +1,74 @@
-game-event-calendar / frame-panel-main 1〜9 対応版
+game-event-calendar / レイアウト再構成版
 
-■ 今回の前提
-ユーザーが用意した枠画像は、以下の命名で 1〜9 を左上から右へ並べると枠になる構成です。
+今回の変更内容
+==============================
 
-assets/ui/frames/
-  frame-panel-main-1.png
-  frame-panel-main-2.png
-  frame-panel-main-3.png
-  frame-panel-main-4.png
-  frame-panel-main-5.png
-  frame-panel-main-6.png
-  frame-panel-main-7.png
-  frame-panel-main-8.png
-  frame-panel-main-9.png
+1. 「イベントチェック」「チェック結果」を一旦削除
+2. 最初の画面を「本日のイベント一覧」に集中
+3. 上部の
+   - ゲームイベントメモ
+   - 開催中
+   - イベントカレンダー
+   を残した
+4. 下部ナビを画像に寄せて
+   - 開催中
+   - カレンダー
+   - お気に入り
+   - 設定
+   の4つにした
+5. 上部と下部は固定
+6. スクロールするのは中央部分だけ
+7. 中央背景も固定され、イベント一覧だけが上下移動する構造
+8. ゲームごとに1つの大きな枠
+9. 「原神」「スターレイル」などは付箋・見出しタブ風
+10. ゲーム枠の中ではイベントごとの個別枠をなくし、
+    区切り線でイベントを分離
+11. 現在GitHubにある
+    frame-panel-main-1.png ～ frame-panel-main-9.png
+    をゲーム枠やカレンダー枠に引き続き使用
 
-並び順:
-1 2 3
-4 5 6
-7 8 9
 
-■ この版でやったこと
-- 大きいパネル枠を 9分割画像で構成
-- ヘッダー / 本日 / ゲームグループ / イベントカード / カレンダー外枠 / 詳細パネルに適用
-- ボタンも同じ画像セットを使って簡易的に構成
-- image-rendering: pixelated を付与
+背景画像を追加する方法
+==============================
 
-■ 重要
-今回は「お試し版」として、枠画像はすべて frame-panel-main-1〜9 を共用しています。
-このため、ボタンに少し大きすぎる・中央の伸び方が想定と違う可能性があります。
-まずは表示確認用として使ってください。
+style.css の先頭にある
 
-■ 配置場所
-GitHub Pages 側では以下のように置いてください。
+--content-bg-image: none;
 
-game-event-calendar/
-  index.html
-  style.css
-  script.js
-  assets/
-    ui/
-      frames/
-        frame-panel-main-1.png
-        ...
-        frame-panel-main-9.png
+を例えば
 
-■ 次に詰めると良さそうな点
-1. ボタン用に別画像を作るかどうか
-2. frame-panel-main-5.png（中央面）をタイル想定にするか単色にするか
-3. frame-size / frame-btn-size の値調整
+--content-bg-image: url("assets/ui/backgrounds/background-main.png");
+
+に変更してください。
+
+その場合の推奨配置:
+
+assets/
+  ui/
+    frames/
+      frame-panel-main-1.png
+      ...
+      frame-panel-main-9.png
+
+    backgrounds/
+      background-main.png
+
+
+重要
+==============================
+
+今回は背景画像そのものはまだ入っていません。
+CSS側だけ、あとから画像を置けばすぐ使える状態にしています。
+
+frame-panel-main-1～9 は既にGitHubに置かれているものを
+そのまま参照します。このZIPにPNGは入れていません。
+
+
+差し替えるファイル
+==============================
+
+index.html
+style.css
+script.js
+
+の3つです。
