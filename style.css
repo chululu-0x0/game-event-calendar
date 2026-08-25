@@ -694,3 +694,144 @@ button{font:inherit}
   旧Grid用の背景はHTMLから使われなくなっている。
   他の9-slice枠には影響しない。
 */
+
+
+/* =========================================================
+   上段タブ: 実画像タイル方式 v12
+   ========================================================= */
+
+/*
+  32px素材を 64px（2倍）表示。
+  background-repeat ではなく、実際の <img> を横・縦に並べる。
+*/
+.top-tab{
+  height:160px;
+}
+
+.tab-skin-imgtiles{
+  position:absolute;
+  inset:0;
+  display:block;
+  overflow:hidden;
+}
+
+.tab-frame-img-table{
+  width:100%;
+  height:100%;
+  border-collapse:collapse;
+  border-spacing:0;
+  table-layout:fixed;
+  margin:0;
+  padding:0;
+}
+
+.tab-frame-img-table td{
+  padding:0;
+  margin:0;
+  border:0;
+  overflow:hidden;
+  vertical-align:top;
+}
+
+.tab-frame-img-table tr:first-child,
+.tab-frame-img-table tr:last-child{
+  height:64px;
+}
+
+.tab-frame-img-table td.corner-cell{
+  width:64px;
+  min-width:64px;
+  max-width:64px;
+}
+
+.corner-img,
+.tile-img{
+  display:block;
+  width:64px;
+  height:64px;
+  image-rendering:pixelated;
+  flex:0 0 auto;
+}
+
+.edge-x-cell{
+  overflow:hidden;
+}
+
+.tile-strip-x{
+  display:flex;
+  flex-wrap:nowrap;
+  align-items:flex-start;
+  width:max-content;
+  min-width:100%;
+  overflow:hidden;
+}
+
+.edge-y-cell{
+  width:64px;
+  min-width:64px;
+  max-width:64px;
+  overflow:hidden;
+}
+
+.tile-strip-y{
+  display:flex;
+  flex-direction:column;
+  flex-wrap:nowrap;
+  align-items:flex-start;
+  height:max-content;
+  min-height:100%;
+  overflow:hidden;
+}
+
+.fill-cell{
+  overflow:hidden;
+}
+
+.tile-fill{
+  display:flex;
+  flex-wrap:wrap;
+  align-content:flex-start;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+.top-tab-label{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 20px;
+  text-align:center;
+  pointer-events:none;
+}
+
+.top-tab:not(.active) .corner-img,
+.top-tab:not(.active) .tile-img{
+  filter:saturate(.28) brightness(1.34) hue-rotate(18deg);
+}
+
+@media(max-width:420px){
+  .top-tab{
+    height:144px;
+  }
+
+  .tab-frame-img-table tr:first-child,
+  .tab-frame-img-table tr:last-child{
+    height:64px;
+  }
+
+  .tab-frame-img-table td.corner-cell,
+  .edge-y-cell{
+    width:64px;
+    min-width:64px;
+    max-width:64px;
+  }
+
+  .top-tab-label{
+    font-size:13px;
+    padding:0 10px;
+  }
+}
