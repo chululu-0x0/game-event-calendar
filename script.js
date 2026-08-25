@@ -110,16 +110,13 @@ const detailSource = document.getElementById("detailSource");
 
 let activeMainTab = "ongoing";
 let activeSubScreen = "check";
-let currentDetail = null;
 
 function formatTodayLabel(date) {
   const week = ["日", "月", "火", "水", "木", "金", "土"];
   return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}（${week[date.getDay()]}）`;
 }
 
-function toDate(str) {
-  return new Date(str);
-}
+function toDate(str) { return new Date(str); }
 
 function formatRange(start, end) {
   const s = toDate(start);
@@ -144,28 +141,26 @@ function getProgressColorClass(color) {
   return "";
 }
 
-function flattenEvents() {
-  return eventData.flatMap(group =>
-    group.events.map(event => ({
-      ...event,
-      game: group.game,
-      icon: group.icon,
-      color: group.color
-    }))
-  );
-}
-
 function renderOngoing() {
   ongoingList.innerHTML = "";
 
   eventData.forEach(group => {
-    const groupEl = document.createElement("div");
-    groupEl.className = "game-group pixel-panel";
+    const groupEl = document.createElement("section");
+    groupEl.className = "frame9 frame9-panel game-group";
+    groupEl.innerHTML = `
+      <div class="frame9-grid">
+        <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+        <div class="f f4"></div>
+        <div class="f f5">
+          <div class="game-group-title"><span>${group.icon}</span><span>${group.game}</span></div>
+          <div class="events-list"></div>
+        </div>
+        <div class="f f6"></div>
+        <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+      </div>
+    `;
 
-    const title = document.createElement("div");
-    title.className = "game-group-title";
-    title.innerHTML = `<span>${group.icon}</span><span>${group.game}</span>`;
-    groupEl.appendChild(title);
+    const eventsList = groupEl.querySelector(".events-list");
 
     group.events
       .slice()
@@ -173,30 +168,40 @@ function renderOngoing() {
       .forEach(event => {
         const remain = getRemainingLabel(event.end);
 
-        const card = document.createElement("div");
-        card.className = "event-card";
-        card.innerHTML = `
-          <div class="event-icon">${group.icon}</div>
-          <div class="event-main">
-            <div class="event-title-row">
-              <div class="event-title">${event.title}</div>
-            </div>
-            <div class="event-range">${formatRange(event.start, event.end)}</div>
-            <div class="progress-wrap">
-              <div class="progress-mini">
-                <div class="progress-mini-fill ${getProgressColorClass(group.color)}" style="width:${event.progress}%"></div>
+        const wrap = document.createElement("section");
+        wrap.className = "frame9 frame9-panel event-card-wrap";
+        wrap.innerHTML = `
+          <div class="frame9-grid">
+            <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+            <div class="f f4"></div>
+            <div class="f f5">
+              <div class="event-card">
+                <div class="event-icon">${group.icon}</div>
+                <div class="event-main">
+                  <div class="event-title-row">
+                    <div class="event-title">${event.title}</div>
+                  </div>
+                  <div class="event-range">${formatRange(event.start, event.end)}</div>
+                  <div class="progress-wrap">
+                    <div class="progress-mini">
+                      <div class="progress-mini-fill ${getProgressColorClass(group.color)}" style="width:${event.progress}%"></div>
+                    </div>
+                    <div class="progress-label">進行度 ${event.progress}%</div>
+                  </div>
+                </div>
+                <div class="event-remain ${remain.tone === "blue" ? "blue" : remain.tone === "orange" ? "orange" : ""}">
+                  <span>${remain.text}</span>
+                  <span class="big">${remain.big}</span>
+                </div>
               </div>
-              <div class="progress-label">進行度 ${event.progress}%</div>
             </div>
-          </div>
-          <div class="event-remain ${remain.tone === "blue" ? "blue" : remain.tone === "orange" ? "orange" : ""}">
-            <span>${remain.text}</span>
-            <span class="big">${remain.big}</span>
+            <div class="f f6"></div>
+            <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
           </div>
         `;
 
-        card.addEventListener("click", () => openDetail({ ...event, game: group.game }));
-        groupEl.appendChild(card);
+        wrap.addEventListener("click", () => openDetail({ ...event, game: group.game }));
+        eventsList.appendChild(wrap);
       });
 
     ongoingList.appendChild(groupEl);
@@ -292,7 +297,6 @@ function formatShortRange(start, end) {
 }
 
 function openDetail(event) {
-  currentDetail = event;
   const remain = getRemainingLabel(event.end);
 
   detailTitle.textContent = event.title;
@@ -318,7 +322,9 @@ function closeDetail() {
 function setMainTab(tab) {
   activeMainTab = tab;
   topTabs.forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.mainTab === tab);
+    const active = btn.dataset.mainTab === tab;
+    btn.classList.toggle("active", active);
+    btn.classList.toggle("frame-btn-active", active);
   });
 
   screens.ongoing.classList.toggle("active", tab === "ongoing");
@@ -338,15 +344,15 @@ function hideSubScreens() {
 }
 
 function setSubScreen(name) {
-  activeSubScreen = name;
   bottomNavBtns.forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.subScreen === name);
+    const active = btn.dataset.subScreen === name;
+    btn.classList.toggle("active", active);
+    btn.classList.toggle("frame-btn-active", active);
   });
 
   hideSubScreens();
   screens[name].classList.add("active");
 
-  // 上段メイン画面は残す
   screens.ongoing.classList.toggle("active", activeMainTab === "ongoing");
   screens.calendar.classList.toggle("active", activeMainTab === "calendar");
 }
