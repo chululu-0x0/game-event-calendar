@@ -1,68 +1,55 @@
-game-event-calendar / top tab main-frame rendering test v10
+game-event-calendar / top-tab table test v11
 
-今回の目的
+今回の変更
 ==============================
 
-frame-tab-active-a1.png ～ a9.png の32px素材はそのまま維持し、
-「描画方法」だけ frame-panel-main と同じ方式へ変更しました。
+上段の「開催中」「イベントカレンダー」ボタンだけ、
+9分割画像の配置方法を CSS Grid から HTML table に変更しました。
 
-維持しているもの
+構造
 ==============================
 
---slice-tab: 32px
-.top-tab height: 80px
+table
+├ 1 | 2 | 3
+├ 4 | 5 | 6
+└ 7 | 8 | 9
 
-Grid:
-32px / 中央 / 32px
+左右列: 32px固定
+上下行: 32px固定
+中央: 残り幅・残り高さ
 
-つまり、32px素材を使う構造自体は変更していません。
+frame-tab-active-a1.png ～ a9.png を使用します。
 
-
-今回変更した部分
+描画方法
 ==============================
 
-前回は、タブ用画像をすべて
+角:
+background-size:100% 100%
 
-background-size: 32px 32px;
+横辺2/8:
+repeat-x
+background-size:auto 100%
 
-で強制固定していました。
+縦辺4/6:
+repeat-y
+background-size:100% auto
 
-今回は frame-panel-main と同じ方式に戻しています。
+中央5:
+repeat
 
-通常パーツ:
-background-size: 100% 100%;
+つまり、画像の使い方自体はこれまでと近く、
+「セルを配置する仕組み」だけ Grid → table にしています。
 
-横辺 2 / 8:
-background-repeat: repeat-x;
-background-size: auto 100%;
-
-縦辺 4 / 6:
-background-repeat: repeat-y;
-background-size: 100% auto;
-
-中央 5:
-background-repeat: repeat;
-
-
-確認してほしい部分
+確認ポイント
 ==============================
 
-特に、
+特に上辺・下辺の中央が、
 
-- 上辺の中央
-- 下辺の中央
+- 以前よりシャープになるか
+- ぼけ方が変わるか
+- 変わらないか
 
-のぼけ方が変化するか確認してください。
+だけ見れば大丈夫です。
 
-角付近や縦線は今回の比較対象ではありません。
-
-
-次の切り分け
-==============================
-
-この方式でも中央だけぼける場合は、
-次にボタン横幅そのものを32pxグリッドへ丸めて、
-
-左32 + 中央32×N + 右32
-
-になるよう調整するのが次の検証候補です。
+今回の変更は上段タブだけで、
+イベント一覧・外枠・カレンダー等は触っていません。

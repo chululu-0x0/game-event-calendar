@@ -596,3 +596,101 @@ button{font:inherit}
 }
 
 
+
+
+/* =========================================================
+   上段タブ: table 版 9-slice 検証 v11
+   ========================================================= */
+
+/*
+  「開催中 / イベントカレンダー」だけ、
+  CSS GridではなくHTML tableの3x3セルで画像を並べる検証。
+*/
+.tab-skin{
+  position:absolute;
+  inset:0;
+}
+
+.tab-frame-table{
+  width:100%;
+  height:100%;
+  table-layout:fixed;
+  border-collapse:collapse;
+  border-spacing:0;
+  padding:0;
+  margin:0;
+}
+
+.tab-frame-table tbody,
+.tab-frame-table tr{
+  padding:0;
+  margin:0;
+  border:0;
+}
+
+/* 上下段は32px、中央行は残り全部 */
+.tab-frame-table tr:first-child,
+.tab-frame-table tr:last-child{
+  height:32px;
+}
+
+/* 左右列は32px */
+.tab-frame-table td:first-child,
+.tab-frame-table td:last-child{
+  width:32px;
+  min-width:32px;
+  max-width:32px;
+}
+
+.tab-frame-table td{
+  padding:0;
+  margin:0;
+  border:0;
+  min-width:0;
+  min-height:0;
+  overflow:hidden;
+
+  background-repeat:no-repeat;
+  background-size:100% 100%;
+  image-rendering:pixelated;
+}
+
+/* 横辺 */
+.tab-frame-table .f2,
+.tab-frame-table .f8{
+  background-repeat:repeat-x;
+  background-size:auto 100%;
+}
+
+/* 縦辺 */
+.tab-frame-table .f4,
+.tab-frame-table .f6{
+  background-repeat:repeat-y;
+  background-size:100% auto;
+}
+
+/* 中央 */
+.tab-frame-table .f5{
+  background-repeat:repeat;
+}
+
+/* 32px素材 */
+.tab-frame-table .f1{background-image:url("assets/ui/frames/frame-tab-active-a1.png")}
+.tab-frame-table .f2{background-image:url("assets/ui/frames/frame-tab-active-a2.png")}
+.tab-frame-table .f3{background-image:url("assets/ui/frames/frame-tab-active-a3.png")}
+.tab-frame-table .f4{background-image:url("assets/ui/frames/frame-tab-active-a4.png")}
+.tab-frame-table .f5{background-image:url("assets/ui/frames/frame-tab-active-a5.png")}
+.tab-frame-table .f6{background-image:url("assets/ui/frames/frame-tab-active-a6.png")}
+.tab-frame-table .f7{background-image:url("assets/ui/frames/frame-tab-active-a7.png")}
+.tab-frame-table .f8{background-image:url("assets/ui/frames/frame-tab-active-a8.png")}
+.tab-frame-table .f9{background-image:url("assets/ui/frames/frame-tab-active-a9.png")}
+
+/* inactive側の色変換もtableセルへ適用 */
+.top-tab:not(.active) .tab-frame-table .f{
+  filter:saturate(.28) brightness(1.34) hue-rotate(18deg);
+}
+
+/*
+  旧Grid用の背景はHTMLから使われなくなっている。
+  他の9-slice枠には影響しない。
+*/
