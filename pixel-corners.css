@@ -1,0 +1,179 @@
+/*
+  Pixel corner overrides
+  ----------------------
+  既存 style.css の後に読み込み、滑らかな border-radius を
+  3段の「ドット階段」コーナーへ差し替えるための追加CSSです。
+
+  角の考え方（左上）:
+        ███████
+      ██
+    ██
+  ██
+  ██
+  ██
+
+  --pixel-step が1段ぶんの大きさです。
+*/
+
+:root {
+  --pixel-step: 5px;
+  --pixel-step-small: 4px;
+}
+
+/* 3段の階段角 */
+.pixel-panel,
+.event-card,
+.detail-sheet-inner,
+.detail-block,
+.complete-check-row,
+.accordion,
+.candidate-item,
+.setting-row,
+.event-bar {
+  border-radius: 0 !important;
+  clip-path: polygon(
+    calc(var(--pixel-step) * 3) 0,
+    calc(100% - (var(--pixel-step) * 3)) 0,
+
+    calc(100% - (var(--pixel-step) * 3)) var(--pixel-step),
+    calc(100% - (var(--pixel-step) * 2)) var(--pixel-step),
+
+    calc(100% - (var(--pixel-step) * 2)) calc(var(--pixel-step) * 2),
+    calc(100% - var(--pixel-step)) calc(var(--pixel-step) * 2),
+
+    calc(100% - var(--pixel-step)) calc(var(--pixel-step) * 3),
+    100% calc(var(--pixel-step) * 3),
+
+    100% calc(100% - (var(--pixel-step) * 3)),
+    calc(100% - var(--pixel-step)) calc(100% - (var(--pixel-step) * 3)),
+
+    calc(100% - var(--pixel-step)) calc(100% - (var(--pixel-step) * 2)),
+    calc(100% - (var(--pixel-step) * 2)) calc(100% - (var(--pixel-step) * 2)),
+
+    calc(100% - (var(--pixel-step) * 2)) calc(100% - var(--pixel-step)),
+    calc(100% - (var(--pixel-step) * 3)) calc(100% - var(--pixel-step)),
+
+    calc(100% - (var(--pixel-step) * 3)) 100%,
+    calc(var(--pixel-step) * 3) 100%,
+
+    calc(var(--pixel-step) * 3) calc(100% - var(--pixel-step)),
+    calc(var(--pixel-step) * 2) calc(100% - var(--pixel-step)),
+
+    calc(var(--pixel-step) * 2) calc(100% - (var(--pixel-step) * 2)),
+    var(--pixel-step) calc(100% - (var(--pixel-step) * 2)),
+
+    var(--pixel-step) calc(100% - (var(--pixel-step) * 3)),
+    0 calc(100% - (var(--pixel-step) * 3)),
+
+    0 calc(var(--pixel-step) * 3),
+    var(--pixel-step) calc(var(--pixel-step) * 3),
+
+    var(--pixel-step) calc(var(--pixel-step) * 2),
+    calc(var(--pixel-step) * 2) calc(var(--pixel-step) * 2),
+
+    calc(var(--pixel-step) * 2) var(--pixel-step),
+    calc(var(--pixel-step) * 3) var(--pixel-step)
+  );
+}
+
+/* 既存の内側枠も丸みを消して、少し小さい階段角に揃える */
+.pixel-panel::before {
+  border-radius: 0 !important;
+  clip-path: polygon(
+    calc(var(--pixel-step-small) * 2) 0,
+    calc(100% - (var(--pixel-step-small) * 2)) 0,
+
+    calc(100% - (var(--pixel-step-small) * 2)) var(--pixel-step-small),
+    calc(100% - var(--pixel-step-small)) var(--pixel-step-small),
+
+    calc(100% - var(--pixel-step-small)) calc(var(--pixel-step-small) * 2),
+    100% calc(var(--pixel-step-small) * 2),
+
+    100% calc(100% - (var(--pixel-step-small) * 2)),
+    calc(100% - var(--pixel-step-small)) calc(100% - (var(--pixel-step-small) * 2)),
+
+    calc(100% - var(--pixel-step-small)) calc(100% - var(--pixel-step-small)),
+    calc(100% - (var(--pixel-step-small) * 2)) calc(100% - var(--pixel-step-small)),
+
+    calc(100% - (var(--pixel-step-small) * 2)) 100%,
+    calc(var(--pixel-step-small) * 2) 100%,
+
+    calc(var(--pixel-step-small) * 2) calc(100% - var(--pixel-step-small)),
+    var(--pixel-step-small) calc(100% - var(--pixel-step-small)),
+
+    var(--pixel-step-small) calc(100% - (var(--pixel-step-small) * 2)),
+    0 calc(100% - (var(--pixel-step-small) * 2)),
+
+    0 calc(var(--pixel-step-small) * 2),
+    var(--pixel-step-small) calc(var(--pixel-step-small) * 2),
+
+    var(--pixel-step-small) var(--pixel-step-small),
+    calc(var(--pixel-step-small) * 2) var(--pixel-step-small)
+  );
+}
+
+/* ボタン類は大枠より1段小さめにして、押しやすさを保つ */
+.top-tab,
+.bottom-nav-btn,
+.primary-btn,
+.ghost-btn,
+.register-btn,
+.close-detail-btn,
+.header-icon,
+.event-icon,
+.calendar-game-icon,
+.event-bar .bar-icon {
+  border-radius: 0 !important;
+  clip-path: polygon(
+    calc(var(--pixel-step-small) * 2) 0,
+    calc(100% - (var(--pixel-step-small) * 2)) 0,
+
+    calc(100% - (var(--pixel-step-small) * 2)) var(--pixel-step-small),
+    calc(100% - var(--pixel-step-small)) var(--pixel-step-small),
+
+    calc(100% - var(--pixel-step-small)) calc(var(--pixel-step-small) * 2),
+    100% calc(var(--pixel-step-small) * 2),
+
+    100% calc(100% - (var(--pixel-step-small) * 2)),
+    calc(100% - var(--pixel-step-small)) calc(100% - (var(--pixel-step-small) * 2)),
+
+    calc(100% - var(--pixel-step-small)) calc(100% - var(--pixel-step-small)),
+    calc(100% - (var(--pixel-step-small) * 2)) calc(100% - var(--pixel-step-small)),
+
+    calc(100% - (var(--pixel-step-small) * 2)) 100%,
+    calc(var(--pixel-step-small) * 2) 100%,
+
+    calc(var(--pixel-step-small) * 2) calc(100% - var(--pixel-step-small)),
+    var(--pixel-step-small) calc(100% - var(--pixel-step-small)),
+
+    var(--pixel-step-small) calc(100% - (var(--pixel-step-small) * 2)),
+    0 calc(100% - (var(--pixel-step-small) * 2)),
+
+    0 calc(var(--pixel-step-small) * 2),
+    var(--pixel-step-small) calc(var(--pixel-step-small) * 2),
+
+    var(--pixel-step-small) var(--pixel-step-small),
+    calc(var(--pixel-step-small) * 2) var(--pixel-step-small)
+  );
+}
+
+/* 丸いゲージ類は情報の読みやすさ優先で現状維持 */
+.progress-mini,
+.progress-mini-fill,
+.progress-bar,
+.progress-fill,
+.game-group-title,
+.detail-block-title,
+.tag,
+.today-line::before {
+  clip-path: none;
+}
+
+/* clip-pathで切った角に影が追従しやすいよう、少しドット感のある影へ */
+.pixel-panel,
+.event-card,
+.event-bar {
+  box-shadow:
+    4px 0 0 rgba(122, 120, 190, 0.08),
+    0 4px 0 rgba(122, 120, 190, 0.12) !important;
+}
