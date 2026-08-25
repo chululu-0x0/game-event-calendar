@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>ゲームイベントメモ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header pixel-panel">
+      <div class="header-title">
+        <div class="header-icon">✦</div>
+        <div>
+          <h1>ゲームイベントメモ</h1>
+          <p>retro event tracker</p>
+        </div>
+      </div>
+
+      <div class="top-tabs">
+        <button class="top-tab active" data-main-tab="ongoing">開催中</button>
+        <button class="top-tab" data-main-tab="calendar">イベントカレンダー</button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- 開催中 -->
+      <section id="screen-ongoing" class="screen active">
+        <div class="screen-head pixel-panel soft">
+          <div class="screen-head-left">
+            <span class="screen-label">本日</span>
+            <span id="todayLabel"></span>
+          </div>
+          <button class="ghost-btn small" id="refreshMockBtn">更新</button>
+        </div>
+
+        <div id="ongoingList" class="stack-list"></div>
+      </section>
+
+      <!-- カレンダー -->
+      <section id="screen-calendar" class="screen">
+        <div class="screen-head pixel-panel soft calendar-head-row">
+          <div class="screen-head-left">
+            <span class="screen-label">全体スケジュール</span>
+            <span>開催期間の見える表</span>
+          </div>
+          <button class="ghost-btn small" id="todayJumpBtn">今日へ</button>
+        </div>
+
+        <div class="calendar-board pixel-panel">
+          <div class="calendar-grid">
+            <div class="calendar-left sticky-left">
+              <div class="calendar-corner">ゲーム</div>
+              <div id="calendarGameRows"></div>
+            </div>
+
+            <div class="calendar-right">
+              <div id="calendarHeaderScroll" class="calendar-scroll header-scroll">
+                <div id="calendarHeader" class="calendar-header-track"></div>
+              </div>
+
+              <div id="calendarBodyScroll" class="calendar-scroll body-scroll">
+                <div id="todayLine" class="today-line"></div>
+                <div id="calendarBody" class="calendar-body-track"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- イベントチェック -->
+      <section id="screen-check" class="screen sub-screen">
+        <div class="screen-head pixel-panel soft">
+          <div class="screen-head-left">
+            <span class="screen-label">イベントチェック</span>
+            <span>登録済みURLから確認</span>
+          </div>
+          <button class="primary-btn small">全ゲームをチェック</button>
+        </div>
+
+        <div class="pixel-panel check-progress-panel">
+          <div class="check-progress-header">
+            <span>チェック進捗</span>
+            <span>最終更新 12:00</span>
+          </div>
+          <div class="progress-row">
+            <span>全体進捗</span>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 52%;"></div>
+            </div>
+            <span>2 / 4 ゲーム</span>
+          </div>
+
+          <div class="status-list">
+            <div class="status-item">
+              <span class="status-name">原神</span>
+              <span class="status-ok">完了 ✓</span>
+            </div>
+            <div class="status-item">
+              <span class="status-name">スターレイル</span>
+              <span class="status-loading">チェック中…</span>
+            </div>
+            <div class="status-item">
+              <span class="status-name">ゼンゼロ</span>
+              <span class="status-wait">待機中</span>
+            </div>
+            <div class="status-item">
+              <span class="status-name">アークナイツ</span>
+              <span class="status-wait">待機中</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pixel-panel">
+          <div class="section-title-row">
+            <span class="screen-label">チェック結果</span>
+            <span class="small-note">候補イベントを選択してください</span>
+          </div>
+
+          <div class="accordion-list">
+            <details class="accordion" open>
+              <summary>
+                <span>原神</span>
+                <span class="summary-meta">候補 2件</span>
+              </summary>
+              <div class="accordion-body">
+                <label class="candidate-item">
+                  <input type="checkbox" checked />
+                  <span class="tag new">新規</span>
+                  <span class="candidate-name">花咲く決闘祭</span>
+                  <span class="candidate-date">05/24 ～ 06/07 04:59</span>
+                </label>
+                <label class="candidate-item">
+                  <input type="checkbox" checked />
+                  <span class="tag change">変更</span>
+                  <span class="candidate-name">ログインボーナス・薔薇編</span>
+                  <span class="candidate-date">05/24 ～ 05/31 23:59</span>
+                </label>
+              </div>
+            </details>
+
+            <details class="accordion">
+              <summary>
+                <span>スターレイル</span>
+                <span class="summary-meta">候補 1件</span>
+              </summary>
+              <div class="accordion-body">
+                <label class="candidate-item">
+                  <input type="checkbox" />
+                  <span class="tag new">新規</span>
+                  <span class="candidate-name">巡星の礼・新章</span>
+                  <span class="candidate-date">05/28 ～ 06/10 03:59</span>
+                </label>
+              </div>
+            </details>
+
+            <details class="accordion">
+              <summary>
+                <span>ゼンゼロ</span>
+                <span class="summary-meta">候補 0件</span>
+              </summary>
+              <div class="accordion-body empty-state">
+                新しい候補はありません
+              </div>
+            </details>
+          </div>
+
+          <button class="register-btn">選択したイベントを登録（2件）</button>
+        </div>
+      </section>
+
+      <!-- お気に入り -->
+      <section id="screen-favorites" class="screen sub-screen">
+        <div class="screen-head pixel-panel soft">
+          <div class="screen-head-left">
+            <span class="screen-label">お気に入り</span>
+            <span>優先して見たいイベント</span>
+          </div>
+        </div>
+
+        <div class="pixel-panel placeholder-panel">
+          <h3>お気に入り画面</h3>
+          <p>ここにはお気に入り登録したイベントを表示する予定です。</p>
+        </div>
+      </section>
+
+      <!-- 設定 -->
+      <section id="screen-settings" class="screen sub-screen">
+        <div class="screen-head pixel-panel soft">
+          <div class="screen-head-left">
+            <span class="screen-label">設定</span>
+            <span>見た目や通知など</span>
+          </div>
+        </div>
+
+        <div class="pixel-panel settings-list">
+          <div class="setting-row">
+            <span>ドット絵テーマ</span>
+            <span class="setting-value">ON</span>
+          </div>
+          <div class="setting-row">
+            <span>終了前通知</span>
+            <span class="setting-value">仮設定</span>
+          </div>
+          <div class="setting-row">
+            <span>Wiki取得元</span>
+            <span class="setting-value">後で接続</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav pixel-panel">
+      <button class="bottom-nav-btn active" data-sub-screen="check">
+        <span class="nav-icon">▣</span>
+        <span>イベントチェック</span>
+      </button>
+      <button class="bottom-nav-btn" data-sub-screen="favorites">
+        <span class="nav-icon">★</span>
+        <span>お気に入り</span>
+      </button>
+      <button class="bottom-nav-btn" data-sub-screen="settings">
+        <span class="nav-icon">⚙</span>
+        <span>設定</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- 詳細サイドシート -->
+  <div id="detailOverlay" class="detail-overlay"></div>
+
+  <aside id="detailSheet" class="detail-sheet">
+    <div class="detail-sheet-inner pixel-panel">
+      <div class="detail-head">
+        <div>
+          <div class="detail-title" id="detailTitle">イベント名</div>
+          <div class="detail-sub" id="detailGame">ゲーム名</div>
+        </div>
+        <button id="closeDetailBtn" class="close-detail-btn">×</button>
+      </div>
+
+      <label class="complete-check-row">
+        <input type="checkbox" />
+        <span>完了したらチェック</span>
+      </label>
+
+      <div class="detail-block">
+        <div class="detail-block-title">残り時間</div>
+        <div id="detailRemain" class="detail-remain">残り 2日</div>
+        <div id="detailDate" class="detail-date">05/24 05:00 ～ 05/26 04:59</div>
+      </div>
+
+      <div class="detail-block">
+        <div class="detail-block-title">関連</div>
+        <div id="detailRelated" class="detail-related">関連イベント名</div>
+      </div>
+
+      <div class="detail-block">
+        <div class="detail-block-title">メモ</div>
+        <p id="detailMemo" class="detail-memo"></p>
+      </div>
+
+      <div class="detail-block">
+        <div class="detail-block-title">出典</div>
+        <a id="detailSource" class="detail-source" href="#" target="_blank" rel="noopener noreferrer">Wikiを開く</a>
+      </div>
+
+      <div class="detail-actions">
+        <button class="ghost-btn">編集</button>
+        <button id="closeDetailBtnBottom" class="primary-btn">閉じる</button>
+      </div>
+    </div>
+  </aside>
+
+  <script src="script.js"></script>
+</body>
+</html>
