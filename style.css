@@ -1129,3 +1129,194 @@ button{font:inherit}
   }
   .event-icon{width:44px!important;height:44px!important;}
 }
+
+
+/* =========================================================
+   v14: compact height + overlay tab join refinement
+   ========================================================= */
+
+/* 1) 高さ100%ベースで縦に伸びすぎるのを抑える */
+.frame9,
+.pixel-frame-table{
+  height:auto;
+}
+
+.pf-content{
+  min-height:0 !important;
+}
+
+/* ゲーム外枠・内枠は内容ぶんだけの高さにする */
+.game-shell > .pixel-frame-table,
+.game-card > .pixel-frame-table,
+.simple-panel > .pixel-frame-table{
+  height:auto !important;
+}
+
+.game-shell > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:6px 6px 6px !important;
+}
+
+.game-card > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:2px 4px !important;
+}
+
+/* 2) ゲームグループ全体を詰めて、縦長感を減らす */
+.game-list{
+  gap:14px !important;
+  padding:8px 6px 0 !important;
+}
+
+.game-section{
+  position:relative;
+  padding-top:14px !important;
+  --game-tab-w:120px;
+}
+
+/* 3) タブは下辺なしの2行構成にして、外枠の上に重ねる */
+.game-chip-tab-open{
+  position:absolute;
+  left:0;
+  top:0;
+  width:var(--game-tab-w);
+  height:30px;
+  z-index:20;
+  pointer-events:none;
+  transform:translateY(0);
+}
+
+.game-tab-open-table{
+  width:100%;
+  height:100%;
+  border-collapse:collapse;
+  border-spacing:0;
+}
+
+.game-tab-open-table tr:first-child{
+  height:16px;
+}
+
+.game-tab-open-table .pf-corner,
+.game-tab-open-table .pf-edge-y{
+  width:16px;
+  min-width:16px;
+  max-width:16px;
+}
+
+.game-tab-open-table .pf-center{
+  background:url("assets/ui/frames/minidot-8-5.png") repeat;
+  background-size:16px 16px;
+  image-rendering:pixelated;
+}
+
+/*
+  4) 外枠本体はタブの真下へ配置し、
+     2pxぶんだけタブと重ねて一体化。
+*/
+.game-shell{
+  position:relative;
+  margin-top:14px !important;
+}
+
+.game-shell > .pixel-frame-table{
+  position:relative;
+  top:-2px;
+}
+
+/* 5) 左上でタブに隠れる範囲の内側余白を少し調整 */
+.game-shell > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding-top:6px !important;
+}
+
+/* 6) イベント行をもう少し詰める */
+.event-row{
+  min-height:74px !important;
+  padding:6px 2px !important;
+  gap:6px !important;
+}
+
+.event-icon{
+  width:42px !important;
+  height:42px !important;
+}
+
+.event-title{
+  font-size:14px !important;
+  margin-bottom:3px !important;
+}
+
+.progress-line{
+  margin-bottom:2px !important;
+}
+
+.event-range{
+  font-size:10px !important;
+  line-height:1.2 !important;
+}
+
+.event-remain .remain-big,
+.remain-big{
+  font-size:28px !important;
+}
+
+/* 7) 上段タブも少しすっきり */
+.top-tab{
+  height:42px !important;
+}
+
+.tab-frame-img-table tr:first-child,
+.tab-frame-img-table tr:last-child{
+  height:16px !important;
+}
+
+.tab-frame-img-table td.corner-cell,
+.tab-frame-img-table .edge-y-cell{
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+}
+
+.top-tab-label{
+  font-size:13px !important;
+  padding:0 8px !important;
+}
+
+/* 8) 詳細だけ32pxのまま維持 */
+.detail-panel,
+.detail-panel > .pixel-frame-table{
+  min-height:calc(100dvh - 24px);
+  height:calc(100dvh - 24px);
+}
+.detail-panel > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  min-height:100%;
+  padding:16px;
+}
+
+/* 9) スマホ用微調整 */
+@media(max-width:420px){
+  .game-section{
+    --game-tab-w:112px;
+    padding-top:13px !important;
+  }
+
+  .game-chip-tab-open{
+    height:28px;
+  }
+
+  .game-shell{
+    margin-top:13px !important;
+  }
+
+  .event-row{
+    grid-template-columns:42px minmax(0,1fr) 56px !important;
+    min-height:70px !important;
+  }
+
+  .event-icon{
+    width:38px !important;
+    height:38px !important;
+  }
+
+  .top-tab{
+    height:40px !important;
+  }
+}

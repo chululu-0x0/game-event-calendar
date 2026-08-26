@@ -78,7 +78,22 @@ function remain(end){const ms=toDate(end)-today,h=Math.floor(ms/36e5),d=Math.flo
 function frame9(cls,html){return `<div class="frame9 ${cls}">${pixelFrameMarkup(html,16)}</div>`}
 
 function openChipTab(label){
-  return `<div class="game-chip-tab-open">${pixelFrameMarkup(`<span class="game-chip-text">${label}</span>`,16,"game-tab-table")}</div>`;
+  return `<div class="game-chip-tab-open">
+    <table class="pixel-frame-table pixel-size-16 game-tab-open-table" role="presentation">
+      <tbody>
+        <tr>
+          <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(1)}" alt="" class="pixel-tile-img"></td>
+          <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(2,32)}</div></td>
+          <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(3)}" alt="" class="pixel-tile-img"></td>
+        </tr>
+        <tr>
+          <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,12)}</div></td>
+          <td class="pf-center"><div class="pf-content"><span class="game-chip-text">${label}</span></div></td>
+          <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,12)}</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>`;
 }
 
 function renderOngoing(){
