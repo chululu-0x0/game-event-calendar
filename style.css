@@ -1507,3 +1507,136 @@ button{font:inherit}
     margin:0 !important;
   }
 }
+
+
+/* =========================================================
+   v16: header cleanup / overlay text / tighter tabs
+   ========================================================= */
+
+/* header */
+.checker-line{display:none !important;}
+.top-chrome{
+  border-left:0 !important;
+  border-right:0 !important;
+  padding-bottom:12px !important;
+}
+.title-row{
+  min-height:38px !important;
+  padding-top:0 !important;
+  gap:8px !important;
+}
+.title-row h1{
+  font-family:"Press Start 2P","DotGothic16",monospace !important;
+  font-size:clamp(15px,3.3vw,20px) !important;
+  letter-spacing:0 !important;
+  text-transform:none;
+  text-shadow:1px 1px #ffffffd9 !important;
+}
+.title-icon{
+  width:34px !important;
+  height:34px !important;
+  font-size:18px !important;
+}
+
+/* top buttons smaller */
+.top-tabs{
+  gap:6px !important;
+  padding-top:1px !important;
+}
+.top-tab{
+  height:34px !important;
+}
+.tab-frame-img-table tr:first-child,
+.tab-frame-img-table tr:last-child{
+  height:16px !important;
+}
+.tab-frame-img-table td.corner-cell,
+.tab-frame-img-table .edge-y-cell{
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+}
+.top-tab-label{
+  font-size:12px !important;
+  padding:0 8px !important;
+  text-shadow:none !important;
+}
+
+/* main game frame: left-top 1 -> 4 look to continue vertical edge */
+.game-shell > .pixel-frame-table > tbody > tr:first-child > .pf-corner:first-child > img{
+  content:url("assets/ui/frames/minidot-8-4.png");
+}
+
+/* game tab: text is overlaid, not inside table cell */
+.game-chip-tab-open{
+  height:24px !important;
+}
+.game-tab-open-table{
+  height:24px !important;
+}
+.game-tab-open-table tr:first-child{
+  height:16px !important;
+}
+.game-tab-open-table tr:nth-child(2){
+  height:8px !important;
+}
+.game-tab-open-table .pf-center > .pf-content{
+  padding:0 !important;
+  min-height:0 !important;
+  height:8px !important;
+}
+
+.game-chip-text{
+  display:none !important;
+}
+
+.game-chip-text-overlay{
+  position:absolute;
+  inset:0;
+  z-index:4;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  padding:0 14px 0 18px;
+  font-weight:700;
+  font-size:13px;
+  line-height:1;
+  color:var(--text);
+  pointer-events:none;
+  white-space:nowrap;
+}
+
+.game-section{
+  --game-tab-w:120px;
+  padding-top:22px !important;
+}
+
+/* keep compact */
+.game-shell > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:5px !important;
+}
+
+/* mobile tweaks */
+@media(max-width:420px){
+  .top-chrome{
+    padding-bottom:10px !important;
+  }
+  .title-row h1{
+    font-size:15px !important;
+  }
+  .top-tab{
+    height:32px !important;
+  }
+  .top-tab-label{
+    font-size:11px !important;
+    padding:0 6px !important;
+  }
+  .game-section{
+    --game-tab-w:112px;
+  }
+  .game-chip-text-overlay{
+    font-size:12px;
+    padding-left:16px;
+    padding-right:10px;
+  }
+}

@@ -88,11 +88,12 @@ function openChipTab(label){
         </tr>
         <tr>
           <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,12)}</div></td>
-          <td class="pf-center"><div class="pf-content"><span class="game-chip-text">${label}</span></div></td>
+          <td class="pf-center"><div class="pf-content"></div></td>
           <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,12)}</div></td>
         </tr>
       </tbody>
     </table>
+    <div class="game-chip-text-overlay">${label}</div>
   </div>`;
 }
 
