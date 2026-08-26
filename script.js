@@ -10,6 +10,60 @@ const eventData=[
 {id:"zzz-comeback",title:"カムバック！プロキシ",start:"2025-05-18T05:00:00",end:"2025-05-24T23:59:00",progress:75,memo:"あと数時間。ショップ解放の確認向け。",related:"復帰支援イベント",source:"https://example.com/zzz/comeback"}]}
 ];
 
+
+const PIXEL_FRAME_SRC=i=>`assets/ui/frames/minidot-8-${i}.png`;
+
+function tileImgs(i,count){
+  return Array.from({length:count},()=>`<img src="${PIXEL_FRAME_SRC(i)}" alt="" class="pixel-tile-img">`).join("");
+}
+
+function pixelFrameMarkup(html,size=16,extraClass=""){
+  const hCount=48;
+  const vCount=size===32?40:72;
+  return `<table class="pixel-frame-table ${size===32?"pixel-size-32":"pixel-size-16"} ${extraClass}" role="presentation">
+    <tbody>
+      <tr>
+        <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(1)}" alt="" class="pixel-tile-img"></td>
+        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(2,hCount)}</div></td>
+        <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(3)}" alt="" class="pixel-tile-img"></td>
+      </tr>
+      <tr>
+        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,vCount)}</div></td>
+        <td class="pf-center"><div class="pf-content">${html}</div></td>
+        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,vCount)}</div></td>
+      </tr>
+      <tr>
+        <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(7)}" alt="" class="pixel-tile-img"></td>
+        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(8,hCount)}</div></td>
+        <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(9)}" alt="" class="pixel-tile-img"></td>
+      </tr>
+    </tbody>
+  </table>`;
+}
+
+function upgradeStaticFrames(){
+  document.querySelectorAll(".frame9").forEach(frame=>{
+    const oldCenter=frame.querySelector(":scope > .frame9-grid > .f5");
+    if(!oldCenter)return;
+    const html=oldCenter.innerHTML;
+    const size=frame.classList.contains("detail-panel")?32:16;
+    frame.innerHTML=pixelFrameMarkup(html,size);
+  });
+}
+
+function upgradeTopTabTables(){
+  document.querySelectorAll(".tab-frame-img-table").forEach(table=>{
+    table.classList.add("pixel-frame-table","pixel-size-16","top-pixel-table");
+    table.querySelectorAll("img").forEach(img=>{
+      const m=img.src.match(/minidot-8-([1-9])\.png/);
+      if(m) img.classList.add("pixel-tile-img");
+    });
+  });
+}
+
+upgradeStaticFrames();
+upgradeTopTabTables();
+
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const screens={ongoing:$("#screen-ongoing"),calendar:$("#screen-calendar"),favorites:$("#screen-favorites"),settings:$("#screen-settings")};
 const ongoingList=$("#ongoingList"),todayLabel=$("#todayLabel"),contentScroll=$("#contentScroll");
@@ -21,16 +75,10 @@ function formatTodayLabel(d){const w=["日","月","火","水","木","金","土"]
 function formatRange(a,b){const s=toDate(a),e=toDate(b);return `${String(s.getMonth()+1).padStart(2,"0")}/${String(s.getDate()).padStart(2,"0")} ～ ${String(e.getMonth()+1).padStart(2,"0")}/${String(e.getDate()).padStart(2,"0")} ${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`}
 function formatShortRange(a,b){const s=toDate(a),e=toDate(b);return `${s.getMonth()+1}/${s.getDate()} ～ ${e.getMonth()+1}/${e.getDate()}`}
 function remain(end){const ms=toDate(end)-today,h=Math.floor(ms/36e5),d=Math.floor(ms/864e5);if(ms<=0)return{prefix:"",big:"終了",tone:"orange"};if(h<24)return{prefix:"あと",big:`${h}時間`,tone:"orange"};if(d<2)return{prefix:"明日",big:"終了",tone:"pink"};return{prefix:"残り",big:`${d}日`,tone:d<=3?"pink":"blue"}}
-function frame9(cls,html){return `<div class="frame9 ${cls}"><div class="frame9-grid"><div class="f f1"></div><div class="f f2"></div><div class="f f3"></div><div class="f f4"></div><div class="f f5">${html}</div><div class="f f6"></div><div class="f f7"></div><div class="f f8"></div><div class="f f9"></div></div></div>`}
+function frame9(cls,html){return `<div class="frame9 ${cls}">${pixelFrameMarkup(html,16)}</div>`}
 
 function openChipTab(label){
-  return `<div class="game-chip-tab-open">
-    <div class="game-chip-open-grid">
-      <span class="f f1"></span><span class="f f2"></span><span class="f f3"></span>
-      <span class="f f4"></span><span class="f f5"></span><span class="f f6"></span>
-    </div>
-    <span class="game-chip-text">${label}</span>
-  </div>`;
+  return `<div class="game-chip-tab-open">${pixelFrameMarkup(`<span class="game-chip-text">${label}</span>`,16,"game-tab-table")}</div>`;
 }
 
 function renderOngoing(){

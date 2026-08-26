@@ -835,3 +835,297 @@ button{font:inherit}
     padding:0 10px;
   }
 }
+
+
+/* =========================================================
+   v13: minidot-8 / real-image TABLE frames
+   ========================================================= */
+
+:root{
+  --pixel-frame-unit:16px;       /* 8px素材の2倍 */
+  --pixel-detail-unit:32px;      /* 詳細シートだけ4倍 */
+}
+
+/* 旧Gridフレームは使わない */
+.frame9 > .frame9-grid{display:none!important;}
+.game-shell::before{display:none!important;}
+.game-chip-open-grid{display:none!important;}
+
+/* 共通テーブル */
+.pixel-frame-table{
+  width:100%;
+  height:100%;
+  table-layout:fixed;
+  border-collapse:collapse;
+  border-spacing:0;
+  padding:0;
+  margin:0;
+}
+
+.pixel-frame-table tr,
+.pixel-frame-table td{
+  padding:0;
+  margin:0;
+  border:0;
+}
+
+.pixel-frame-table td{
+  overflow:hidden;
+  vertical-align:top;
+  position:relative;
+}
+
+.pixel-frame-table .pixel-tile-img{
+  display:block;
+  flex:0 0 auto;
+  image-rendering:pixelated;
+}
+
+/* 16pxフレーム（8px素材×2） */
+.pixel-frame-table.pixel-size-16 tr:first-child,
+.pixel-frame-table.pixel-size-16 tr:last-child{
+  height:16px;
+}
+.pixel-frame-table.pixel-size-16 .pf-corner,
+.pixel-frame-table.pixel-size-16 .pf-edge-y{
+  width:16px;
+  min-width:16px;
+  max-width:16px;
+}
+.pixel-frame-table.pixel-size-16 .pixel-tile-img{
+  width:16px;
+  height:16px;
+}
+
+/* 32pxフレーム（詳細のみ） */
+.pixel-frame-table.pixel-size-32 tr:first-child,
+.pixel-frame-table.pixel-size-32 tr:last-child{
+  height:32px;
+}
+.pixel-frame-table.pixel-size-32 .pf-corner,
+.pixel-frame-table.pixel-size-32 .pf-edge-y{
+  width:32px;
+  min-width:32px;
+  max-width:32px;
+}
+.pixel-frame-table.pixel-size-32 .pixel-tile-img{
+  width:32px;
+  height:32px;
+}
+
+/* 横辺は実imgを並べて、余りは切る */
+.pf-edge-x{overflow:hidden;}
+.pf-strip-x{
+  display:flex;
+  flex-wrap:nowrap;
+  width:max-content;
+  min-width:100%;
+  overflow:hidden;
+}
+
+/* 縦辺も実imgを並べて、余りは切る */
+.pf-edge-y{overflow:hidden;}
+.pf-strip-y{
+  display:flex;
+  flex-direction:column;
+  flex-wrap:nowrap;
+  height:max-content;
+  min-height:100%;
+  overflow:hidden;
+}
+
+/*
+  中央5だけは面なので背景タイルとして使用。
+  枠線（1,2,3,4,6,7,8,9）はすべて実img。
+*/
+.pixel-size-16 .pf-center{
+  background:url("assets/ui/frames/minidot-8-5.png") repeat;
+  background-size:16px 16px;
+  image-rendering:pixelated;
+}
+.pixel-size-32 .pf-center{
+  background:url("assets/ui/frames/minidot-8-5.png") repeat;
+  background-size:32px 32px;
+  image-rendering:pixelated;
+}
+.pf-content{
+  position:relative;
+  z-index:1;
+  min-width:0;
+  min-height:100%;
+}
+
+/* ---------- 上段タブ ---------- */
+.top-tabs{
+  gap:6px;
+  padding:2px 2px 0;
+}
+.top-tab{
+  height:48px!important;
+}
+.tab-skin-imgtiles{
+  inset:0;
+  overflow:hidden;
+}
+.tab-frame-img-table{
+  width:100%;
+  height:100%;
+  table-layout:fixed;
+  border-collapse:collapse;
+  border-spacing:0;
+}
+.tab-frame-img-table tr:first-child,
+.tab-frame-img-table tr:last-child{
+  height:16px!important;
+}
+.tab-frame-img-table td.corner-cell,
+.tab-frame-img-table .edge-y-cell{
+  width:16px!important;
+  min-width:16px!important;
+  max-width:16px!important;
+}
+.tab-frame-img-table .corner-img,
+.tab-frame-img-table .tile-img{
+  width:16px!important;
+  height:16px!important;
+  display:block;
+  flex:0 0 auto;
+  image-rendering:pixelated;
+}
+.tab-frame-img-table .fill-cell{
+  background:url("assets/ui/frames/minidot-8-5.png") repeat;
+  background-size:16px 16px;
+  image-rendering:pixelated;
+}
+.top-tab-label{
+  position:absolute!important;
+  inset:0;
+  z-index:4;
+  height:auto!important;
+  font-size:14px;
+}
+
+/* inactive: 画像自体は同じ。見分けは文字と薄いオーバーレイで */
+.top-tab:not(.active)::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:3;
+  background:#eef0ff66;
+  pointer-events:none;
+}
+
+/* ---------- 開催中のゲームグループ ---------- */
+.game-list{
+  gap:18px!important;
+  padding:8px 6px 0!important;
+}
+.game-section{
+  padding-top:28px!important;
+  --game-tab-w:128px;
+}
+.game-shell{
+  width:100%!important;
+  left:0!important;
+  margin:0!important;
+}
+.game-shell > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:5px!important;
+}
+
+.game-chip-tab-open{
+  position:absolute;
+  z-index:8;
+  left:0;
+  top:0;
+  width:var(--game-tab-w);
+  height:44px;
+  pointer-events:none;
+}
+.game-chip-tab-open .pixel-frame-table{
+  height:44px;
+}
+.game-chip-tab-open .pf-content{
+  display:flex;
+  align-items:center;
+  min-height:12px;
+}
+.game-chip-text{
+  position:static!important;
+  display:flex!important;
+  align-items:center;
+  width:100%;
+  min-height:100%;
+  padding:0 10px!important;
+  font-weight:700;
+  font-size:14px;
+}
+
+/* outer frame topとタブを少し重ねて一体感 */
+.game-shell{
+  margin-top:0;
+}
+.game-chip-tab-open{
+  transform:translateY(0);
+}
+
+/* ---------- 内側イベント枠 ---------- */
+.game-card{
+  width:100%;
+}
+.game-card > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:2px 4px!important;
+}
+.event-row{
+  grid-template-columns:52px minmax(0,1fr) 70px!important;
+  gap:7px!important;
+  min-height:88px!important;
+  padding:7px 2px!important;
+}
+.event-icon{
+  width:48px!important;
+  height:48px!important;
+}
+.event-title{font-size:15px!important;}
+.event-range{font-size:10px!important;}
+.event-row + .event-row{
+  border-top:2px solid #5f63a09e;
+}
+
+/* ---------- favorites/settingsなど ---------- */
+.simple-panel > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  min-height:190px;
+  padding:18px 16px;
+}
+
+/* ---------- サイド詳細だけ32px ---------- */
+.detail-panel{
+  min-height:calc(100dvh - 24px);
+}
+.detail-panel > .pixel-frame-table{
+  min-height:calc(100dvh - 24px);
+}
+.detail-panel > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:16px;
+}
+.detail-sheet{
+  width:min(92vw,470px);
+}
+
+/* スマホは従来のレイアウト感を維持 */
+@media(max-width:620px){
+  .top-tab{height:46px!important;}
+  .game-list{padding-left:4px!important;padding-right:4px!important;}
+}
+
+@media(max-width:420px){
+  .top-tab{height:44px!important;}
+  .top-tab-label{font-size:13px;}
+  .game-chip-tab-open{height:42px;}
+  .game-section{padding-top:27px!important;}
+  .event-row{
+    grid-template-columns:46px minmax(0,1fr) 64px!important;
+    min-height:82px!important;
+  }
+  .event-icon{width:44px!important;height:44px!important;}
+}
