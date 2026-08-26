@@ -1320,3 +1320,190 @@ button{font:inherit}
     height:40px !important;
   }
 }
+
+
+/* =========================================================
+   v15: vertical-stretch root fix + 24px open tab
+   ========================================================= */
+
+/*
+  縦に異常に伸びていた本当の原因:
+  .pf-strip-y の中に大量の16px画像を縦積みしていたため、
+  その「画像列そのものの高さ」がtable行高として計算されていた。
+
+  v15では縦辺画像列をabsolute化。
+  見た目はセル内に並ぶが、tableの高さ計算には参加させない。
+*/
+.pf-edge-y{
+  position:relative !important;
+  overflow:hidden !important;
+}
+
+.pf-strip-y{
+  position:absolute !important;
+  top:0 !important;
+  left:0 !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  flex-wrap:nowrap !important;
+}
+
+/* 横辺も念のため高さ計算へ余計な影響を出さない */
+.pf-edge-x{
+  position:relative !important;
+  overflow:hidden !important;
+}
+
+.pf-strip-x{
+  position:absolute !important;
+  left:0 !important;
+  top:0 !important;
+  height:100% !important;
+  min-width:0 !important;
+  width:max-content !important;
+  display:flex !important;
+  flex-wrap:nowrap !important;
+}
+
+/* 通常フレームは内容の高さだけで決まる */
+.game-shell,
+.game-card,
+.game-shell > .pixel-frame-table,
+.game-card > .pixel-frame-table,
+.game-shell .pf-center,
+.game-card .pf-center,
+.game-shell .pf-content,
+.game-card .pf-content{
+  height:auto !important;
+  min-height:0 !important;
+}
+
+/*
+  ゲーム名タブ:
+  1〜6だけ（下辺7〜9なし）
+  高さ24px
+  本体開始位置22px
+  → 2pxだけ重なる
+*/
+.game-section{
+  position:relative !important;
+  padding-top:22px !important;
+  --game-tab-w:120px;
+}
+
+.game-chip-tab-open{
+  position:absolute !important;
+  left:0 !important;
+  top:0 !important;
+  width:var(--game-tab-w) !important;
+  height:24px !important;
+  z-index:20 !important;
+  transform:none !important;
+  pointer-events:none;
+}
+
+.game-tab-open-table{
+  width:100% !important;
+  height:24px !important;
+  table-layout:fixed !important;
+  border-collapse:collapse !important;
+  border-spacing:0 !important;
+}
+
+.game-tab-open-table tr:first-child{
+  height:16px !important;
+}
+
+.game-tab-open-table tr:nth-child(2){
+  height:8px !important;
+}
+
+.game-tab-open-table .pf-content{
+  height:8px !important;
+  min-height:8px !important;
+  display:flex !important;
+  align-items:center !important;
+  overflow:visible !important;
+}
+
+.game-chip-text{
+  position:absolute !important;
+  left:16px !important;
+  right:16px !important;
+  top:0 !important;
+  height:24px !important;
+  min-height:0 !important;
+  padding:0 8px !important;
+  display:flex !important;
+  align-items:center !important;
+  font-size:13px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
+
+/* 本体はpadding-topで22px下がっているので、余計なmargin/top補正を全解除 */
+.game-shell{
+  position:relative !important;
+  left:0 !important;
+  top:auto !important;
+  width:100% !important;
+  margin:0 !important;
+}
+
+.game-shell > .pixel-frame-table{
+  position:relative !important;
+  top:auto !important;
+  margin:0 !important;
+}
+
+/* 内枠もイベント件数に追従 */
+.game-events{
+  min-height:0 !important;
+  height:auto !important;
+}
+
+.event-row{
+  height:auto !important;
+}
+
+/* 余白を少し整理 */
+.game-shell > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:5px !important;
+}
+
+.game-card > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:2px 4px !important;
+}
+
+.game-list{
+  gap:14px !important;
+  padding-top:8px !important;
+}
+
+/* スマホも同じ2px重なりロジック */
+@media(max-width:420px){
+  .game-section{
+    --game-tab-w:112px;
+    padding-top:22px !important;
+  }
+
+  .game-chip-tab-open{
+    height:24px !important;
+  }
+
+  .game-tab-open-table{
+    height:24px !important;
+  }
+
+  .game-chip-text{
+    height:24px !important;
+    font-size:12px !important;
+  }
+
+  .game-shell{
+    margin:0 !important;
+  }
+}
