@@ -158,3 +158,87 @@ function syncCalendar(){let lock=false;calendarBodyScroll.addEventListener("scro
 todayLabel.textContent=formatTodayLabel(today);renderOngoing();renderCalendar();syncCalendar();
 $$(".top-tab,.bottom-nav-btn").forEach(b=>b.addEventListener("click",()=>setScreen(b.dataset.screen)));
 $("#refreshMockBtn").addEventListener("click",renderOngoing);$("#closeDetailBtn").addEventListener("click",closeDetail);$("#closeDetailBtnBottom").addEventListener("click",closeDetail);detailOverlay.addEventListener("click",closeDetail);setScreen("ongoing");
+
+
+/* =========================================================
+   v18: dynamic game tab width + countdown progress logic
+   ========================================================= */
+
+function setupGameTabWidths(){
+  document.querySelectorAll(".game-section").forEach(section=>{
+    const labelEl = section.querySelector(".game-chip-text-overlay");
+    if(!labelEl) return;
+    const text = labelEl.textContent.trim();
+    const width = Math.max(96, Math.ceil(text.length * 16 + 40));
+    section.style.setProperty("--game-tab-w", `${width}px`);
+  });
+}
+
+function parseDateRangeFromText(text){
+  if(!text) return null;
+  const m = text.match(/(\d{2})\/(\d{2})\s*～\s*(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})/);
+  if(!m) return null;
+
+  const now = new Date();
+  const year = now.getFullYear();
+
+  const startMonth = Number(m[1]);
+  const startDay = Number(m[2]);
+  const endMonth = Number(m[3]);
+  const endDay = Number(m[4]);
+  const endHour = Number(m[5]);
+  const endMinute = Number(m[6]);
+
+  const start = new Date(year, startMonth - 1, startDay, 0, 0, 0, 0);
+  let end = new Date(year, endMonth - 1, endDay, endHour, endMinute, 0, 0);
+
+  if(end < start){
+    end = new Date(year + 1, endMonth - 1, endDay, endHour, endMinute, 0, 0);
+  }
+
+  return { start, end };
+}
+
+function updateCountdownProgress(){
+  const now = new Date();
+
+  document.querySelectorAll(".event-row").forEach(row=>{
+    const rangeEl = row.querySelector(".event-range");
+    const barEl = row.querySelector(".progress-mini-fill");
+    const labelEl = row.querySelector(".progress-label");
+
+    if(!rangeEl || !barEl) return;
+
+    const parsed = parseDateRangeFromText(rangeEl.textContent);
+    if(!parsed) return;
+
+    const total = parsed.end - parsed.start;
+    const remain = parsed.end - now;
+
+    let ratio = 0;
+    if(total > 0){
+      ratio = Math.max(0, Math.min(1, remain / total));
+    }
+
+    if(now < parsed.start){
+      ratio = 1;
+    }
+
+    const pct = Math.round(ratio * 100);
+    barEl.style.width = `${pct}%`;
+
+    let color = "#6f86ff";
+    if(ratio <= 0.66) color = "#ff8fb2";
+    if(ratio <= 0.33) color = "#ff9a66";
+    barEl.style.background = color;
+
+    if(labelEl){
+      labelEl.textContent = `進行度 ${pct}%`;
+    }
+  });
+}
+
+window.addEventListener("load", ()=>{
+  setupGameTabWidths();
+  updateCountdownProgress();
+});
