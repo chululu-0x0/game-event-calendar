@@ -2029,3 +2029,339 @@ button{font:inherit}
 .game-chip-tab-open{
   top:-1px !important;
 }
+
+
+/* =========================================================
+   v20: top tab fix + version + acquisition sheet
+   ========================================================= */
+
+/* ゲームタイトルタブをさらに1px上へ（合計 -2px） */
+.game-chip-tab-open{
+  top:-2px !important;
+}
+
+/*
+  上段ボタンの下辺が消えていた主因は、
+  中央の実画像タイルがtableの行高を押し広げて
+  下段7/8/9がoverflowで切れていたこと。
+  タイル列をabsoluteにして高さ計算から外す。
+*/
+.tab-frame-img-table .edge-x-cell,
+.tab-frame-img-table .edge-y-cell,
+.tab-frame-img-table .fill-cell{
+  position:relative !important;
+  overflow:hidden !important;
+}
+
+.tab-frame-img-table .tile-strip-x{
+  position:absolute !important;
+  top:0 !important;
+  left:0 !important;
+  height:100% !important;
+  width:max-content !important;
+  min-width:0 !important;
+}
+
+.tab-frame-img-table .tile-strip-y{
+  position:absolute !important;
+  top:0 !important;
+  left:0 !important;
+  width:100% !important;
+  height:max-content !important;
+  min-height:0 !important;
+}
+
+.tab-frame-img-table .tile-fill{
+  position:absolute !important;
+  inset:0 !important;
+  overflow:hidden !important;
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-content:flex-start !important;
+}
+
+/* ボタン自体はv19の32pxのまま。上段エリアを少しだけ下へ拡張 */
+.top-tab{
+  height:32px !important;
+}
+.top-tabs{
+  margin-bottom:8px !important;
+  overflow:visible !important;
+}
+.top-chrome{
+  padding-bottom:18px !important;
+  overflow:visible !important;
+}
+
+/* version */
+.app-version{
+  position:absolute;
+  left:6px;
+  top:calc(4px + env(safe-area-inset-top));
+  z-index:30;
+  font-family:"DotGothic16",monospace;
+  font-size:9px;
+  line-height:1;
+  color:#464b89;
+  opacity:.8;
+  pointer-events:none;
+}
+
+/* empty state */
+.event-empty{
+  min-height:72px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:3px;
+  text-align:center;
+  font-size:13px;
+  color:#5b6092;
+}
+.event-empty small{
+  font-size:10px;
+  opacity:.8;
+}
+
+/* countdown colors */
+.progress-mini-fill.progress-high{background:#7189df !important;}
+.progress-mini-fill.progress-mid{background:#ed6f9a !important;}
+.progress-mini-fill.progress-low{background:#f18a62 !important;}
+
+/* acquisition overlay */
+.fetch-overlay{
+  position:fixed;
+  inset:0;
+  z-index:70;
+  background:#24264b66;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease;
+}
+.fetch-overlay.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.fetch-sheet{
+  position:fixed;
+  z-index:80;
+  left:50%;
+  bottom:0;
+  width:min(100%,620px);
+  max-height:min(84dvh,760px);
+  transform:translate(-50%,105%);
+  transition:transform .22s ease;
+  background:#fff9f2;
+  border-top:4px solid #686bc6;
+  box-shadow:0 -6px 0 #8d91d044;
+  padding:14px 14px calc(16px + env(safe-area-inset-bottom));
+  overflow-y:auto;
+  color:var(--text);
+}
+.fetch-sheet.open{
+  transform:translate(-50%,0);
+}
+
+.fetch-sheet-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:6px;
+}
+.fetch-sheet-head h2{
+  margin:0;
+  font-family:"DotGothic16",monospace;
+  font-size:22px;
+}
+.fetch-kicker{
+  display:block;
+  font-size:9px;
+  letter-spacing:.08em;
+  color:#7478ad;
+}
+.fetch-close{
+  width:38px;
+  height:38px;
+  border:2px solid #676bc4;
+  background:#fff;
+  color:#444980;
+  font-size:24px;
+  line-height:1;
+}
+.fetch-help{
+  margin:4px 0 12px;
+  font-size:12px;
+  line-height:1.6;
+  color:#5d628f;
+}
+
+.fetch-game-accordions{
+  display:grid;
+  gap:8px;
+}
+.fetch-game{
+  border:2px solid #888ccb;
+  background:#f4f1ff;
+}
+.fetch-game summary{
+  min-height:44px;
+  display:grid;
+  grid-template-columns:28px 1fr auto;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  cursor:pointer;
+  font-weight:700;
+  list-style:none;
+}
+.fetch-game summary::-webkit-details-marker{display:none;}
+.fetch-game summary::after{
+  content:"＋";
+  grid-column:3;
+  grid-row:1;
+  margin-left:8px;
+}
+.fetch-game[open] summary::after{content:"－";}
+.fetch-game-count{
+  grid-column:3;
+  grid-row:1;
+  margin-right:28px;
+  font-size:10px;
+  color:#6d71a5;
+  font-weight:500;
+}
+.fetch-game-body{
+  padding:8px 10px 10px;
+  border-top:1px solid #aeb1da;
+  background:#fffdfa;
+}
+.fetch-label{
+  display:block;
+  margin-bottom:4px;
+  font-size:11px;
+  font-weight:700;
+}
+.fetch-url-input{
+  width:100%;
+  min-height:54px;
+  resize:vertical;
+  border:2px solid #a1a4cf;
+  background:#fff;
+  color:#2d3266;
+  padding:7px;
+  font:12px/1.45 system-ui,sans-serif;
+  border-radius:0;
+}
+.fetch-game-actions,
+.fetch-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+.fetch-game-actions{margin-top:7px;}
+.fetch-run-btn,
+.fetch-clear-btn,
+.fetch-apply-btn,
+.fetch-sub-btn{
+  border:2px solid #666ac1;
+  background:#f6f5ff;
+  color:#3e4380;
+  min-height:36px;
+  padding:6px 10px;
+  font-weight:700;
+}
+.fetch-run-btn,
+.fetch-apply-btn{
+  background:#c8d1ff;
+}
+.fetch-candidates{
+  display:grid;
+  gap:6px;
+  margin-top:8px;
+}
+.fetch-candidate-empty{
+  padding:10px;
+  text-align:center;
+  font-size:11px;
+  color:#777ca8;
+}
+.fetch-candidate{
+  display:grid;
+  grid-template-columns:22px 1fr;
+  gap:7px;
+  align-items:start;
+  border:1px solid #c0c2df;
+  background:#fff;
+  padding:7px;
+}
+.fetch-candidate input[type="checkbox"]{
+  width:18px;
+  height:18px;
+}
+.fetch-candidate-main{
+  min-width:0;
+  display:grid;
+  gap:3px;
+}
+.fetch-candidate-main strong{
+  font-size:13px;
+}
+.fetch-candidate-main small{
+  font-size:10px;
+  color:#7478a5;
+}
+.fetch-candidate-dates{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  gap:4px;
+  align-items:center;
+}
+.fetch-candidate-dates input{
+  min-width:0;
+  width:100%;
+  font-size:11px;
+  padding:4px;
+  border:1px solid #b7b9d8;
+}
+.fetch-status{
+  min-height:34px;
+  margin:10px 0;
+  padding:7px 9px;
+  background:#f3f2fb;
+  border-left:4px solid #8b8fc7;
+  font-size:11px;
+  line-height:1.5;
+}
+.fetch-status[data-tone="ok"]{border-left-color:#6f9f7c;}
+.fetch-status[data-tone="warn"]{border-left-color:#e08c67;}
+.fetch-status[data-tone="working"]{border-left-color:#7189df;}
+.fetch-actions{
+  position:sticky;
+  bottom:calc(-16px - env(safe-area-inset-bottom));
+  padding:9px 0 calc(16px + env(safe-area-inset-bottom));
+  background:#fff9f2f2;
+}
+.fetch-apply-btn{flex:1 1 210px;}
+.fetch-sub-btn{flex:0 0 auto;}
+
+.game-tab-measure{
+  position:fixed;
+  left:-9999px;
+  top:-9999px;
+  visibility:hidden;
+  white-space:nowrap;
+  font-size:15px;
+  font-weight:700;
+  font-family:"Zen Maru Gothic",system-ui,sans-serif;
+}
+
+@media(max-width:420px){
+  .top-chrome{padding-bottom:16px !important;}
+  .fetch-sheet{padding-left:10px;padding-right:10px;}
+  .fetch-candidate-dates{
+    grid-template-columns:1fr;
+  }
+  .fetch-candidate-dates > span{display:none;}
+}

@@ -13,6 +13,7 @@
 <div class="app-shell">
 
   <header class="top-chrome">
+    <div class="app-version" aria-label="バージョン">v20</div>
     <div class="checker-line checker-line-top" aria-hidden="true"></div>
 
     <div class="title-row">
@@ -202,6 +203,32 @@
       <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
     </div>
   </section>
+</aside>
+
+
+<div id="fetchOverlay" class="fetch-overlay" aria-hidden="true"></div>
+<aside id="fetchSheet" class="fetch-sheet" aria-hidden="true" aria-label="イベント取得">
+  <div class="fetch-sheet-head">
+    <div>
+      <span class="fetch-kicker">EVENT IMPORT</span>
+      <h2>イベント取得</h2>
+    </div>
+    <button id="closeFetchBtn" class="fetch-close" type="button" aria-label="閉じる">×</button>
+  </div>
+
+  <p class="fetch-help">
+    ゲームごとにイベント情報ページのURLを登録して「取得」を押してください。
+    取得できた候補から表示したいイベントだけ選べます。
+  </p>
+
+  <div id="fetchGameAccordions" class="fetch-game-accordions"></div>
+
+  <div id="fetchStatus" class="fetch-status" aria-live="polite"></div>
+
+  <div class="fetch-actions">
+    <button id="applyFetchedEventsBtn" class="fetch-apply-btn" type="button">選択したイベントを反映</button>
+    <button id="closeFetchBtnBottom" class="fetch-sub-btn" type="button">閉じる</button>
+  </div>
 </aside>
 
 <script src="script.js"></script>
