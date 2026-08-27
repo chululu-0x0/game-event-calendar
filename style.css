@@ -1640,3 +1640,226 @@ button{font:inherit}
     padding-right:10px;
   }
 }
+
+
+/* =========================================================
+   v17: tighter packing / more top space / remove divider line
+   ========================================================= */
+
+/* 上段全体を少し広げて、タイトルとボタン群の距離を空ける */
+.top-chrome{
+  padding-top:calc(10px + env(safe-area-inset-top)) !important;
+  padding-bottom:16px !important;
+}
+
+.title-row{
+  min-height:42px !important;
+  margin-bottom:10px !important;
+  gap:10px !important;
+  justify-content:center !important;
+}
+
+/* タイトルと上段ボタンの間をもう少し離す */
+.top-tabs{
+  margin-top:6px !important;
+  padding-top:0 !important;
+  gap:8px !important;
+}
+
+/* 開催中/カレンダーのボタンが下側で欠けないように上段高さを少し戻す */
+.top-tab{
+  height:38px !important;
+}
+@media(max-width:420px){
+  .top-tab{
+    height:36px !important;
+  }
+}
+
+/* レース/区切りラインを削除 */
+.lace-line,
+.lace-divider,
+.section-lace,
+.header-lace,
+.content-lace,
+.top-lace,
+.divider-lace,
+.checker-line{
+  display:none !important;
+  background:none !important;
+}
+
+/* 今日行の下線を削除し、そのぶん下マージンも詰める */
+.today-row{
+  border-bottom:0 !important;
+  margin-bottom:4px !important;
+  padding-bottom:4px !important;
+  min-height:40px !important;
+}
+
+/* 今日行の直後を上へ詰める */
+.game-list{
+  gap:10px !important;
+  padding-top:2px !important;
+  padding-left:4px !important;
+  padding-right:4px !important;
+}
+
+/* フレーム同士の距離を詰める */
+.game-section{
+  padding-top:20px !important;
+  margin:0 !important;
+  --game-tab-w:124px;
+}
+
+.game-chip-tab-open{
+  height:24px !important;
+}
+
+/* メイン枠と内側イベント一覧枠の距離を縮める */
+.game-shell > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:3px !important;
+}
+
+/* 一覧フレームをもっと広く取る */
+.game-card{
+  width:100% !important;
+}
+
+.game-card > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:1px 2px !important;
+}
+
+/* 外枠と一覧枠の間隔をさらに縮める */
+.game-events{
+  padding:0 !important;
+  margin:0 !important;
+}
+
+/* イベント項目と一覧枠の余白も縮める */
+.event-row{
+  min-height:70px !important;
+  padding:4px 1px !important;
+  gap:5px !important;
+}
+
+.event-row + .event-row{
+  margin-top:0 !important;
+}
+
+.event-icon{
+  width:40px !important;
+  height:40px !important;
+}
+
+.event-title{
+  font-size:13px !important;
+  margin-bottom:2px !important;
+  line-height:1.15 !important;
+}
+
+.progress-line{
+  gap:4px !important;
+  margin-bottom:1px !important;
+}
+
+.progress-mini{
+  height:8px !important;
+}
+
+.progress-label{
+  font-size:10px !important;
+}
+
+.event-range{
+  font-size:9px !important;
+  line-height:1.15 !important;
+}
+
+.event-remain{
+  min-width:56px !important;
+}
+
+.event-remain .remain-prefix,
+.remain-prefix{
+  font-size:12px !important;
+}
+
+.event-remain .remain-big,
+.remain-big{
+  font-size:26px !important;
+}
+
+/* ゲームごとの外枠の中で左右余白を少し削って、内容を広く */
+.game-shell .pf-content,
+.game-card .pf-content{
+  box-sizing:border-box !important;
+}
+
+/* タイトルタブを外枠により近づける */
+.game-shell{
+  margin-top:0 !important;
+}
+
+.simple-panel > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:12px !important;
+}
+
+/* スマホ微調整 */
+@media(max-width:420px){
+  .top-chrome{
+    padding-bottom:14px !important;
+  }
+
+  .title-row{
+    margin-bottom:8px !important;
+  }
+
+  .top-tabs{
+    margin-top:4px !important;
+    gap:6px !important;
+  }
+
+  .game-section{
+    --game-tab-w:116px;
+    padding-top:20px !important;
+  }
+
+  .game-list{
+    gap:8px !important;
+    padding-top:1px !important;
+  }
+
+  .game-shell > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+    padding:2px !important;
+  }
+
+  .game-card > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+    padding:1px !important;
+  }
+
+  .event-row{
+    grid-template-columns:40px minmax(0,1fr) 54px !important;
+    min-height:66px !important;
+    gap:4px !important;
+    padding:3px 1px !important;
+  }
+
+  .event-icon{
+    width:36px !important;
+    height:36px !important;
+  }
+
+  .event-title{
+    font-size:12px !important;
+  }
+
+  .progress-label{
+    font-size:9px !important;
+  }
+
+  .event-remain .remain-big,
+  .remain-big{
+    font-size:24px !important;
+  }
+}
