@@ -2395,3 +2395,331 @@ button{font:inherit}
 .fetch-reward{display:block;width:100%;line-height:1.45;}
 .fetch-date-note{display:block;line-height:1.4;opacity:.8;}
 #detailType,#detailReward{line-height:1.55;overflow-wrap:anywhere;}
+
+
+/* =========================================================
+   v22: fixed import sheet / editing / compact synced calendar
+   ========================================================= */
+
+/* iOS: double tap zoom suppression while keeping normal panning */
+html,body,.app-shell{
+  touch-action:manipulation;
+}
+
+/* scrollbars stay hidden everywhere while scrolling still works */
+*{
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+*::-webkit-scrollbar{
+  width:0 !important;
+  height:0 !important;
+  display:none !important;
+}
+
+/* event edit trigger */
+.event-icon.event-edit-trigger{
+  position:relative;
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.event-game-mark{
+  display:grid;
+  place-items:center;
+  width:100%;
+  height:100%;
+}
+.event-edit-mark{
+  position:absolute;
+  right:2px;
+  bottom:2px;
+  display:grid;
+  place-items:center;
+  width:20px;
+  height:20px;
+  border:2px solid #696fc2;
+  background:#fff9f2;
+  color:#50558f;
+  font:700 13px/1 "DotGothic16",monospace;
+  box-shadow:1px 1px 0 rgba(77,82,143,.18);
+}
+.event-icon.event-edit-trigger:active .event-edit-mark{
+  transform:translateY(1px);
+}
+
+/* detail edit button */
+.detail-head-actions{
+  display:flex;
+  align-items:flex-start;
+  gap:6px;
+}
+.detail-edit-btn,
+.detail-close{
+  width:40px;
+  height:40px;
+  border:2px solid #676bc4;
+  background:#fff;
+  color:#444980;
+  font-size:22px;
+  line-height:1;
+}
+
+/* import sheet occupies a stable 90% of the viewport.
+   Accordion expansion only changes the scrollable middle area. */
+.fetch-sheet{
+  height:90dvh !important;
+  max-height:90dvh !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+}
+.fetch-sheet-head,
+.fetch-help,
+.fetch-status,
+.fetch-actions{
+  flex:0 0 auto;
+}
+.fetch-game-accordions{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  display:block;
+  padding-right:1px;
+}
+.fetch-game{
+  margin-bottom:8px;
+}
+.fetch-game:last-child{
+  margin-bottom:0;
+}
+.fetch-actions{
+  position:static !important;
+  bottom:auto !important;
+  margin-top:6px;
+  padding:8px 0 calc(2px + env(safe-area-inset-bottom)) !important;
+}
+.fetch-relay-source{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.fetch-candidate-title-row{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.fetch-update-badge{
+  display:inline-flex;
+  align-items:center;
+  min-height:20px;
+  padding:2px 7px;
+  border:1px solid #d46389;
+  background:#ffe3ec;
+  color:#a93861 !important;
+  font-weight:700;
+  font-size:10px !important;
+}
+.fetch-candidate.is-update{
+  border-color:#dc87a4;
+  background:#fff9fb;
+}
+
+/* calendar: today is always the left edge and only the left title
+   column can initiate vertical scrolling. */
+.calendar-left{
+  min-height:0;
+  overflow:hidden;
+}
+.calendar-game-scroll{
+  height:calc(100% - 56px);
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  touch-action:pan-y;
+  -webkit-overflow-scrolling:touch;
+}
+#calendarGameRows{
+  height:auto !important;
+  display:block !important;
+}
+.calendar-game-cell{
+  min-height:0 !important;
+  box-sizing:border-box;
+  flex:none;
+}
+.calendar-right{
+  min-height:0;
+}
+.header-scroll{
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  touch-action:pan-x;
+}
+.body-scroll{
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  touch-action:pan-x;
+  overscroll-behavior-x:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.calendar-header-track{
+  width:max-content;
+}
+.calendar-body-track{
+  display:block !important;
+  height:auto;
+  min-height:100%;
+  width:max-content;
+}
+.calendar-row{
+  min-height:0 !important;
+  height:auto;
+  box-sizing:border-box;
+}
+.event-bar{
+  height:28px !important;
+  min-height:28px !important;
+  padding:3px 7px !important;
+  gap:5px !important;
+  line-height:1.1;
+}
+.event-bar-title{
+  min-width:0;
+  line-height:1.05;
+}
+.event-bar-title > span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.event-bar-title small{
+  font-size:9px !important;
+}
+.today-line{
+  pointer-events:none;
+}
+
+/* edit sheet */
+.edit-overlay{
+  position:fixed;
+  inset:0;
+  z-index:88;
+  background:#24264b66;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease;
+}
+.edit-overlay.open{
+  opacity:1;
+  pointer-events:auto;
+}
+.edit-sheet{
+  position:fixed;
+  z-index:89;
+  left:50%;
+  bottom:0;
+  width:min(100%,620px);
+  height:90dvh;
+  transform:translate(-50%,105%);
+  transition:transform .22s ease;
+  background:#fff9f2;
+  border-top:4px solid #686bc6;
+  box-shadow:0 -6px 0 #8d91d044;
+  color:var(--text);
+  overflow:hidden;
+}
+.edit-sheet.open{
+  transform:translate(-50%,0);
+}
+.edit-form{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  padding:14px 14px calc(12px + env(safe-area-inset-bottom));
+}
+.edit-sheet-head{
+  flex:0 0 auto;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+}
+.edit-sheet-head h2{
+  margin:0;
+  font-family:"DotGothic16",monospace;
+  font-size:22px;
+}
+.edit-game-label{
+  margin-top:3px;
+  font-size:12px;
+  color:#6b70a4;
+  font-weight:700;
+}
+.edit-scroll{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  display:grid;
+  align-content:start;
+  gap:10px;
+  padding:4px 1px 12px;
+}
+.edit-field{
+  display:grid;
+  gap:4px;
+}
+.edit-field>span{
+  font-size:11px;
+  font-weight:700;
+  color:#555b92;
+}
+.edit-field input,
+.edit-field textarea{
+  width:100%;
+  border:2px solid #a1a4cf;
+  border-radius:0;
+  background:#fff;
+  color:#2d3266;
+  padding:8px;
+  font:14px/1.45 "Zen Maru Gothic",system-ui,sans-serif;
+  resize:vertical;
+}
+.edit-two-col{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.edit-status{
+  min-height:20px;
+  color:#b34f6d;
+  font-size:11px;
+}
+.edit-actions{
+  flex:0 0 auto;
+  display:flex;
+  gap:7px;
+  padding-top:8px;
+}
+.edit-actions .fetch-apply-btn{
+  flex:1 1 auto;
+}
+.edit-actions .fetch-sub-btn{
+  flex:0 0 auto;
+}
+
+@media(max-width:520px){
+  .edit-form{
+    padding-left:10px;
+    padding-right:10px;
+  }
+  .edit-two-col{
+    grid-template-columns:1fr;
+  }
+  .fetch-sheet{
+    height:90dvh !important;
+    max-height:90dvh !important;
+  }
+}

@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Event Calendar</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
 <div class="app-shell">
 
   <header class="top-chrome">
-    <div class="app-version" aria-label="バージョン">v21</div>
+    <div class="app-version" aria-label="バージョン">v22</div>
     <div class="checker-line checker-line-top" aria-hidden="true"></div>
 
     <div class="title-row">
@@ -118,7 +118,9 @@
           <div class="calendar-grid">
             <div class="calendar-left">
               <div class="calendar-corner">ゲーム</div>
-              <div id="calendarGameRows"></div>
+              <div id="calendarGameScroll" class="calendar-game-scroll">
+                <div id="calendarGameRows"></div>
+              </div>
             </div>
 
             <div class="calendar-right">
@@ -190,7 +192,10 @@
             <div id="detailGame" class="detail-game">ゲーム</div>
             <h2 id="detailTitle" class="detail-title">イベント名</h2>
           </div>
-          <button id="closeDetailBtn" class="detail-close">×</button>
+          <div class="detail-head-actions">
+            <button id="editDetailBtn" class="detail-edit-btn" type="button" aria-label="イベントを編集" title="編集">✎</button>
+            <button id="closeDetailBtn" class="detail-close" type="button" aria-label="閉じる">×</button>
+          </div>
         </div>
         <div id="detailRemain" class="detail-remain"></div>
         <div id="detailDate" class="detail-date"></div>
@@ -219,8 +224,8 @@
   </div>
 
   <p class="fetch-help">
-    原神はSupabaseの中継を通してWikiから取得します。
-    取得できた候補から表示したいイベントだけ選べます。開始日時が「Ver.○○アプデ後」などの場合は、その表記を残したまま反映できます。
+    各ゲームの登録済みWikiをSupabase中継から取得します。
+    前回と同じ内容は候補から除外し、同名イベントの内容が変わった場合だけ「更新」として表示します。
   </p>
 
   <div id="fetchGameAccordions" class="fetch-game-accordions"></div>
@@ -231,6 +236,76 @@
     <button id="applyFetchedEventsBtn" class="fetch-apply-btn" type="button">選択したイベントを反映</button>
     <button id="closeFetchBtnBottom" class="fetch-sub-btn" type="button">閉じる</button>
   </div>
+</aside>
+
+
+<div id="editOverlay" class="edit-overlay" aria-hidden="true"></div>
+<aside id="editSheet" class="edit-sheet" aria-hidden="true" aria-label="イベント編集">
+  <form id="editEventForm" class="edit-form">
+    <div class="edit-sheet-head">
+      <div>
+        <span class="fetch-kicker">EVENT EDIT</span>
+        <h2>イベント編集</h2>
+        <div id="editGameLabel" class="edit-game-label"></div>
+      </div>
+      <button id="closeEditBtn" class="fetch-close" type="button" aria-label="閉じる">×</button>
+    </div>
+
+    <div class="edit-scroll">
+      <label class="edit-field">
+        <span>イベント名</span>
+        <input id="editTitle" type="text" required>
+      </label>
+
+      <label class="edit-field">
+        <span>種類</span>
+        <input id="editType" type="text" placeholder="未設定">
+      </label>
+
+      <label class="edit-field">
+        <span>限定報酬</span>
+        <textarea id="editReward" rows="3" placeholder="未設定"></textarea>
+      </label>
+
+      <div class="edit-two-col">
+        <label class="edit-field">
+          <span>開始日時</span>
+          <input id="editStart" type="datetime-local">
+        </label>
+        <label class="edit-field">
+          <span>終了日時</span>
+          <input id="editEnd" type="datetime-local">
+        </label>
+      </div>
+
+      <label class="edit-field">
+        <span>開始日の表記</span>
+        <input id="editStartText" type="text" placeholder="例：Ver.7.0アプデ後">
+      </label>
+
+      <label class="edit-field">
+        <span>終了日の表記</span>
+        <input id="editEndText" type="text" placeholder="例：Ver.4.6終了まで">
+      </label>
+
+      <label class="edit-field">
+        <span>メモ</span>
+        <textarea id="editMemo" rows="4"></textarea>
+      </label>
+
+      <label class="edit-field">
+        <span>出典URL</span>
+        <input id="editSource" type="url" inputmode="url" placeholder="https://...">
+      </label>
+
+      <div id="editStatus" class="edit-status" aria-live="polite"></div>
+    </div>
+
+    <div class="edit-actions">
+      <button class="fetch-apply-btn" type="submit">保存</button>
+      <button id="cancelEditBtn" class="fetch-sub-btn" type="button">キャンセル</button>
+    </div>
+  </form>
 </aside>
 
 <script src="script.js"></script>
