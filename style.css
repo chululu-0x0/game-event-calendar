@@ -2007,3 +2007,25 @@ button{font:inherit}
     min-height:64px !important;
   }
 }
+
+
+/* =========================================================
+   v19: top button height only + game tab 1px up
+   ========================================================= */
+
+/* 開催中 / イベントカレンダー：
+   16px上辺 + 16px下辺だけが収まる最小高さへ */
+.top-tab{
+  height:32px !important;
+}
+
+@media(max-width:420px){
+  .top-tab{
+    height:32px !important;
+  }
+}
+
+/* ゲームタイトルタブを1pxだけ上へ */
+.game-chip-tab-open{
+  top:-1px !important;
+}
