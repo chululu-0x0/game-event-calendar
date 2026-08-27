@@ -13,7 +13,7 @@
 <div class="app-shell">
 
   <header class="top-chrome">
-    <div class="app-version" aria-label="バージョン">v20</div>
+    <div class="app-version" aria-label="バージョン">v21</div>
     <div class="checker-line checker-line-top" aria-hidden="true"></div>
 
     <div class="title-row">
@@ -194,6 +194,8 @@
         </div>
         <div id="detailRemain" class="detail-remain"></div>
         <div id="detailDate" class="detail-date"></div>
+        <div class="detail-section"><div class="detail-label">種類</div><div id="detailType"></div></div>
+        <div class="detail-section"><div class="detail-label">限定報酬</div><div id="detailReward"></div></div>
         <div class="detail-section"><div class="detail-label">関連</div><div id="detailRelated"></div></div>
         <div class="detail-section"><div class="detail-label">メモ</div><p id="detailMemo"></p></div>
         <div class="detail-section"><div class="detail-label">出典</div><a id="detailSource" href="#" target="_blank" rel="noopener noreferrer">Wikiを開く</a></div>
@@ -217,8 +219,8 @@
   </div>
 
   <p class="fetch-help">
-    ゲームごとにイベント情報ページのURLを登録して「取得」を押してください。
-    取得できた候補から表示したいイベントだけ選べます。
+    原神はSupabaseの中継を通してWikiから取得します。
+    取得できた候補から表示したいイベントだけ選べます。開始日時が「Ver.○○アプデ後」などの場合は、その表記を残したまま反映できます。
   </p>
 
   <div id="fetchGameAccordions" class="fetch-game-accordions"></div>

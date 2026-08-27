@@ -2365,3 +2365,33 @@ button{font:inherit}
   }
   .fetch-candidate-dates > span{display:none;}
 }
+
+
+/* =========================================================
+   v21: Supabase relay / imported event metadata
+   ========================================================= */
+.fetch-relay-source{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 10px;
+  align-items:center;
+  margin:4px 0 10px;
+  padding:9px 10px;
+  border:1px dashed rgba(73,79,142,.25);
+  border-radius:8px;
+  background:rgba(255,255,255,.55);
+  font-size:12px;
+}
+.fetch-relay-source strong{font-size:11px;letter-spacing:.08em;}
+.fetch-candidate-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;}
+.fetch-meta-chip{
+  display:inline-flex;
+  width:max-content;
+  padding:2px 6px;
+  border-radius:999px;
+  background:rgba(118,137,226,.12);
+  font-weight:700;
+}
+.fetch-reward{display:block;width:100%;line-height:1.45;}
+.fetch-date-note{display:block;line-height:1.4;opacity:.8;}
+#detailType,#detailReward{line-height:1.55;overflow-wrap:anywhere;}

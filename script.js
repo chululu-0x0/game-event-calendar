@@ -1,4 +1,5 @@
-const APP_VERSION="v20";
+const APP_VERSION="v21";
+const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
 
@@ -91,11 +92,24 @@ const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const screens={ongoing:$("#screen-ongoing"),calendar:$("#screen-calendar"),favorites:$("#screen-favorites"),settings:$("#screen-settings")};
 const ongoingList=$("#ongoingList"),todayLabel=$("#todayLabel"),contentScroll=$("#contentScroll");
 const calendarHeader=$("#calendarHeader"),calendarBody=$("#calendarBody"),calendarGameRows=$("#calendarGameRows"),todayLine=$("#todayLine"),calendarHeaderScroll=$("#calendarHeaderScroll"),calendarBodyScroll=$("#calendarBodyScroll");
-const detailSheet=$("#detailSheet"),detailOverlay=$("#detailOverlay"),detailTitle=$("#detailTitle"),detailGame=$("#detailGame"),detailRemain=$("#detailRemain"),detailDate=$("#detailDate"),detailRelated=$("#detailRelated"),detailMemo=$("#detailMemo"),detailSource=$("#detailSource");
+const detailSheet=$("#detailSheet"),detailOverlay=$("#detailOverlay"),detailTitle=$("#detailTitle"),detailGame=$("#detailGame"),detailRemain=$("#detailRemain"),detailDate=$("#detailDate"),detailType=$("#detailType"),detailReward=$("#detailReward"),detailRelated=$("#detailRelated"),detailMemo=$("#detailMemo"),detailSource=$("#detailSource");
 
-const toDate=s=>new Date(s);
+const toDate=s=>(s==null||s==="")?new Date(NaN):new Date(s);
 function formatTodayLabel(d){const w=["日","月","火","水","木","金","土"];return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}（${w[d.getDay()]}）`}
-function formatRange(a,b){const s=toDate(a),e=toDate(b);return `${String(s.getMonth()+1).padStart(2,"0")}/${String(s.getDate()).padStart(2,"0")} ～ ${String(e.getMonth()+1).padStart(2,"0")}/${String(e.getDate()).padStart(2,"0")} ${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`}
+function formatRange(a,b){
+  const s=toDate(a),e=toDate(b);
+  if(Number.isNaN(e.getTime()))return "終了日時不明";
+  const endText=`${String(e.getMonth()+1).padStart(2,"0")}/${String(e.getDate()).padStart(2,"0")} ${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`;
+  if(Number.isNaN(s.getTime()))return `開始日時不明 ～ ${endText}`;
+  return `${String(s.getMonth()+1).padStart(2,"0")}/${String(s.getDate()).padStart(2,"0")} ～ ${endText}`;
+}
+function formatEventRange(event){
+  const s=toDate(event.start),e=toDate(event.end);
+  if(!Number.isNaN(s.getTime()))return formatRange(event.start,event.end);
+  const startText=event.startText||"開始日時不明";
+  const endText=event.endText||(!Number.isNaN(e.getTime())?`${String(e.getMonth()+1).padStart(2,"0")}/${String(e.getDate()).padStart(2,"0")} ${String(e.getHours()).padStart(2,"0")}:${String(e.getMinutes()).padStart(2,"0")}`:"終了日時不明");
+  return `${startText} ～ ${endText}`;
+}
 function formatShortRange(a,b){const s=toDate(a),e=toDate(b);return `${s.getMonth()+1}/${s.getDate()} ～ ${e.getMonth()+1}/${e.getDate()}`}
 function remain(end){const ms=toDate(end)-now(),h=Math.floor(ms/36e5),d=Math.floor(ms/864e5);if(ms<=0)return{prefix:"",big:"終了",tone:"orange"};if(h<24)return{prefix:"あと",big:`${h}時間`,tone:"orange"};if(d<2)return{prefix:"明日",big:"終了",tone:"pink"};return{prefix:"残り",big:`${d}日`,tone:d<=3?"pink":"blue"}}
 function frame9(cls,html){return `<div class="frame9 ${cls}">${pixelFrameMarkup(html,16)}</div>`}
@@ -151,8 +165,8 @@ function renderOngoing(){
       const tone=r.tone==="blue"?"blue":r.tone==="orange"?"orange":"";
       btn.innerHTML=`<span class="event-icon">${group.icon}</span>
       <span class="event-main"><span class="event-title">${event.title}</span>
-      <span class="progress-line"><span class="progress-mini"><span class="progress-mini-fill progress-${p.tone}" style="width:${p.pct}%"></span></span><span class="progress-label">進行度 ${p.pct}%</span></span>
-      <span class="event-range">${formatRange(event.start,event.end)}</span></span>
+      <span class="progress-line"><span class="progress-mini"><span class="progress-mini-fill progress-${p.tone}" style="width:${p.pct??0}%"></span></span><span class="progress-label">${p.pct==null?"進行度 --":`進行度 ${p.pct}%`}</span></span>
+      <span class="event-range">${escapeHtml(formatEventRange(event))}</span></span>
       <span class="event-remain ${tone}"><span class="remain-prefix">${r.prefix}</span><span class="remain-big">${r.big}</span></span>`;
       btn.addEventListener("click",()=>openDetail({...event,game:group.game}));
       eventsEl.appendChild(btn);
@@ -179,7 +193,13 @@ function renderCalendar(){
   eventData.forEach(group=>{
     const left=document.createElement("div");left.className="calendar-game-cell";left.innerHTML=`<span class="calendar-game-icon">${group.icon}</span><span class="calendar-game-name">${group.game}</span>`;calendarGameRows.appendChild(left);
     const row=document.createElement("div");row.className="calendar-row";
-    group.events.forEach((event,i)=>{const s=toDate(event.start),e=toDate(event.end),so=Math.floor((s-startDate)/864e5),eo=Math.ceil((e-startDate)/864e5),bar=document.createElement("button");bar.className=`event-bar ${group.color}`;bar.style.left=`${Math.max(0,so*dayWidth+5)}px`;bar.style.top=`${13+i*48}px`;bar.style.width=`${Math.max(dayWidth*1.5,(eo-so+1)*dayWidth-10)}px`;bar.innerHTML=`<span>${group.icon}</span><span class="event-bar-title"><span>${event.title}</span><small>${formatShortRange(event.start,event.end)}</small></span>`;bar.addEventListener("click",()=>openDetail({...event,game:group.game}));row.appendChild(bar)});
+    let visibleIndex=0;
+    group.events.forEach((event)=>{
+      const s=toDate(event.start),e=toDate(event.end);
+      if(Number.isNaN(s.getTime())||Number.isNaN(e.getTime()))return;
+      const so=Math.floor((s-startDate)/864e5),eo=Math.ceil((e-startDate)/864e5),bar=document.createElement("button");
+      bar.className=`event-bar ${group.color}`;bar.style.left=`${Math.max(0,so*dayWidth+5)}px`;bar.style.top=`${13+visibleIndex*48}px`;bar.style.width=`${Math.max(dayWidth*1.5,(eo-so+1)*dayWidth-10)}px`;bar.innerHTML=`<span>${group.icon}</span><span class="event-bar-title"><span>${event.title}</span><small>${formatShortRange(event.start,event.end)}</small></span>`;bar.addEventListener("click",()=>openDetail({...event,game:group.game}));row.appendChild(bar);visibleIndex++;
+    });
     calendarBody.appendChild(row);
   });
   const off=Math.floor((new Date(now()).setHours(0,0,0,0)-startDate)/864e5);todayLine.style.left=`${off*dayWidth+dayWidth/2}px`;requestAnimationFrame(()=>todayLine.style.height=`${calendarBody.offsetHeight}px`);
@@ -194,7 +214,15 @@ function jumpToToday(){
   const x=o*w-calendarBodyScroll.clientWidth/2+w/2;
   calendarBodyScroll.scrollTo({left:Math.max(0,x),behavior:"smooth"});
 }
-function openDetail(event){const r=remain(event.end);detailGame.textContent=event.game;detailTitle.textContent=event.title;detailRemain.textContent=r.prefix?`${r.prefix} ${r.big}`:r.big;detailDate.textContent=formatRange(event.start,event.end);detailRelated.textContent=event.related||"関連イベントなし";detailMemo.textContent=event.memo||"メモはありません。";detailSource.href=event.source||"#";detailOverlay.classList.add("open");detailSheet.classList.add("open");detailSheet.setAttribute("aria-hidden","false")}
+function openDetail(event){
+  const r=remain(event.end);
+  detailGame.textContent=event.game;detailTitle.textContent=event.title;detailRemain.textContent=r.prefix?`${r.prefix} ${r.big}`:r.big;
+  detailDate.textContent=formatEventRange(event);
+  detailType.textContent=event.type||"情報なし";
+  detailReward.textContent=event.limitedReward||"情報なし";
+  detailRelated.textContent=event.related||"関連イベントなし";detailMemo.textContent=event.memo||"メモはありません。";
+  detailSource.href=event.source||event.sourceUrl||"#";detailOverlay.classList.add("open");detailSheet.classList.add("open");detailSheet.setAttribute("aria-hidden","false");
+}
 function closeDetail(){detailOverlay.classList.remove("open");detailSheet.classList.remove("open");detailSheet.setAttribute("aria-hidden","true")}
 function setScreen(name){Object.entries(screens).forEach(([k,e])=>e.classList.toggle("active",k===name));$$(".top-tab,.bottom-nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.screen===name));contentScroll.scrollTop=0;if(name==="calendar"){renderCalendar();requestAnimationFrame(jumpToToday)}}
 function syncCalendar(){let lock=false;calendarBodyScroll.addEventListener("scroll",()=>{if(lock)return;lock=true;calendarHeaderScroll.scrollLeft=calendarBodyScroll.scrollLeft;lock=false});calendarHeaderScroll.addEventListener("scroll",()=>{if(lock)return;lock=true;calendarBodyScroll.scrollLeft=calendarHeaderScroll.scrollLeft;lock=false})}
@@ -214,8 +242,10 @@ function countdownProgress(event){
   const start=toDate(event.start);
   const end=toDate(event.end);
   const current=now();
+  if(Number.isNaN(end.getTime())) return {pct:null,tone:"low"};
+  if(Number.isNaN(start.getTime())) return {pct:null,tone:"high"};
   const total=end-start;
-  if(!Number.isFinite(total) || total<=0) return {pct:0,tone:"low"};
+  if(!Number.isFinite(total) || total<=0) return {pct:null,tone:"low"};
   let ratio=(end-current)/total;
   if(current<start) ratio=1;
   ratio=Math.max(0,Math.min(1,ratio));
@@ -277,6 +307,10 @@ function renderFetchAccordions(){
     details.className="fetch-game";
     if(index===0)details.open=true;
     const urls=Array.isArray(sourceState[game.id])?sourceState[game.id].join("\n"):"";
+    const sourceArea=game.id==="genshin"
+      ? `<div class="fetch-relay-source"><strong>取得元</strong><span>原神 Wiki → Supabase中継</span></div>`
+      : `<label class="fetch-label" for="source-${game.id}">取得元URL</label>
+        <textarea id="source-${game.id}" class="fetch-url-input" rows="2" placeholder="1行に1URL">${escapeHtml(urls)}</textarea>`;
     details.innerHTML=`
       <summary>
         <span class="fetch-game-icon">${game.icon}</span>
@@ -284,10 +318,9 @@ function renderFetchAccordions(){
         <span class="fetch-game-count">${(fetchedCandidates[game.id]||[]).length}件</span>
       </summary>
       <div class="fetch-game-body">
-        <label class="fetch-label" for="source-${game.id}">取得元URL</label>
-        <textarea id="source-${game.id}" class="fetch-url-input" rows="2" placeholder="1行に1URL">${escapeHtml(urls)}</textarea>
+        ${sourceArea}
         <div class="fetch-game-actions">
-          <button type="button" class="fetch-run-btn" data-fetch-game="${game.id}">このゲームを取得</button>
+          <button type="button" class="fetch-run-btn" data-fetch-game="${game.id}">${game.id==="genshin"?"Wikiから取得":"このゲームを取得"}</button>
           <button type="button" class="fetch-clear-btn" data-clear-game="${game.id}">候補を消す</button>
         </div>
         <div class="fetch-candidates" id="candidates-${game.id}">
@@ -316,49 +349,84 @@ function candidateMarkup(gameId){
       <input type="checkbox" data-candidate-game="${gameId}" data-candidate-index="${i}" checked>
       <span class="fetch-candidate-main">
         <strong>${escapeHtml(c.title||"名称未取得")}</strong>
-        <small>${escapeHtml(c.dateText||"日付未検出")}</small>
-        <span class="fetch-candidate-dates">
-          <input type="datetime-local" data-candidate-start="${gameId}:${i}" value="${toLocalInputValue(c.start)}">
-          <span>→</span>
-          <input type="datetime-local" data-candidate-end="${gameId}:${i}" value="${toLocalInputValue(c.end)}">
+        <span class="fetch-candidate-meta">
+          ${c.type?`<small class="fetch-meta-chip">${escapeHtml(c.type)}</small>`:""}
+          ${c.limitedReward?`<small class="fetch-reward">限定報酬：${escapeHtml(c.limitedReward)}</small>`:""}
         </span>
+        <small>${escapeHtml(c.dateText||[c.startText,c.endText].filter(Boolean).join(" ～ ")||"日付未検出")}</small>
+        <span class="fetch-candidate-dates">
+          <input type="datetime-local" data-candidate-start="${gameId}:${i}" value="${toLocalInputValue(c.start)}" aria-label="開始日時">
+          <span>→</span>
+          <input type="datetime-local" data-candidate-end="${gameId}:${i}" value="${toLocalInputValue(c.end)}" aria-label="終了日時">
+        </span>
+        ${!c.start&&c.startText?`<small class="fetch-date-note">開始：${escapeHtml(c.startText)}（日時未確定のまま反映できます）</small>`:""}
       </span>
     </label>`).join("");
 }
 
 async function fetchGameCandidates(gameId){
   const game=GAME_DEFS.find(g=>g.id===gameId);
+  setFetchStatus(`${game.game}を取得中…`,"working");
+
+  if(gameId==="genshin"){
+    try{
+      const candidates=await fetchGenshinCandidatesFromRelay();
+      fetchedCandidates[gameId]=dedupeCandidates(candidates).slice(0,80);
+      renderFetchAccordions();
+      setFetchStatus(`${game.game}: ${fetchedCandidates[gameId].length}件の候補を中継から取得しました。`,"ok");
+    }catch(err){
+      setFetchStatus(`${game.game}: 取得できませんでした。${err.message}`,"warn");
+    }
+    return;
+  }
+
   const input=document.querySelector(`#source-${gameId}`);
-  const urls=input.value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  const urls=(input?.value||"").split(/\n+/).map(x=>x.trim()).filter(Boolean);
   sourceState[gameId]=urls;
   saveSourceState();
-
   if(!urls.length){
     setFetchStatus(`${game.game}: URLを入力してください。`,"warn");
     return;
   }
-
-  setFetchStatus(`${game.game}を取得中…`,"working");
   const all=[];
   const errors=[];
-
   for(const url of urls){
-    try{
-      const candidates=await fetchCandidatesFromUrl(url);
-      all.push(...candidates);
-    }catch(err){
-      errors.push(`${url}：${err.message}`);
-    }
+    try{all.push(...await fetchCandidatesFromUrl(url));}
+    catch(err){errors.push(`${url}：${err.message}`);}
   }
-
   fetchedCandidates[gameId]=dedupeCandidates(all).slice(0,80);
   renderFetchAccordions();
-
   if(fetchedCandidates[gameId].length){
     setFetchStatus(`${game.game}: ${fetchedCandidates[gameId].length}件の候補を取得しました。${errors.length?" 一部URLは取得できませんでした。":""}`,"ok");
   }else{
     setFetchStatus(`${game.game}: 候補を取得できませんでした。${errors[0]||"ページ形式を判別できませんでした。"}`,"warn");
   }
+}
+
+async function fetchGenshinCandidatesFromRelay(){
+  const res=await fetch(FETCH_WIKI_EVENTS_ENDPOINT,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:"{}"
+  });
+  if(!res.ok){
+    if(res.status===401)throw new Error("中継関数が401を返しました。Supabase側のJWT検証設定を確認してください。");
+    throw new Error(`中継 HTTP ${res.status}`);
+  }
+  const data=await res.json();
+  if(!data?.ok)throw new Error(data?.error||"中継側で取得に失敗しました。");
+  if(!Array.isArray(data.events))throw new Error("中継からイベント配列が返りませんでした。");
+  return data.events.map(event=>({
+    title:cleanText(event.title),
+    type:cleanText(event.type)||null,
+    limitedReward:cleanText(event.limitedReward)||null,
+    start:event.start||"",
+    end:event.end||"",
+    startText:cleanText(event.startText)||null,
+    endText:cleanText(event.endText)||null,
+    dateText:[event.startText,event.endText].filter(Boolean).join(" ～ "),
+    source:event.sourceUrl||data.source||""
+  })).filter(event=>event.title&&event.end);
 }
 
 async function fetchCandidatesFromUrl(url){
@@ -505,18 +573,24 @@ function applyFetchedEvents(){
       if(!check?.checked)return;
       const startInput=document.querySelector(`[data-candidate-start="${game.id}:${i}"]`);
       const endInput=document.querySelector(`[data-candidate-end="${game.id}:${i}"]`);
-      const start=startInput?.value?new Date(startInput.value):toDate(c.start);
+      const start=startInput?.value?new Date(startInput.value):(c.start?toDate(c.start):null);
       const end=endInput?.value?new Date(endInput.value):toDate(c.end);
-      if(Number.isNaN(start.getTime())||Number.isNaN(end.getTime())||end<=start){
+      const hasStart=start && !Number.isNaN(start.getTime());
+      if(Number.isNaN(end.getTime()) || (hasStart && end<=start)){
         skipped++;
         return;
       }
+      const startIso=hasStart?start.toISOString():null;
       selected.push({
-        id:`${game.id}-${slugify(c.title)}-${start.getTime()}`,
+        id:`${game.id}-${slugify(c.title)}-${hasStart?start.getTime():slugify(c.startText||"unknown-start")}`,
         title:c.title,
-        start:start.toISOString(),
+        type:c.type||null,
+        limitedReward:c.limitedReward||null,
+        start:startIso,
         end:end.toISOString(),
-        memo:"URL取得イベント",
+        startText:c.startText||null,
+        endText:c.endText||null,
+        memo:"Wiki取得イベント",
         related:"取得イベント",
         source:c.source||""
       });
@@ -530,7 +604,7 @@ function applyFetchedEvents(){
   });
 
   if(!changed){
-    setFetchStatus(`反映できるイベントがありません。${skipped?" 日付未入力の候補があります。":""}`,"warn");
+    setFetchStatus(`反映できるイベントがありません。${skipped?" 終了日時が不足している候補があります。":""}`,"warn");
     return;
   }
 
@@ -539,7 +613,7 @@ function applyFetchedEvents(){
   renderOngoing();
   renderCalendar();
   setupGameTabWidths();
-  setFetchStatus(`${changed}件を反映しました。${skipped?`${skipped}件は日付不足でスキップしました。`:""}`,"ok");
+  setFetchStatus(`${changed}件を反映しました。${skipped?`${skipped}件は日時不足でスキップしました。`:""}`,"ok");
   setTimeout(closeFetchSheet,450);
 }
 
