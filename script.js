@@ -1,4 +1,4 @@
-const APP_VERSION="v22";
+const APP_VERSION="v23";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -439,8 +439,18 @@ function saveSourceState(){
   localStorage.setItem(STORAGE_SOURCES,JSON.stringify(sourceState));
 }
 
+const fetchProgressState=Object.fromEntries(GAME_DEFS.map(game=>[game.id,"waiting"]));
+let fetchAllRunning=false;
+
+function resetFetchProgress(){
+  GAME_DEFS.forEach(game=>{fetchProgressState[game.id]="waiting";});
+}
+
 function openFetchSheet(){
+  resetFetchProgress();
+  renderFetchProgress();
   renderFetchAccordions();
+  updateFetchSelectionCount();
   $("#fetchOverlay").classList.add("open");
   $("#fetchSheet").classList.add("open");
   $("#fetchOverlay").setAttribute("aria-hidden","false");
@@ -454,30 +464,76 @@ function closeFetchSheet(){
   $("#fetchSheet").setAttribute("aria-hidden","true");
 }
 
+function fetchStateLabel(state){
+  if(state==="checking")return "チェック中…";
+  if(state==="done")return "完了";
+  if(state==="error")return "エラー";
+  return "待機中";
+}
+
+function fetchStateIcon(state){
+  if(state==="checking")return "◌";
+  if(state==="done")return "✓";
+  if(state==="error")return "!";
+  return "◷";
+}
+
+function renderFetchProgress(){
+  const host=$("#fetchProgressGames");
+  if(!host)return;
+
+  host.innerHTML=GAME_DEFS.map(game=>{
+    const state=fetchProgressState[game.id]||"waiting";
+    return `<div class="check-game-row" data-progress-game="${game.id}">
+      <button type="button" class="check-game-icon-btn" data-check-game="${game.id}" aria-label="${escapeHtml(game.game)}だけチェック" title="${escapeHtml(game.game)}だけチェック">
+        <span>${game.icon}</span>
+      </button>
+      <span class="check-game-name">${escapeHtml(game.game)}</span>
+      <span class="check-game-state is-${state}">
+        <span>${fetchStateLabel(state)}</span>
+        <span class="check-game-state-icon" aria-hidden="true">${fetchStateIcon(state)}</span>
+      </span>
+    </div>`;
+  }).join("");
+
+  host.querySelectorAll("[data-check-game]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      if(fetchAllRunning)return;
+      fetchGameCandidates(btn.dataset.checkGame);
+    });
+  });
+
+  const processed=GAME_DEFS.filter(game=>["done","error"].includes(fetchProgressState[game.id])).length;
+  const percent=Math.round(processed/GAME_DEFS.length*100);
+  const fill=$("#checkProgressFill"),count=$("#checkProgressCount");
+  if(fill)fill.style.width=`${percent}%`;
+  if(count)count.textContent=`${processed} / ${GAME_DEFS.length} ゲーム`;
+
+  const allBtn=$("#fetchAllGamesBtn");
+  if(allBtn){
+    allBtn.disabled=fetchAllRunning;
+    allBtn.textContent=fetchAllRunning?"チェック中…":"全ゲームチェック";
+  }
+}
+
 function renderFetchAccordions(){
   const host=$("#fetchGameAccordions");
   host.innerHTML="";
 
-  GAME_DEFS.forEach((game,index)=>{
+  GAME_DEFS.forEach(game=>{
+    const list=fetchedCandidates[game.id]||[];
     const details=document.createElement("details");
-    details.className="fetch-game";
-    if(index===0)details.open=true;
+    details.className="fetch-game check-result-game";
+    details.open=list.length>0;
 
     details.innerHTML=`
       <summary>
         <span class="fetch-game-icon">${game.icon}</span>
-        <span>${escapeHtml(game.game)}</span>
-        <span class="fetch-game-count">${(fetchedCandidates[game.id]||[]).length}件</span>
+        <span class="check-result-game-name">${escapeHtml(game.game)}</span>
+        <span class="fetch-game-count">${list.length?`候補 ${list.length}件`:"候補なし"}</span>
       </summary>
-      <div class="fetch-game-body">
-        <div class="fetch-relay-source">
-          <strong>取得元</strong>
-          <span>${escapeHtml(game.sourceUrl)}</span>
-        </div>
-        <div class="fetch-game-actions">
-          <button type="button" class="fetch-run-btn" data-fetch-game="${game.id}">Wikiから取得</button>
-          <button type="button" class="fetch-clear-btn" data-clear-game="${game.id}">候補を消す</button>
-        </div>
+      <div class="fetch-game-body check-result-body">
+        <div class="check-result-count">候補イベント：${list.length}件</div>
         <div class="fetch-candidates" id="candidates-${game.id}">
           ${candidateMarkup(game.id)}
         </div>
@@ -486,68 +542,95 @@ function renderFetchAccordions(){
     host.appendChild(details);
   });
 
-  host.querySelectorAll("[data-fetch-game]").forEach(btn=>{
-    btn.addEventListener("click",()=>fetchGameCandidates(btn.dataset.fetchGame));
+  host.querySelectorAll('input[type="checkbox"][data-candidate-game]').forEach(input=>{
+    input.addEventListener("change",updateFetchSelectionCount);
   });
+  updateFetchSelectionCount();
+}
 
-  host.querySelectorAll("[data-clear-game]").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      fetchedCandidates[btn.dataset.clearGame]=[];
-      renderFetchAccordions();
-    });
-  });
+function formatImportDateValue(value,text=""){
+  if(value){
+    const d=toDate(value);
+    if(!Number.isNaN(d.getTime())){
+      const p=n=>String(n).padStart(2,"0");
+      return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    }
+  }
+  return cleanText(text)||"日時未定";
+}
+
+function formatImportRange(candidate){
+  const start=formatImportDateValue(candidate.start,candidate.startText);
+  const end=formatImportDateValue(candidate.end,candidate.endText);
+  return `${start} ～ ${end}`;
 }
 
 function candidateMarkup(gameId){
   const list=fetchedCandidates[gameId]||[];
-  if(!list.length)return `<div class="fetch-candidate-empty">新しい候補はありません。</div>`;
+  if(!list.length)return `<div class="fetch-candidate-empty">新規・変更されたイベントはありません。</div>`;
 
-  return list.map((c,i)=>`
-    <label class="fetch-candidate ${c.changeType==="update"?"is-update":""}">
+  return list.map((c,i)=>{
+    const badge=c.changeType==="update"?"変更":"新規";
+    const badgeClass=c.changeType==="update"?"is-change":"is-new";
+    return `<label class="fetch-candidate check-result-candidate ${c.changeType==="update"?"is-update":""}">
       <input type="checkbox" data-candidate-game="${gameId}" data-candidate-index="${i}" checked>
       <span class="fetch-candidate-main">
         <span class="fetch-candidate-title-row">
+          <small class="fetch-change-badge ${badgeClass}">${badge}</small>
           <strong>${escapeHtml(c.title||"名称未取得")}</strong>
-          ${c.changeType==="update"?`<small class="fetch-update-badge">更新</small>`:""}
         </span>
-        <span class="fetch-candidate-meta">
-          ${c.type?`<small class="fetch-meta-chip">${escapeHtml(c.type)}</small>`:""}
-          ${c.limitedReward?`<small class="fetch-reward">限定報酬：${escapeHtml(c.limitedReward)}</small>`:""}
-        </span>
-        <small>${escapeHtml(c.dateText||[c.startText,c.endText].filter(Boolean).join(" ～ ")||"日付未検出")}</small>
-        <span class="fetch-candidate-dates">
-          <input type="datetime-local" data-candidate-start="${gameId}:${i}" value="${toLocalInputValue(c.start)}" aria-label="開始日時">
-          <span>→</span>
-          <input type="datetime-local" data-candidate-end="${gameId}:${i}" value="${toLocalInputValue(c.end)}" aria-label="終了日時">
-        </span>
-        ${!c.start&&c.startText?`<small class="fetch-date-note">開始：${escapeHtml(c.startText)}（日時未確定のまま反映できます）</small>`:""}
-        ${!c.end&&c.endText?`<small class="fetch-date-note">終了：${escapeHtml(c.endText)}（日時未確定のまま反映できます）</small>`:""}
+        <small class="check-result-date">${escapeHtml(formatImportRange(c))}</small>
       </span>
-    </label>`).join("");
+    </label>`;
+  }).join("");
+}
+
+function updateFetchSelectionCount(){
+  const selected=$$('#fetchGameAccordions input[type="checkbox"][data-candidate-game]:checked').length;
+  const button=$("#applyFetchedEventsBtn");
+  if(button)button.textContent=`選択したイベントを登録（${selected}件）`;
 }
 
 async function fetchGameCandidates(gameId){
   const game=GAME_DEFS.find(g=>g.id===gameId);
   if(!game)return;
 
-  setFetchStatus(`${game.game}を取得中…`,"working");
+  fetchProgressState[gameId]="checking";
+  renderFetchProgress();
+  setFetchStatus(`${game.game}をチェック中…`,"working");
 
   try{
     const raw=await fetchCandidatesFromRelay(gameId);
     const candidates=classifyFetchedCandidates(gameId,dedupeCandidates(raw)).slice(0,100);
     fetchedCandidates[gameId]=candidates;
+    fetchProgressState[gameId]="done";
     renderFetchAccordions();
-
-    if(candidates.length){
-      const updates=candidates.filter(c=>c.changeType==="update").length;
-      const suffix=updates?`（更新 ${updates}件を含む）`:"";
-      setFetchStatus(`${game.game}: ${candidates.length}件の新しい候補を取得しました。${suffix}`,"ok");
-    }else{
-      setFetchStatus(`${game.game}: 前回から追加・変更されたイベントはありません。`,"ok");
-    }
+    renderFetchProgress();
+    setFetchStatus(`${game.game}: ${candidates.length}件の候補`,"ok");
+    return true;
   }catch(err){
-    setFetchStatus(`${game.game}: 取得できませんでした。${err.message}`,"warn");
+    fetchProgressState[gameId]="error";
+    renderFetchProgress();
+    setFetchStatus(`${game.game}: ${err.message}`,"warn");
+    return false;
   }
+}
+
+async function fetchAllGames(){
+  if(fetchAllRunning)return;
+  fetchAllRunning=true;
+  GAME_DEFS.forEach(game=>{fetchProgressState[game.id]="waiting";});
+  renderFetchProgress();
+
+  for(const game of GAME_DEFS){
+    await fetchGameCandidates(game.id);
+  }
+
+  fetchAllRunning=false;
+  renderFetchProgress();
+  updateFetchSelectionCount();
+  const failed=GAME_DEFS.filter(game=>fetchProgressState[game.id]==="error").length;
+  setFetchStatus(failed?`全ゲームチェック完了（${failed}ゲームでエラー）`:"全ゲームチェック完了","ok");
 }
 
 async function fetchCandidatesFromRelay(gameId){
@@ -762,12 +845,8 @@ function applyFetchedEvents(){
       const check=document.querySelector(`[data-candidate-game="${game.id}"][data-candidate-index="${i}"]`);
       if(!check?.checked)return;
 
-      const startInput=document.querySelector(`[data-candidate-start="${game.id}:${i}"]`);
-      const endInput=document.querySelector(`[data-candidate-end="${game.id}:${i}"]`);
-
-      const start=startInput?.value?new Date(startInput.value):(c.start?toDate(c.start):null);
-      const end=endInput?.value?new Date(endInput.value):(c.end?toDate(c.end):null);
-
+      const start=c.start?toDate(c.start):null;
+      const end=c.end?toDate(c.end):null;
       const hasStart=start && !Number.isNaN(start.getTime());
       const hasEnd=end && !Number.isNaN(end.getTime());
 
@@ -818,7 +897,7 @@ function applyFetchedEvents(){
   });
 
   if(!changed){
-    setFetchStatus(`反映できるイベントがありません。${skipped?" 日時の整合性を確認してください。":""}`,"warn");
+    setFetchStatus(`登録できるイベントがありません。${skipped?" 日時の整合性を確認してください。":""}`,"warn");
     return;
   }
 
@@ -828,13 +907,13 @@ function applyFetchedEvents(){
   renderCalendar();
   setupGameTabWidths();
 
-  setFetchStatus(`${changed}件を反映しました。${skipped?`${skipped}件は日時の整合性でスキップしました。`:""}`,"ok");
-
   GAME_DEFS.forEach(game=>{
     fetchedCandidates[game.id]=classifyFetchedCandidates(game.id,fetchedCandidates[game.id]||[]);
   });
   renderFetchAccordions();
+  updateFetchSelectionCount();
 
+  setFetchStatus(`${changed}件を登録しました。${skipped?`${skipped}件は日時の整合性でスキップしました。`:""}`,"ok");
   setTimeout(closeFetchSheet,450);
 }
 
@@ -985,7 +1064,7 @@ window.addEventListener("load",()=>{
 
   $("#fetchOverlay").addEventListener("click",closeFetchSheet);
   $("#closeFetchBtn").addEventListener("click",closeFetchSheet);
-  $("#closeFetchBtnBottom").addEventListener("click",closeFetchSheet);
+  $("#fetchAllGamesBtn").addEventListener("click",fetchAllGames);
   $("#applyFetchedEventsBtn").addEventListener("click",applyFetchedEvents);
 
   $("#editDetailBtn").addEventListener("click",()=>{

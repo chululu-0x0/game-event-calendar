@@ -13,7 +13,7 @@
 <div class="app-shell">
 
   <header class="top-chrome">
-    <div class="app-version" aria-label="バージョン">v22</div>
+    <div class="app-version" aria-label="バージョン">v23</div>
     <div class="checker-line checker-line-top" aria-hidden="true"></div>
 
     <div class="title-row">
@@ -214,27 +214,41 @@
 
 
 <div id="fetchOverlay" class="fetch-overlay" aria-hidden="true"></div>
-<aside id="fetchSheet" class="fetch-sheet" aria-hidden="true" aria-label="イベント取得">
-  <div class="fetch-sheet-head">
-    <div>
-      <span class="fetch-kicker">EVENT IMPORT</span>
-      <h2>イベント取得</h2>
+<aside id="fetchSheet" class="fetch-sheet fetch-check-sheet" aria-hidden="true" aria-label="イベントチェック">
+  <div class="fetch-sheet-head check-sheet-head">
+    <div class="check-heading-wrap">
+      <span class="fetch-kicker">EVENT CHECK</span>
+      <div class="check-title-line">
+        <h2>チェック進捗</h2>
+        <button id="fetchAllGamesBtn" class="fetch-all-btn" type="button">全ゲームチェック</button>
+      </div>
     </div>
     <button id="closeFetchBtn" class="fetch-close" type="button" aria-label="閉じる">×</button>
   </div>
 
-  <p class="fetch-help">
-    各ゲームの登録済みWikiをSupabase中継から取得します。
-    前回と同じ内容は候補から除外し、同名イベントの内容が変わった場合だけ「更新」として表示します。
-  </p>
+  <section class="check-progress-panel" aria-labelledby="checkProgressTitle">
+    <div class="check-progress-summary">
+      <strong id="checkProgressTitle">全体進捗</strong>
+      <div class="check-progress-track" aria-hidden="true"><div id="checkProgressFill" class="check-progress-fill"></div></div>
+      <span id="checkProgressCount" class="check-progress-count">0 / 5 ゲーム</span>
+    </div>
+    <div id="fetchProgressGames" class="check-game-list"></div>
+  </section>
 
-  <div id="fetchGameAccordions" class="fetch-game-accordions"></div>
+  <div class="check-result-heading">
+    <div>
+      <span class="fetch-kicker">CHECK RESULT</span>
+      <h2>チェック結果</h2>
+    </div>
+    <span class="check-result-note">候補イベントを選択してください</span>
+  </div>
 
-  <div id="fetchStatus" class="fetch-status" aria-live="polite"></div>
+  <div id="fetchGameAccordions" class="fetch-game-accordions check-result-list"></div>
 
-  <div class="fetch-actions">
-    <button id="applyFetchedEventsBtn" class="fetch-apply-btn" type="button">選択したイベントを反映</button>
-    <button id="closeFetchBtnBottom" class="fetch-sub-btn" type="button">閉じる</button>
+  <div id="fetchStatus" class="fetch-status fetch-status-sr" aria-live="polite"></div>
+
+  <div class="fetch-actions check-register-actions">
+    <button id="applyFetchedEventsBtn" class="fetch-apply-btn check-register-btn" type="button">選択したイベントを登録（0件）</button>
   </div>
 </aside>
 

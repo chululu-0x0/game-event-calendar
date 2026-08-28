@@ -1,4 +1,4 @@
-Game Event Calendar v22
+Game Event Calendar v23
 ===========================
 
 GitHub main の v21（index.html / style.css / script.js）を基準にした更新版です。
@@ -73,9 +73,16 @@ FF14:
    その場合はTest結果をそのまま共有してください。
 
 【GitHubへ反映するファイル】
-Supabase側のDeploy確認後、GitHub main の以下3ファイルをv22版で置き換えます。
+Supabase側のDeploy確認後、GitHub main の以下3ファイルをv23版で置き換えます。
 - index.html
 - style.css
 - script.js
 
 assets は変更していません。
+
+
+v23 更新画面
+- 上段: チェック進捗（全体進捗・全ゲームチェック・個別ゲームチェック・完了/チェック中/待機中/エラー）
+- 下段: チェック結果（新規/変更・イベント名・日時のみ）
+- 日時の編集は取得時には行わず、登録後のイベント編集へ統一
+- 下部は「選択したイベントを登録（n件）」のみ
