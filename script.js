@@ -1,4 +1,4 @@
-const APP_VERSION="v24";
+const APP_VERSION="v25";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -84,7 +84,7 @@ function pixelFrameMarkup(html,size=16,extraClass=""){
 }
 
 function upgradeStaticFrames(){
-  document.querySelectorAll(".frame9").forEach(frame=>{
+  [...document.querySelectorAll(".frame9")].reverse().forEach(frame=>{
     const oldCenter=frame.querySelector(":scope > .frame9-grid > .f5");
     if(!oldCenter)return;
     const html=oldCenter.innerHTML;
@@ -109,7 +109,7 @@ upgradeTopTabTables();
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const screens={ongoing:$("#screen-ongoing"),calendar:$("#screen-calendar"),favorites:$("#screen-favorites"),settings:$("#screen-settings")};
 const ongoingList=$("#ongoingList"),todayLabel=$("#todayLabel"),contentScroll=$("#contentScroll");
-const calendarHeader=$("#calendarHeader"),calendarBody=$("#calendarBody"),calendarGameRows=$("#calendarGameRows"),calendarGameScroll=$("#calendarGameScroll"),todayLine=$("#todayLine"),calendarHeaderScroll=$("#calendarHeaderScroll"),calendarBodyScroll=$("#calendarBodyScroll");
+const calendarHeader=$("#calendarHeader"),calendarBody=$("#calendarBody"),calendarGameRows=$("#calendarGameRows"),calendarGameScroll=$("#calendarGameScroll"),calendarHeaderScroll=$("#calendarHeaderScroll"),calendarBodyScroll=$("#calendarBodyScroll");
 const detailSheet=$("#detailSheet"),detailOverlay=$("#detailOverlay"),detailTitle=$("#detailTitle"),detailGame=$("#detailGame"),detailRemain=$("#detailRemain"),detailDate=$("#detailDate"),detailType=$("#detailType"),detailReward=$("#detailReward"),detailRelated=$("#detailRelated"),detailMemo=$("#detailMemo"),detailSource=$("#detailSource");
 
 const toDate=s=>(s==null||s==="")?new Date(NaN):new Date(s);
@@ -160,6 +160,17 @@ function openChipTab(label){
   </div>`;
 }
 
+function compareOngoingOrder(a,b){
+  const ae=toDate(a.end),be=toDate(b.end);
+  const av=Number.isNaN(ae.getTime())?Number.POSITIVE_INFINITY:ae.getTime();
+  const bv=Number.isNaN(be.getTime())?Number.POSITIVE_INFINITY:be.getTime();
+  if(av!==bv)return av-bv;
+  const as=toDate(a.start),bs=toDate(b.start);
+  const asv=Number.isNaN(as.getTime())?Number.POSITIVE_INFINITY:as.getTime();
+  const bsv=Number.isNaN(bs.getTime())?Number.POSITIVE_INFINITY:bs.getTime();
+  return asv-bsv || cleanText(a.title).localeCompare(cleanText(b.title),"ja");
+}
+
 function renderOngoing(){
   ongoingList.innerHTML="";
   eventData.forEach(group=>{
@@ -180,12 +191,7 @@ function renderOngoing(){
 
     group.events
       .slice()
-      .sort((a,b)=>{
-        const ae=toDate(a.end),be=toDate(b.end);
-        const av=Number.isNaN(ae.getTime())?Number.POSITIVE_INFINITY:ae.getTime();
-        const bv=Number.isNaN(be.getTime())?Number.POSITIVE_INFINITY:be.getTime();
-        return av-bv;
-      })
+      .sort(compareOngoingOrder)
       .forEach(event=>{
         const r=remain(event.end);
         const p=countdownProgress(event);
@@ -200,9 +206,8 @@ function renderOngoing(){
           </span>
           <span class="event-main">
             <span class="event-title">${escapeHtml(event.title)}</span>
-            <span class="progress-line">
+            <span class="progress-line" aria-label="残り期間の進行バー">
               <span class="progress-mini"><span class="progress-mini-fill progress-${p.tone}" style="width:${p.pct??0}%"></span></span>
-              <span class="progress-label">${p.pct==null?"進行度 --":`進行度 ${p.pct}%`}</span>
             </span>
             <span class="event-range">${escapeHtml(formatEventRange(event))}</span>
           </span>
@@ -224,6 +229,17 @@ function renderOngoing(){
 
     ongoingList.appendChild(section);
   });
+}
+
+function fitCalendarGameName(el){
+  if(!el)return;
+  el.style.fontSize="12px";
+  const min=8.5;
+  let size=12;
+  while(size>min && el.scrollWidth>el.clientWidth){
+    size-=.5;
+    el.style.fontSize=`${size}px`;
+  }
 }
 
 function renderCalendar(){
@@ -268,16 +284,19 @@ function renderCalendar(){
         return e>=startDate && s<=lastDate;
       })
       .slice()
-      .sort((a,b)=>toDate(a.start)-toDate(b.start) || toDate(a.end)-toDate(b.end));
+      .sort(compareOngoingOrder);
 
+    // 1イベント=1レーン。順番は開催中画面と同一なのでバー同士は重ならない。
     const laneCount=Math.max(1,visible.length);
-    const groupHeight=Math.max(46,8+laneCount*34);
+    const titleBoost=cleanText(group.game).length>=9?8:0;
+    const groupHeight=Math.max(62+titleBoost,12+laneCount*31);
 
     const left=document.createElement("div");
     left.className="calendar-game-cell";
     left.style.height=`${groupHeight}px`;
     left.innerHTML=`<span class="calendar-game-icon">${group.icon}</span><span class="calendar-game-name">${escapeHtml(group.game)}</span>`;
     calendarGameRows.appendChild(left);
+    requestAnimationFrame(()=>fitCalendarGameName(left.querySelector(".calendar-game-name")));
 
     const row=document.createElement("div");
     row.className="calendar-row";
@@ -299,9 +318,9 @@ function renderCalendar(){
       bar.type="button";
       bar.className=`event-bar ${group.color}`;
       bar.style.left=`${leftPx}px`;
-      bar.style.top=`${5+index*34}px`;
+      bar.style.top=`${6+index*31}px`;
       bar.style.width=`${widthPx}px`;
-      bar.innerHTML=`<span>${group.icon}</span><span class="event-bar-title"><span>${escapeHtml(event.title)}</span><small>${formatShortRange(event.start,event.end)}</small></span>`;
+      bar.innerHTML=`<span class="event-bar-icon">${group.icon}</span><span class="event-bar-title"><span>${escapeHtml(event.title)}</span><small>${formatShortRange(event.start,event.end)}</small></span>`;
       bar.addEventListener("click",()=>openDetail({...event,game:group.game,gameId:group.id}));
       row.appendChild(bar);
     });
@@ -310,11 +329,9 @@ function renderCalendar(){
     totalHeight+=groupHeight;
   });
 
-  calendarBody.style.height=`${Math.max(totalHeight,calendarBodyScroll.clientHeight)}px`;
+  const bodyHeight=Math.max(totalHeight,calendarBodyScroll.clientHeight);
+  calendarBody.style.height=`${bodyHeight}px`;
   calendarGameRows.style.height=`${totalHeight}px`;
-
-  todayLine.style.left=`${dayWidth/2}px`;
-  requestAnimationFrame(()=>todayLine.style.height=`${Math.max(totalHeight,calendarBodyScroll.clientHeight)}px`);
 
   calendarHeaderScroll.scrollLeft=0;
   calendarBodyScroll.scrollLeft=0;
@@ -357,6 +374,7 @@ function closeDetail(){
 function setScreen(name){
   Object.entries(screens).forEach(([k,e])=>e.classList.toggle("active",k===name));
   $$(".top-tab,.bottom-nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.screen===name));
+  document.querySelector(".app-shell")?.classList.toggle("calendar-mode",name==="calendar");
   contentScroll.scrollTop=0;
   if(name==="calendar"){
     renderCalendar();
@@ -383,9 +401,29 @@ function syncCalendar(){
   });
 }
 
+function preventScrollBounce(el,axis){
+  if(!el)return;
+  let last=0;
+  el.addEventListener("touchstart",event=>{
+    const touch=event.touches[0];
+    last=axis==="x"?touch.clientX:touch.clientY;
+  },{passive:true});
+  el.addEventListener("touchmove",event=>{
+    const touch=event.touches[0];
+    const current=axis==="x"?touch.clientX:touch.clientY;
+    const delta=current-last;
+    last=current;
+    const pos=axis==="x"?el.scrollLeft:el.scrollTop;
+    const max=axis==="x"?el.scrollWidth-el.clientWidth:el.scrollHeight-el.clientHeight;
+    const atStart=pos<=.5;
+    const atEnd=pos>=max-.5;
+    if((atStart&&delta>0)||(atEnd&&delta<0))event.preventDefault();
+  },{passive:false});
+}
+
 todayLabel.textContent=formatTodayLabel(now());renderOngoing();renderCalendar();syncCalendar();
 $$(".top-tab,.bottom-nav-btn").forEach(b=>b.addEventListener("click",()=>setScreen(b.dataset.screen)));
-$("#refreshMockBtn").addEventListener("click",openFetchSheet);$("#closeDetailBtn").addEventListener("click",closeDetail);$("#closeDetailBtnBottom").addEventListener("click",closeDetail);detailOverlay.addEventListener("click",closeDetail);setScreen("ongoing");
+$("#addEventBtn").addEventListener("click",openAddEvent);$("#refreshMockBtn").addEventListener("click",openFetchSheet);$("#closeDetailBtn").addEventListener("click",closeDetail);$("#closeDetailBtnBottom").addEventListener("click",closeDetail);detailOverlay.addEventListener("click",closeDetail);setScreen("ongoing");
 
 
 
@@ -552,11 +590,9 @@ function renderFetchAccordions(){
 
   GAME_DEFS.forEach(game=>{
     const list=fetchedCandidates[game.id]||[];
-    const details=document.createElement("details");
-    details.className="fetch-game check-result-game";
-    details.open=list.length>0;
-
-    details.innerHTML=`
+    const wrapper=document.createElement("div");
+    wrapper.className="check-result-frame";
+    const detailsMarkup=`<details class="fetch-game check-result-game" ${list.length?"open":""}>
       <summary>
         <span class="fetch-game-icon">${game.icon}</span>
         <span class="check-result-game-name">${escapeHtml(game.game)}</span>
@@ -565,11 +601,12 @@ function renderFetchAccordions(){
       <div class="fetch-game-body check-result-body">
         <div class="check-result-count">候補イベント：${list.length}件</div>
         <div class="fetch-candidates" id="candidates-${game.id}">
-          ${candidateMarkup(game.id)}
+          ${pixelFrameMarkup(candidateMarkup(game.id),16,"candidate-list-pixel-table")}
         </div>
-      </div>`;
-
-    host.appendChild(details);
+      </div>
+    </details>`;
+    wrapper.innerHTML=pixelFrameMarkup(detailsMarkup,16,"check-result-pixel-table");
+    host.appendChild(wrapper);
   });
 
   host.querySelectorAll('input[type="checkbox"][data-candidate-game]').forEach(input=>{
@@ -1000,6 +1037,7 @@ function slugify(s){
 
 
 let editingEventRef=null;
+let editMode="edit";
 
 function getStoredEvent(gameId,eventId){
   const group=eventData.find(g=>g.id===gameId);
@@ -1007,12 +1045,45 @@ function getStoredEvent(gameId,eventId){
   return {group,event};
 }
 
+function openEditSheetBase(){
+  $("#editStatus").textContent="";
+  $("#editOverlay").classList.add("open");
+  $("#editSheet").classList.add("open");
+  $("#editOverlay").setAttribute("aria-hidden","false");
+  $("#editSheet").setAttribute("aria-hidden","false");
+  requestAnimationFrame(()=>$("#editTitle").focus({preventScroll:true}));
+}
+
+function openAddEvent(){
+  editMode="add";
+  editingEventRef=null;
+  $("#editSheetTitle").textContent="イベント追加";
+  $("#editSubmitBtn").textContent="追加";
+  $("#editGameLabel").hidden=true;
+  $("#editGameField").hidden=false;
+  $("#editGameSelect").innerHTML=GAME_DEFS.map(game=>`<option value="${game.id}">${escapeHtml(game.game)}</option>`).join("");
+  $("#editTitle").value="";
+  $("#editType").value="";
+  $("#editReward").value="";
+  $("#editStart").value="";
+  $("#editEnd").value="";
+  $("#editStartText").value="";
+  $("#editEndText").value="";
+  $("#editMemo").value="";
+  $("#editSource").value="";
+  openEditSheetBase();
+}
+
 function openEditEvent(gameId,eventId){
   const {group,event}=getStoredEvent(gameId,eventId);
   if(!group||!event)return;
 
+  editMode="edit";
   editingEventRef={gameId,eventId};
-
+  $("#editSheetTitle").textContent="イベント編集";
+  $("#editSubmitBtn").textContent="保存";
+  $("#editGameLabel").hidden=false;
+  $("#editGameField").hidden=true;
   $("#editGameLabel").textContent=group.game;
   $("#editTitle").value=event.title||"";
   $("#editType").value=event.type||"";
@@ -1023,14 +1094,7 @@ function openEditEvent(gameId,eventId){
   $("#editEndText").value=event.endText||"";
   $("#editMemo").value=event.memo||"";
   $("#editSource").value=event.source||event.sourceUrl||"";
-  $("#editStatus").textContent="";
-
-  $("#editOverlay").classList.add("open");
-  $("#editSheet").classList.add("open");
-  $("#editOverlay").setAttribute("aria-hidden","false");
-  $("#editSheet").setAttribute("aria-hidden","false");
-
-  requestAnimationFrame(()=>$("#editTitle").focus({preventScroll:true}));
+  openEditSheetBase();
 }
 
 function closeEditEvent(){
@@ -1039,43 +1103,24 @@ function closeEditEvent(){
   $("#editOverlay").setAttribute("aria-hidden","true");
   $("#editSheet").setAttribute("aria-hidden","true");
   editingEventRef=null;
+  editMode="edit";
 }
 
-function saveEditedEvent(ev){
-  ev.preventDefault();
-  if(!editingEventRef)return;
-
-  const {group,event}=getStoredEvent(editingEventRef.gameId,editingEventRef.eventId);
-  if(!group||!event){
-    $("#editStatus").textContent="編集対象が見つかりませんでした。";
-    return;
-  }
-
+function readEditFormValues(){
   const title=cleanText($("#editTitle").value);
-  if(!title){
-    $("#editStatus").textContent="イベント名を入力してください。";
-    return;
-  }
+  if(!title)return {error:"イベント名を入力してください。"};
 
   const startValue=$("#editStart").value;
   const endValue=$("#editEnd").value;
   const start=startValue?new Date(startValue):null;
   const end=endValue?new Date(endValue):null;
 
-  if(start&&Number.isNaN(start.getTime())){
-    $("#editStatus").textContent="開始日時を確認してください。";
-    return;
-  }
-  if(end&&Number.isNaN(end.getTime())){
-    $("#editStatus").textContent="終了日時を確認してください。";
-    return;
-  }
-  if(start&&end&&end<=start){
-    $("#editStatus").textContent="終了日時は開始日時より後にしてください。";
-    return;
-  }
+  if(start&&Number.isNaN(start.getTime()))return {error:"開始日時を確認してください。"};
+  if(end&&Number.isNaN(end.getTime()))return {error:"終了日時を確認してください。"};
+  if(start&&end&&end<=start)return {error:"終了日時は開始日時より後にしてください。"};
 
-  Object.assign(event,{
+  const source=$("#editSource").value.trim();
+  return {values:{
     title,
     type:cleanText($("#editType").value)||null,
     limitedReward:cleanText($("#editReward").value)||null,
@@ -1084,10 +1129,49 @@ function saveEditedEvent(ev){
     startText:cleanText($("#editStartText").value)||null,
     endText:cleanText($("#editEndText").value)||null,
     memo:$("#editMemo").value.trim(),
-    source:$("#editSource").value.trim(),
-    sourceUrl:$("#editSource").value.trim()
-  });
+    source,
+    sourceUrl:source
+  }};
+}
 
+function saveEditedEvent(ev){
+  ev.preventDefault();
+  const result=readEditFormValues();
+  if(result.error){
+    $("#editStatus").textContent=result.error;
+    return;
+  }
+  const values=result.values;
+
+  if(editMode==="add"){
+    const gameId=$("#editGameSelect").value;
+    const group=eventData.find(g=>g.id===gameId);
+    if(!group){
+      $("#editStatus").textContent="追加先のゲームを選択してください。";
+      return;
+    }
+    const event={
+      id:`${gameId}-manual-${Date.now()}-${slugify(values.title)}`,
+      ...values,
+      related:"手動追加イベント"
+    };
+    group.events.push(event);
+    saveEventData();
+    renderOngoing();
+    renderCalendar();
+    setupGameTabWidths();
+    closeEditEvent();
+    return;
+  }
+
+  if(!editingEventRef)return;
+  const {group,event}=getStoredEvent(editingEventRef.gameId,editingEventRef.eventId);
+  if(!group||!event){
+    $("#editStatus").textContent="編集対象が見つかりませんでした。";
+    return;
+  }
+
+  Object.assign(event,values);
   saveEventData();
   renderOngoing();
   renderCalendar();
@@ -1098,10 +1182,7 @@ function saveEditedEvent(ev){
     currentDetailRef?.eventId===event.id;
 
   closeEditEvent();
-
-  if(detailWasOpen){
-    openDetail({...event,game:group.game,gameId:group.id});
-  }
+  if(detailWasOpen)openDetail({...event,game:group.game,gameId:group.id});
 }
 
 /* current date keeps changing even if app stays open across midnight */
@@ -1116,6 +1197,10 @@ window.addEventListener("load",()=>{
   document.querySelector(".app-version").textContent=APP_VERSION;
   todayLabel.textContent=formatTodayLabel(now());
   setupGameTabWidths();
+
+  preventScrollBounce(calendarGameScroll,"y");
+  preventScrollBounce(calendarBodyScroll,"x");
+  preventScrollBounce(calendarHeaderScroll,"x");
 
   $("#fetchOverlay").addEventListener("click",closeFetchSheet);
   $("#closeFetchBtn").addEventListener("click",closeFetchSheet);

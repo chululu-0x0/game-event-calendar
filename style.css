@@ -3134,3 +3134,344 @@ html,body,.app-shell{
   .check-result-heading h2{font-size:14px;}
   .check-result-note{font-size:7.5px;}
 }
+
+
+/* =========================================================
+   v25: minidot import frames / fixed calendar / manual add
+   ========================================================= */
+
+/* ---------- 開催中: 追加 + 更新 ---------- */
+.today-actions{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex:0 0 auto;
+}
+.mini-add-btn{
+  background:#f7f4ff;
+}
+
+/* ---------- 開催中: 残り期間バー ---------- */
+.progress-line{
+  display:block !important;
+  width:100%;
+  margin:1px 0 2px !important;
+}
+.progress-mini{
+  width:100% !important;
+  display:flex !important;
+  justify-content:flex-end !important;
+  overflow:hidden;
+}
+.progress-mini-fill{
+  flex:0 0 auto;
+  margin-left:auto;
+  transform-origin:right center;
+}
+.progress-label{
+  display:none !important;
+}
+
+/* ---------- カレンダー画面そのものは固定 ---------- */
+.app-shell.calendar-mode .content-scroll{
+  overflow:hidden !important;
+  overscroll-behavior:none !important;
+}
+.app-shell.calendar-mode #screen-calendar{
+  height:100%;
+  max-height:100%;
+  overflow:hidden !important;
+}
+.app-shell.calendar-mode .calendar-board-full,
+.app-shell.calendar-mode .calendar-grid,
+.app-shell.calendar-mode .calendar-left,
+.app-shell.calendar-mode .calendar-right{
+  height:100%;
+  min-height:0;
+}
+
+.calendar-game-scroll{
+  overscroll-behavior:none !important;
+  -webkit-overflow-scrolling:auto !important;
+  scrollbar-width:none;
+}
+.calendar-game-scroll::-webkit-scrollbar{display:none;}
+
+.header-scroll,
+.body-scroll{
+  overscroll-behavior:none !important;
+  -webkit-overflow-scrolling:auto !important;
+  scrollbar-width:none;
+}
+.header-scroll::-webkit-scrollbar,
+.body-scroll::-webkit-scrollbar{display:none;}
+
+/* 日付は上部に常時固定。左右だけ動く */
+.calendar-right{
+  display:grid !important;
+  grid-template-rows:56px minmax(0,1fr) !important;
+  overflow:hidden !important;
+}
+.header-scroll{
+  position:relative;
+  z-index:8;
+  height:56px !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  touch-action:pan-x !important;
+  background:#fffdf5;
+}
+.body-scroll{
+  min-height:0;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  touch-action:pan-x !important;
+}
+.today-line{display:none !important;}
+
+/* 左列: アイコンとタイトルを縦軸中央に揃える */
+.calendar-game-cell{
+  min-height:62px !important;
+  padding:8px 6px !important;
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:6px !important;
+  overflow:hidden;
+}
+.calendar-game-icon{
+  width:31px !important;
+  height:31px !important;
+  min-width:31px !important;
+  flex:0 0 31px;
+  font-size:15px;
+}
+.calendar-game-name{
+  flex:1 1 auto;
+  min-width:0;
+  max-width:100%;
+  display:block;
+  overflow:hidden;
+  white-space:nowrap !important;
+  text-overflow:clip;
+  line-height:1.1;
+  font-size:12px;
+}
+
+/* カレンダーバーをコンパクトにしつつレーンは分離 */
+.event-bar{
+  height:25px !important;
+  min-height:25px !important;
+  padding:2px 5px !important;
+  gap:4px !important;
+}
+.event-bar-icon{
+  flex:0 0 auto;
+  font-size:11px;
+}
+.event-bar-title{
+  min-width:0;
+  font-size:10px !important;
+  line-height:1.02 !important;
+}
+.event-bar-title > span{
+  min-width:0;
+  font-size:10px !important;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.event-bar-title small{
+  font-size:7.5px !important;
+  line-height:1 !important;
+}
+.calendar-row{
+  min-height:62px !important;
+  overflow:hidden;
+}
+
+/* ---------- 更新画面: 95% + 外枠も16px minidot TABLE ---------- */
+.fetch-check-sheet{
+  height:95dvh !important;
+  max-height:95dvh !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+.fetch-outer-frame,
+.fetch-outer-frame > .pixel-frame-table{
+  width:100%;
+  height:100%;
+  min-height:0;
+}
+.fetch-outer-frame{
+  flex:1 1 auto;
+  min-height:0;
+}
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px);
+}
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  height:100%;
+  min-height:0;
+  padding:0 !important;
+}
+.fetch-check-content{
+  height:100%;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  padding:6px 6px calc(7px + env(safe-area-inset-bottom));
+  overflow:hidden;
+}
+
+/* × は単独行。その下から進捗 */
+.check-sheet-topline{
+  flex:0 0 34px;
+  min-height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 1px 0 4px;
+}
+.check-sheet-topline .fetch-kicker{
+  font-size:8px;
+  opacity:.65;
+}
+.check-sheet-close{
+  position:static !important;
+  width:32px !important;
+  height:32px !important;
+  flex:0 0 32px;
+  margin-left:auto;
+  font-size:19px !important;
+}
+
+/* 進捗も16px minidot TABLE */
+.fetch-progress-frame{
+  flex:0 0 auto;
+  width:100%;
+}
+.fetch-progress-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:0 !important;
+}
+.check-progress-details{
+  border:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  overflow:hidden;
+}
+.check-progress-titlebar{
+  padding:4px 7px !important;
+  min-height:36px !important;
+  grid-template-columns:minmax(0,1fr) auto 14px !important;
+}
+.check-progress-title{
+  font-size:12px !important;
+}
+.check-progress-details .fetch-all-btn{
+  min-height:27px !important;
+  font-size:9px !important;
+  padding:3px 6px !important;
+}
+.check-progress-panel{
+  padding:5px 7px 3px !important;
+  background:transparent !important;
+}
+.check-progress-summary strong,
+.check-progress-count{
+  font-size:9px !important;
+}
+.check-game-row{
+  min-height:36px !important;
+}
+.check-game-name{
+  font-size:11px !important;
+}
+.check-game-state{
+  font-size:9px !important;
+}
+
+/* 結果見出しは小さめ */
+.check-result-heading{
+  flex:0 0 auto;
+  min-height:27px !important;
+  padding:0 3px !important;
+}
+.check-result-heading h2{
+  font-size:12px !important;
+}
+.check-result-note{
+  font-size:7px !important;
+}
+
+/* 各ゲーム結果フレームも16px minidot TABLE */
+.check-result-list{
+  overscroll-behavior:none !important;
+  scrollbar-width:none;
+}
+.check-result-list::-webkit-scrollbar{display:none;}
+.check-result-frame{
+  width:100%;
+  margin:0 0 5px;
+}
+.check-result-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content,
+.fetch-candidates > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:0 !important;
+}
+.check-result-game{
+  margin:0 !important;
+  border:0 !important;
+  background:transparent !important;
+}
+.check-result-game summary{
+  min-height:35px !important;
+  padding:3px 7px !important;
+}
+.check-result-game-name{
+  font-size:11px !important;
+}
+.check-result-game .fetch-game-count{
+  font-size:8px !important;
+}
+.check-result-body{
+  padding:4px 5px 6px !important;
+}
+.check-result-count{
+  font-size:9px !important;
+}
+.fetch-candidates{
+  margin-top:3px;
+}
+.candidate-list-pixel-table .check-result-candidate{
+  border:0 !important;
+  border-bottom:1px solid #d3d4e5 !important;
+}
+.candidate-list-pixel-table .check-result-candidate:last-child{
+  border-bottom:0 !important;
+}
+
+/* edit/add 共通 */
+.edit-game-field select{
+  width:100%;
+  border:2px solid #a1a4cf;
+  border-radius:0;
+  background:#fff;
+  color:#2d3266;
+  padding:8px;
+  font:14px/1.45 "Zen Maru Gothic",system-ui,sans-serif;
+}
+
+@media(max-width:420px){
+  .calendar-game-cell{padding-left:5px !important;padding-right:4px !important;gap:4px !important;}
+  .calendar-game-icon{width:28px !important;height:28px !important;min-width:28px !important;flex-basis:28px;}
+  .event-bar-title,.event-bar-title > span{font-size:9px !important;}
+  .event-bar-title small{font-size:7px !important;}
+  .fetch-check-content{padding-left:4px;padding-right:4px;}
+  .check-progress-title{font-size:11px !important;}
+  .check-result-heading h2{font-size:11px !important;}
+}

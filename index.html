@@ -13,7 +13,7 @@
 <div class="app-shell">
 
   <header class="top-chrome">
-    <div class="app-version" aria-label="バージョン">v24</div>
+    <div class="app-version" aria-label="バージョン">v25</div>
     <div class="checker-line checker-line-top" aria-hidden="true"></div>
 
     <div class="title-row">
@@ -108,7 +108,10 @@
             <span class="today-calendar-icon">▣</span>
             <strong id="todayLabel"></strong>
           </div>
-          <button id="refreshMockBtn" class="mini-action-btn" type="button">更新</button>
+          <div class="today-actions">
+            <button id="addEventBtn" class="mini-action-btn mini-add-btn" type="button">追加</button>
+            <button id="refreshMockBtn" class="mini-action-btn" type="button">更新</button>
+          </div>
         </div>
         <div id="ongoingList" class="game-list"></div>
       </section>
@@ -129,7 +132,6 @@
               </div>
 
               <div id="calendarBodyScroll" class="calendar-scroll body-scroll">
-                <div id="todayLine" class="today-line"></div>
                 <div id="calendarBody" class="calendar-body-track"></div>
               </div>
             </div>
@@ -215,39 +217,63 @@
 
 <div id="fetchOverlay" class="fetch-overlay" aria-hidden="true"></div>
 <aside id="fetchSheet" class="fetch-sheet fetch-check-sheet" aria-hidden="true" aria-label="イベントチェック">
-  <button id="closeFetchBtn" class="fetch-close check-sheet-close" type="button" aria-label="閉じる">×</button>
+  <section class="frame9 fetch-outer-frame">
+    <div class="frame9-grid">
+      <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+      <div class="f f4"></div>
+      <div class="f f5">
+        <div class="fetch-check-content">
+          <div class="check-sheet-topline">
+            <span class="fetch-kicker">EVENT CHECK</span>
+            <button id="closeFetchBtn" class="fetch-close check-sheet-close" type="button" aria-label="閉じる">×</button>
+          </div>
 
-  <details id="checkProgressDetails" class="check-progress-details" open>
-    <summary class="check-progress-titlebar">
-      <span class="check-progress-title">チェック進捗</span>
-      <button id="fetchAllGamesBtn" class="fetch-all-btn" type="button">全ゲームチェック</button>
-      <span class="check-progress-chevron" aria-hidden="true"></span>
-    </summary>
+          <section class="frame9 fetch-progress-frame">
+            <div class="frame9-grid">
+              <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+              <div class="f f4"></div>
+              <div class="f f5">
+                <details id="checkProgressDetails" class="check-progress-details" open>
+                  <summary class="check-progress-titlebar">
+                    <span class="check-progress-title">チェック進捗</span>
+                    <button id="fetchAllGamesBtn" class="fetch-all-btn" type="button">全ゲームチェック</button>
+                    <span class="check-progress-chevron" aria-hidden="true"></span>
+                  </summary>
 
-    <div class="check-progress-panel" aria-labelledby="checkProgressTitle">
-      <div class="check-progress-summary">
-        <strong id="checkProgressTitle">全体進捗</strong>
-        <div class="check-progress-track" aria-hidden="true"><div id="checkProgressFill" class="check-progress-fill"></div></div>
-        <span id="checkProgressCount" class="check-progress-count">0 / 5 ゲーム</span>
+                  <div class="check-progress-panel" aria-labelledby="checkProgressTitle">
+                    <div class="check-progress-summary">
+                      <strong id="checkProgressTitle">全体進捗</strong>
+                      <div class="check-progress-track" aria-hidden="true"><div id="checkProgressFill" class="check-progress-fill"></div></div>
+                      <span id="checkProgressCount" class="check-progress-count">0 / 5 ゲーム</span>
+                    </div>
+                    <div id="fetchProgressGames" class="check-game-list"></div>
+                  </div>
+                </details>
+              </div>
+              <div class="f f6"></div>
+              <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+            </div>
+          </section>
+
+          <div class="check-result-heading">
+            <h2>チェック結果</h2>
+            <span class="check-result-note">チェックを外した候補は次回から除外</span>
+          </div>
+
+          <div id="fetchGameAccordions" class="fetch-game-accordions check-result-list"></div>
+
+          <div id="fetchStatus" class="fetch-status fetch-status-sr" aria-live="polite"></div>
+
+          <div class="fetch-actions check-register-actions">
+            <button id="applyFetchedEventsBtn" class="fetch-apply-btn check-register-btn" type="button">選択したイベントを登録（0件）</button>
+          </div>
+        </div>
       </div>
-      <div id="fetchProgressGames" class="check-game-list"></div>
+      <div class="f f6"></div>
+      <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
     </div>
-  </details>
-
-  <div class="check-result-heading">
-    <h2>チェック結果</h2>
-    <span class="check-result-note">チェックを外した候補は次回から除外</span>
-  </div>
-
-  <div id="fetchGameAccordions" class="fetch-game-accordions check-result-list"></div>
-
-  <div id="fetchStatus" class="fetch-status fetch-status-sr" aria-live="polite"></div>
-
-  <div class="fetch-actions check-register-actions">
-    <button id="applyFetchedEventsBtn" class="fetch-apply-btn check-register-btn" type="button">選択したイベントを登録（0件）</button>
-  </div>
+  </section>
 </aside>
-
 
 <div id="editOverlay" class="edit-overlay" aria-hidden="true"></div>
 <aside id="editSheet" class="edit-sheet" aria-hidden="true" aria-label="イベント編集">
@@ -255,13 +281,18 @@
     <div class="edit-sheet-head">
       <div>
         <span class="fetch-kicker">EVENT EDIT</span>
-        <h2>イベント編集</h2>
+        <h2 id="editSheetTitle">イベント編集</h2>
         <div id="editGameLabel" class="edit-game-label"></div>
       </div>
       <button id="closeEditBtn" class="fetch-close" type="button" aria-label="閉じる">×</button>
     </div>
 
     <div class="edit-scroll">
+      <label id="editGameField" class="edit-field edit-game-field" hidden>
+        <span>ゲーム</span>
+        <select id="editGameSelect"></select>
+      </label>
+
       <label class="edit-field">
         <span>イベント名</span>
         <input id="editTitle" type="text" required>
@@ -312,7 +343,7 @@
     </div>
 
     <div class="edit-actions">
-      <button class="fetch-apply-btn" type="submit">保存</button>
+      <button id="editSubmitBtn" class="fetch-apply-btn" type="submit">保存</button>
       <button id="cancelEditBtn" class="fetch-sub-btn" type="button">キャンセル</button>
     </div>
   </form>
