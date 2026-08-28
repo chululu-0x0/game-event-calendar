@@ -13,7 +13,7 @@
 <div class="app-shell">
 
   <header class="top-chrome">
-    <div class="app-version" aria-label="バージョン">v23</div>
+    <div class="app-version" aria-label="バージョン">v24</div>
     <div class="checker-line checker-line-top" aria-hidden="true"></div>
 
     <div class="title-row">
@@ -215,32 +215,28 @@
 
 <div id="fetchOverlay" class="fetch-overlay" aria-hidden="true"></div>
 <aside id="fetchSheet" class="fetch-sheet fetch-check-sheet" aria-hidden="true" aria-label="イベントチェック">
-  <div class="fetch-sheet-head check-sheet-head">
-    <div class="check-heading-wrap">
-      <span class="fetch-kicker">EVENT CHECK</span>
-      <div class="check-title-line">
-        <h2>チェック進捗</h2>
-        <button id="fetchAllGamesBtn" class="fetch-all-btn" type="button">全ゲームチェック</button>
-      </div>
-    </div>
-    <button id="closeFetchBtn" class="fetch-close" type="button" aria-label="閉じる">×</button>
-  </div>
+  <button id="closeFetchBtn" class="fetch-close check-sheet-close" type="button" aria-label="閉じる">×</button>
 
-  <section class="check-progress-panel" aria-labelledby="checkProgressTitle">
-    <div class="check-progress-summary">
-      <strong id="checkProgressTitle">全体進捗</strong>
-      <div class="check-progress-track" aria-hidden="true"><div id="checkProgressFill" class="check-progress-fill"></div></div>
-      <span id="checkProgressCount" class="check-progress-count">0 / 5 ゲーム</span>
+  <details id="checkProgressDetails" class="check-progress-details" open>
+    <summary class="check-progress-titlebar">
+      <span class="check-progress-title">チェック進捗</span>
+      <button id="fetchAllGamesBtn" class="fetch-all-btn" type="button">全ゲームチェック</button>
+      <span class="check-progress-chevron" aria-hidden="true"></span>
+    </summary>
+
+    <div class="check-progress-panel" aria-labelledby="checkProgressTitle">
+      <div class="check-progress-summary">
+        <strong id="checkProgressTitle">全体進捗</strong>
+        <div class="check-progress-track" aria-hidden="true"><div id="checkProgressFill" class="check-progress-fill"></div></div>
+        <span id="checkProgressCount" class="check-progress-count">0 / 5 ゲーム</span>
+      </div>
+      <div id="fetchProgressGames" class="check-game-list"></div>
     </div>
-    <div id="fetchProgressGames" class="check-game-list"></div>
-  </section>
+  </details>
 
   <div class="check-result-heading">
-    <div>
-      <span class="fetch-kicker">CHECK RESULT</span>
-      <h2>チェック結果</h2>
-    </div>
-    <span class="check-result-note">候補イベントを選択してください</span>
+    <h2>チェック結果</h2>
+    <span class="check-result-note">チェックを外した候補は次回から除外</span>
   </div>
 
   <div id="fetchGameAccordions" class="fetch-game-accordions check-result-list"></div>

@@ -1,4 +1,4 @@
-const APP_VERSION="v23";
+const APP_VERSION="v24";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -28,6 +28,7 @@ const GAME_DEFS=[
 
 const STORAGE_EVENTS="game-event-calendar.events.v20";
 const STORAGE_SOURCES="game-event-calendar.sources.v20";
+const STORAGE_IMPORT_EXCLUSIONS="game-event-calendar.import-exclusions.v1";
 
 function emptyEventData(){
   return GAME_DEFS.map(g=>({...g,events:[]}));
@@ -435,6 +436,35 @@ function loadSourceState(){
 let sourceState=loadSourceState();
 const fetchedCandidates={};
 
+function loadImportExclusions(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_IMPORT_EXCLUSIONS)||"{}");
+    return saved && typeof saved==="object" ? saved : {};
+  }catch{return {};}
+}
+let importExclusions=loadImportExclusions();
+
+function saveImportExclusions(){
+  localStorage.setItem(STORAGE_IMPORT_EXCLUSIONS,JSON.stringify(importExclusions));
+}
+
+function candidateFingerprint(candidate){
+  return comparableEvent(candidate);
+}
+
+function isImportExcluded(gameId,candidate){
+  const list=Array.isArray(importExclusions[gameId])?importExclusions[gameId]:[];
+  return list.includes(candidateFingerprint(candidate));
+}
+
+function addImportExclusion(gameId,candidate){
+  const fingerprint=candidateFingerprint(candidate);
+  const list=Array.isArray(importExclusions[gameId])?[...importExclusions[gameId]]:[];
+  if(!list.includes(fingerprint))list.push(fingerprint);
+  // 個人利用でも無制限に増えないよう、各ゲーム最新500件まで。
+  importExclusions[gameId]=list.slice(-500);
+}
+
 function saveSourceState(){
   localStorage.setItem(STORAGE_SOURCES,JSON.stringify(sourceState));
 }
@@ -663,14 +693,18 @@ async function fetchCandidatesFromRelay(gameId){
 }
 
 function comparableEvent(event){
+  const hasExactStart=Boolean(event.start);
+  const hasExactEnd=Boolean(event.end);
   return JSON.stringify({
     title:cleanText(event.title),
     type:cleanText(event.type)||"",
     limitedReward:cleanText(event.limitedReward)||"",
     start:event.start||"",
     end:event.end||"",
-    startText:cleanText(event.startText)||"",
-    endText:cleanText(event.endText)||""
+    // 日時をDate化できている場合、Wiki上の表記ゆれだけでは「変更」にしない。
+    // 「Ver.x.xアプデ後」など絶対日時がない時だけ元表記を比較する。
+    startText:hasExactStart?"":(cleanText(event.startText)||""),
+    endText:hasExactEnd?"":(cleanText(event.endText)||"")
   });
 }
 
@@ -680,21 +714,28 @@ function classifyFetchedCandidates(gameId,list){
   const result=[];
 
   list.forEach(candidate=>{
-    const sameTitle=existing.find(event=>cleanText(event.title)===cleanText(candidate.title));
-    if(!sameTitle){
-      result.push({...candidate,changeType:"new"});
+    const sameTitleEvents=existing.filter(event=>cleanText(event.title)===cleanText(candidate.title));
+
+    // 登録済みイベントと内容まで完全一致するものは候補に出さない。
+    const exactRegistered=sameTitleEvents.find(event=>comparableEvent(event)===comparableEvent(candidate));
+    if(exactRegistered)return;
+
+    // 前回ユーザーが明示的に除外した「同じ内容」の候補も出さない。
+    // 内容が変われば fingerprint も変わるため、再び候補として現れる。
+    if(isImportExcluded(gameId,candidate))return;
+
+    // 同名の登録済みイベントがあり、内容に差がある時だけ「変更」。
+    if(sameTitleEvents.length){
+      const sameTitle=sameTitleEvents[0];
+      result.push({
+        ...candidate,
+        changeType:"update",
+        existingId:sameTitle.id
+      });
       return;
     }
 
-    if(comparableEvent(sameTitle)===comparableEvent(candidate)){
-      return;
-    }
-
-    result.push({
-      ...candidate,
-      changeType:"update",
-      existingId:sameTitle.id
-    });
+    result.push({...candidate,changeType:"new"});
   });
 
   return result;
@@ -835,6 +876,7 @@ function dedupeCandidates(list){
 function applyFetchedEvents(){
   let changed=0;
   let skipped=0;
+  let excluded=0;
 
   GAME_DEFS.forEach(game=>{
     const candidates=fetchedCandidates[game.id]||[];
@@ -843,7 +885,14 @@ function applyFetchedEvents(){
 
     candidates.forEach((c,i)=>{
       const check=document.querySelector(`[data-candidate-game="${game.id}"][data-candidate-index="${i}"]`);
-      if(!check?.checked)return;
+
+      // チェックを外した候補は「今回は登録しない」だけでなく、
+      // 同じ内容が次回取得された時にも表示しないよう記録する。
+      if(!check?.checked){
+        addImportExclusion(game.id,c);
+        excluded++;
+        return;
+      }
 
       const start=c.start?toDate(c.start):null;
       const end=c.end?toDate(c.end):null;
@@ -896,12 +945,14 @@ function applyFetchedEvents(){
     });
   });
 
-  if(!changed){
-    setFetchStatus(`登録できるイベントがありません。${skipped?" 日時の整合性を確認してください。":""}`,"warn");
+  if(excluded)saveImportExclusions();
+
+  if(!changed && !excluded){
+    setFetchStatus(`登録・除外するイベントがありません。${skipped?" 日時の整合性を確認してください。":""}`,"warn");
     return;
   }
 
-  saveEventData();
+  if(changed)saveEventData();
   todayLabel.textContent=formatTodayLabel(now());
   renderOngoing();
   renderCalendar();
@@ -913,7 +964,11 @@ function applyFetchedEvents(){
   renderFetchAccordions();
   updateFetchSelectionCount();
 
-  setFetchStatus(`${changed}件を登録しました。${skipped?`${skipped}件は日時の整合性でスキップしました。`:""}`,"ok");
+  const parts=[];
+  if(changed)parts.push(`${changed}件を登録`);
+  if(excluded)parts.push(`${excluded}件を次回から除外`);
+  if(skipped)parts.push(`${skipped}件は日時の整合性でスキップ`);
+  setFetchStatus(`${parts.join("・")}しました。`,"ok");
   setTimeout(closeFetchSheet,450);
 }
 
@@ -1064,7 +1119,11 @@ window.addEventListener("load",()=>{
 
   $("#fetchOverlay").addEventListener("click",closeFetchSheet);
   $("#closeFetchBtn").addEventListener("click",closeFetchSheet);
-  $("#fetchAllGamesBtn").addEventListener("click",fetchAllGames);
+  $("#fetchAllGamesBtn").addEventListener("click",event=>{
+    event.preventDefault();
+    event.stopPropagation();
+    fetchAllGames();
+  });
   $("#applyFetchedEventsBtn").addEventListener("click",applyFetchedEvents);
 
   $("#editDetailBtn").addEventListener("click",()=>{
