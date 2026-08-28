@@ -3475,3 +3475,260 @@ html,body,.app-shell{
   .check-progress-title{font-size:11px !important;}
   .check-result-heading h2{font-size:11px !important;}
 }
+
+
+/* =========================================================
+   v26: inset popup frames / candidate list / compact chrome
+   ========================================================= */
+
+/* ---------- 上段を少しコンパクトに ---------- */
+.top-chrome{
+  padding-top:calc(5px + env(safe-area-inset-top)) !important;
+  padding-bottom:7px !important;
+}
+.title-row{
+  min-height:32px !important;
+  margin-bottom:3px !important;
+}
+.title-icon{
+  width:30px !important;
+  height:30px !important;
+  font-size:16px !important;
+}
+.title-row h1{
+  font-size:clamp(14px,3vw,18px) !important;
+}
+.top-tabs{
+  margin-top:1px !important;
+  margin-bottom:0 !important;
+  gap:6px !important;
+}
+.top-tab{
+  height:32px !important;
+}
+
+/* ---------- 下段上端のラインを一旦なくす ---------- */
+.bottom-chrome{
+  border-top:0 !important;
+  box-shadow:none !important;
+}
+
+/* ---------- 開催中: 本日文字削除後のバランス ---------- */
+.today-title{
+  gap:7px !important;
+}
+.today-calendar-icon{
+  font-size:18px !important;
+}
+.event-title{
+  font-size:17px !important;
+  line-height:1.3 !important;
+}
+.event-range{
+  font-size:12px !important;
+  line-height:1.45 !important;
+}
+.game-chip-text-overlay{
+  font-size:15px !important;
+  font-weight:700 !important;
+}
+
+/* ---------- カレンダー左列: アイコン上 / タイトル下 ---------- */
+.calendar-game-cell{
+  padding:7px 5px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  text-align:center;
+}
+.calendar-game-icon{
+  width:31px !important;
+  height:31px !important;
+  min-width:31px !important;
+  flex:0 0 31px !important;
+  margin:0 auto;
+}
+.calendar-game-name{
+  flex:0 1 auto !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  display:block !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  line-height:1.05 !important;
+  font-size:12px;
+}
+
+/* ---------- 更新画面: 画面端から離した固定フレーム ---------- */
+.fetch-check-sheet{
+  left:50% !important;
+  right:auto !important;
+  bottom:max(9px, env(safe-area-inset-bottom)) !important;
+  width:min(calc(100% - 18px),602px) !important;
+  height:min(91dvh,790px) !important;
+  max-height:min(91dvh,790px) !important;
+  padding:0 !important;
+  overflow:visible !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+.fetch-check-sheet:not(.open){
+  transform:translate(-50%,calc(105% + 18px)) !important;
+}
+.fetch-check-sheet.open{
+  transform:translate(-50%,0) !important;
+}
+.fetch-outer-frame,
+.fetch-outer-frame > .pixel-frame-table{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+}
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px) !important;
+}
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  height:100% !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+  padding:0 !important;
+}
+.fetch-check-content{
+  height:100% !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+.check-result-list{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overscroll-behavior:contain !important;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* 候補件数 + 候補一覧をひとつのminidotフレームにまとめる */
+.check-result-body{
+  padding:4px 5px 6px !important;
+}
+.candidate-list-pixel-table{
+  width:100% !important;
+}
+.candidate-list-pixel-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:0 !important;
+}
+.check-result-candidate-panel{
+  min-width:0;
+  background:rgba(255,255,255,.3);
+}
+.check-result-candidate-panel .check-result-count{
+  min-height:28px;
+  display:flex;
+  align-items:center;
+  padding:4px 8px !important;
+  margin:0 !important;
+  border-bottom:2px solid #c7c9df;
+  font-size:9px !important;
+  font-weight:700;
+}
+.check-result-candidate-panel .fetch-candidates{
+  margin:0 !important;
+  padding:0 !important;
+}
+.check-result-candidate-panel .check-result-candidate{
+  margin:0 !important;
+  border:0 !important;
+  border-bottom:1px solid #cfd1e3 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  padding:7px 7px !important;
+}
+.check-result-candidate-panel .check-result-candidate:last-child{
+  border-bottom:0 !important;
+}
+.check-result-candidate-panel .fetch-candidate-empty{
+  min-height:42px;
+  display:grid;
+  place-items:center;
+  padding:8px;
+}
+
+/* ---------- 追加/編集画面: 外枠も全周見える固定minidotフレーム ---------- */
+.edit-sheet{
+  left:50% !important;
+  right:auto !important;
+  bottom:max(9px, env(safe-area-inset-bottom)) !important;
+  width:min(calc(100% - 18px),602px) !important;
+  height:min(88dvh,760px) !important;
+  max-height:min(88dvh,760px) !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+.edit-sheet:not(.open){
+  transform:translate(-50%,calc(105% + 18px)) !important;
+}
+.edit-sheet.open{
+  transform:translate(-50%,0) !important;
+}
+.edit-outer-frame,
+.edit-outer-frame > .pixel-frame-table{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+}
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px) !important;
+}
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  height:100% !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+  padding:0 !important;
+}
+.edit-form{
+  height:100% !important;
+  min-height:0 !important;
+  padding:8px 9px calc(8px + env(safe-area-inset-bottom)) !important;
+  overflow:hidden !important;
+  background:#fff9f2;
+}
+.edit-scroll{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overscroll-behavior:contain !important;
+  -webkit-overflow-scrolling:touch;
+}
+.edit-sheet-head,
+.edit-actions{
+  flex:0 0 auto !important;
+}
+
+@media(max-width:420px){
+  .top-chrome{
+    padding-top:calc(4px + env(safe-area-inset-top)) !important;
+    padding-bottom:6px !important;
+  }
+  .title-row{
+    min-height:30px !important;
+    margin-bottom:2px !important;
+  }
+  .title-row h1{font-size:14px !important;}
+  .title-icon{width:28px !important;height:28px !important;font-size:15px !important;}
+  .game-chip-text-overlay{font-size:14px !important;}
+  .event-title{font-size:16px !important;}
+  .event-range{font-size:11.5px !important;}
+  .calendar-game-cell{padding:6px 3px !important;gap:2px !important;}
+  .calendar-game-icon{width:28px !important;height:28px !important;min-width:28px !important;flex-basis:28px !important;}
+  .fetch-check-sheet,
+  .edit-sheet{
+    width:calc(100% - 14px) !important;
+    bottom:max(7px, env(safe-area-inset-bottom)) !important;
+  }
+}

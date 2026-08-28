@@ -13,7 +13,7 @@
 <div class="app-shell">
 
   <header class="top-chrome">
-    <div class="app-version" aria-label="バージョン">v25</div>
+    <div class="app-version" aria-label="バージョン">v26</div>
     <div class="checker-line checker-line-top" aria-hidden="true"></div>
 
     <div class="title-row">
@@ -104,7 +104,6 @@
       <section id="screen-ongoing" class="screen active">
         <div class="today-row">
           <div class="today-title">
-            <span>本日</span>
             <span class="today-calendar-icon">▣</span>
             <strong id="todayLabel"></strong>
           </div>
@@ -277,6 +276,11 @@
 
 <div id="editOverlay" class="edit-overlay" aria-hidden="true"></div>
 <aside id="editSheet" class="edit-sheet" aria-hidden="true" aria-label="イベント編集">
+  <section class="frame9 edit-outer-frame">
+    <div class="frame9-grid">
+      <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+      <div class="f f4"></div>
+      <div class="f f5">
   <form id="editEventForm" class="edit-form">
     <div class="edit-sheet-head">
       <div>
@@ -347,6 +351,11 @@
       <button id="cancelEditBtn" class="fetch-sub-btn" type="button">キャンセル</button>
     </div>
   </form>
+      </div>
+      <div class="f f6"></div>
+      <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+    </div>
+  </section>
 </aside>
 
 <script src="script.js"></script>

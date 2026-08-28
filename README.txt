@@ -109,3 +109,11 @@ v25 更新内容
 - 今日を示す縦線を削除
 - 開催中の「進行度 xx%」文字を削除。残り期間バーは右端を固定し、左側から減る表現へ変更
 - 開催中の更新ボタン左に「追加」を追加。既存の編集フォームを利用して手動イベントを追加可能
+
+
+v26 changes:
+- Inset fixed minidot outer frames for update and add/edit sheets; only inner content scrolls.
+- Candidate count and candidate rows share one minidot frame with divider lines.
+- Calendar game icon is above the game name.
+- Removed 本日 label; enlarged ongoing event title/date and game tab labels.
+- Compact top chrome and removed top border/shadow line from bottom navigation.

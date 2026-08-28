@@ -1,4 +1,4 @@
-const APP_VERSION="v25";
+const APP_VERSION="v26";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -592,6 +592,12 @@ function renderFetchAccordions(){
     const list=fetchedCandidates[game.id]||[];
     const wrapper=document.createElement("div");
     wrapper.className="check-result-frame";
+    const candidatePanel=`<div class="check-result-candidate-panel">
+      <div class="check-result-count">候補イベント：${list.length}件</div>
+      <div class="fetch-candidates" id="candidates-${game.id}">
+        ${candidateMarkup(game.id)}
+      </div>
+    </div>`;
     const detailsMarkup=`<details class="fetch-game check-result-game" ${list.length?"open":""}>
       <summary>
         <span class="fetch-game-icon">${game.icon}</span>
@@ -599,10 +605,7 @@ function renderFetchAccordions(){
         <span class="fetch-game-count">${list.length?`候補 ${list.length}件`:"候補なし"}</span>
       </summary>
       <div class="fetch-game-body check-result-body">
-        <div class="check-result-count">候補イベント：${list.length}件</div>
-        <div class="fetch-candidates" id="candidates-${game.id}">
-          ${pixelFrameMarkup(candidateMarkup(game.id),16,"candidate-list-pixel-table")}
-        </div>
+        ${pixelFrameMarkup(candidatePanel,16,"candidate-list-pixel-table")}
       </div>
     </details>`;
     wrapper.innerHTML=pixelFrameMarkup(detailsMarkup,16,"check-result-pixel-table");
