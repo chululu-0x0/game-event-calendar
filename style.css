@@ -4800,3 +4800,82 @@ select{
   padding-left:0 !important;
   padding-right:0 !important;
 }
+
+
+/* =========================================================
+   v35: TABLE画像フレームを全箇所16pxへ統一
+   - 更新 / 追加 / 編集 / 詳細 / 進捗 / 結果 / 上段タブを16px基準へ
+   - 旧pixel-size-32指定が残っていても、最終的な実画像表示は16pxに固定
+   - v34で32px外枠向けに広げていた更新画面の横幅補正は解除
+   ========================================================= */
+
+:root{
+  --pixel-frame-unit:16px;
+  --pixel-detail-unit:16px;
+}
+
+/* minidot系TABLEはクラス名に関係なく16pxへ統一 */
+.pixel-frame-table tr:first-child,
+.pixel-frame-table tr:last-child{
+  height:16px !important;
+}
+.pixel-frame-table .pf-corner,
+.pixel-frame-table .pf-edge-y{
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+}
+.pixel-frame-table .pixel-tile-img{
+  width:16px !important;
+  height:16px !important;
+}
+.pixel-frame-table .pf-center{
+  background-size:16px 16px !important;
+}
+
+/* 上段ボタンの実画像TABLEも16pxで固定 */
+.tab-frame-img-table tr:first-child,
+.tab-frame-img-table tr:last-child{
+  height:16px !important;
+}
+.tab-frame-img-table td.corner-cell,
+.tab-frame-img-table .edge-y-cell{
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+}
+.tab-frame-img-table .corner-img,
+.tab-frame-img-table .tile-img{
+  width:16px !important;
+  height:16px !important;
+}
+.tab-frame-img-table .fill-cell{
+  background-size:16px 16px !important;
+}
+
+/* 32px外枠用だったv34の横方向拡張は不要。16px外枠内へ素直に収める。 */
+.fetch-check-content{
+  width:100% !important;
+  max-width:100% !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+
+/* 旧pixel-size-32がDOMに残った場合も16pxとして扱う保険 */
+.pixel-frame-table.pixel-size-32 tr:first-child,
+.pixel-frame-table.pixel-size-32 tr:last-child{
+  height:16px !important;
+}
+.pixel-frame-table.pixel-size-32 .pf-corner,
+.pixel-frame-table.pixel-size-32 .pf-edge-y{
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+}
+.pixel-frame-table.pixel-size-32 .pixel-tile-img{
+  width:16px !important;
+  height:16px !important;
+}
+.pixel-frame-table.pixel-size-32 .pf-center{
+  background-size:16px 16px !important;
+}
