@@ -4187,3 +4187,183 @@ select{
     padding-right:5px !important;
   }
 }
+
+
+/* =========================================================
+   v29: 更新画面の結果フレームを1ゲーム1枚へ整理
+   - ゲーム内の候補一覧専用TABLEフレームを廃止
+   - 外周/内周の余白を圧縮
+   - 更新画面の文字を一段だけ大きく
+   ========================================================= */
+
+/* 更新モーダルの32px外枠の内側を広く使う */
+.fetch-check-content{
+  gap:2px !important;
+  padding:3px 3px calc(4px + env(safe-area-inset-bottom)) !important;
+}
+.check-sheet-topline{
+  flex-basis:30px !important;
+  min-height:30px !important;
+  padding:0 0 0 2px !important;
+}
+.check-sheet-topline .fetch-kicker{
+  font-size:9px !important;
+}
+
+/* 進捗フレームの周囲と内側の余白を圧縮 */
+.fetch-progress-frame{
+  margin:0 !important;
+}
+.check-progress-titlebar{
+  min-height:34px !important;
+  padding:3px 5px !important;
+  gap:5px !important;
+}
+.check-progress-title{
+  font-size:13px !important;
+}
+.check-progress-details .fetch-all-btn{
+  min-height:28px !important;
+  padding:3px 6px !important;
+  font-size:10px !important;
+}
+.check-progress-panel{
+  padding:3px 5px 2px !important;
+}
+.check-progress-summary{
+  min-height:27px !important;
+  padding-bottom:3px !important;
+}
+.check-progress-summary strong,
+.check-progress-count{
+  font-size:10px !important;
+}
+.check-game-row{
+  min-height:35px !important;
+  gap:6px !important;
+}
+.check-game-name{
+  font-size:12px !important;
+}
+.check-game-state{
+  font-size:10px !important;
+}
+
+/* 結果見出しを詰めつつ少し読みやすく */
+.check-result-heading{
+  min-height:28px !important;
+  margin:0 !important;
+  padding:1px 2px 0 !important;
+}
+.check-result-heading h2{
+  font-size:13px !important;
+}
+.check-result-note{
+  max-width:62% !important;
+  font-size:8px !important;
+  line-height:1.2 !important;
+}
+
+/* ゲーム結果一覧の外周余白 */
+.check-result-list{
+  padding:0 !important;
+}
+.check-result-frame{
+  width:100% !important;
+  margin:0 0 3px !important;
+}
+.check-result-frame:last-child{
+  margin-bottom:0 !important;
+}
+.check-result-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:0 !important;
+}
+
+/* 1ゲーム = 1フレーム。summary と候補一覧を直接同居させる */
+.check-result-game summary{
+  min-height:37px !important;
+  grid-template-columns:28px minmax(0,1fr) auto !important;
+  gap:5px !important;
+  padding:2px 5px !important;
+}
+.check-result-game-name{
+  font-size:13px !important;
+}
+.check-result-game .fetch-game-count{
+  margin-right:22px !important;
+  font-size:9px !important;
+}
+.check-result-body{
+  padding:0 !important;
+  border-top:1px solid #c7c9df !important;
+  background:rgba(255,255,255,.18) !important;
+}
+.check-result-candidate-panel{
+  min-width:0;
+  background:transparent !important;
+}
+.check-result-candidate-panel .check-result-count{
+  min-height:27px !important;
+  margin:0 !important;
+  padding:3px 5px !important;
+  border-bottom:1px solid #cfd1e3 !important;
+  font-size:10.5px !important;
+  font-weight:700;
+}
+.check-result-candidate-panel .fetch-candidates{
+  display:block !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+.check-result-candidate-panel .check-result-candidate{
+  margin:0 !important;
+  padding:6px 5px !important;
+  gap:6px !important;
+  border:0 !important;
+  border-bottom:1px solid #cfd1e3 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+}
+.check-result-candidate-panel .check-result-candidate:last-child{
+  border-bottom:0 !important;
+}
+.check-result-candidate .fetch-candidate-title-row{
+  gap:6px !important;
+}
+.check-result-candidate .fetch-candidate-title-row strong{
+  font-size:14px !important;
+  line-height:1.3 !important;
+}
+.fetch-change-badge{
+  min-width:39px !important;
+  min-height:22px !important;
+  padding:2px 5px !important;
+  font-size:11px !important;
+}
+.check-result-date{
+  padding-left:45px !important;
+  font-size:11px !important;
+  line-height:1.35 !important;
+}
+.check-result-candidate input[type="checkbox"]{
+  width:19px !important;
+  height:19px !important;
+}
+.check-result-candidate-panel .fetch-candidate-empty{
+  min-height:42px !important;
+  padding:6px 5px !important;
+  font-size:12px !important;
+}
+
+@media(max-width:420px){
+  .fetch-check-content{
+    padding-left:3px !important;
+    padding-right:3px !important;
+  }
+  .check-progress-title{font-size:13px !important;}
+  .check-result-heading h2{font-size:13px !important;}
+  .check-result-note{font-size:8px !important;}
+  .check-result-game-name{font-size:13px !important;}
+  .check-result-candidate .fetch-candidate-title-row strong{font-size:13.5px !important;}
+  .check-result-date{padding-left:0 !important;font-size:10.5px !important;}
+}

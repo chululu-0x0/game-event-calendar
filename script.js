@@ -1,4 +1,4 @@
-const APP_VERSION="v28";
+const APP_VERSION="v29";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -599,22 +599,23 @@ function renderFetchAccordions(){
     const list=fetchedCandidates[game.id]||[];
     const wrapper=document.createElement("div");
     wrapper.className="check-result-frame";
-    const candidatePanel=`<div class="check-result-candidate-panel">
-      <div class="check-result-count">候補イベント：${list.length}件</div>
-      <div class="fetch-candidates" id="candidates-${game.id}">
-        ${candidateMarkup(game.id)}
-      </div>
-    </div>`;
+
+    // v29: ゲームごとの結果は minidot フレームを1枚だけ使用。
+    // 候補件数と候補一覧は、そのゲームフレームの中へ直接配置する。
     const detailsMarkup=`<details class="fetch-game check-result-game" ${list.length?"open":""}>
       <summary>
         <span class="fetch-game-icon">${game.icon}</span>
         <span class="check-result-game-name">${escapeHtml(game.game)}</span>
         <span class="fetch-game-count">${list.length?`候補 ${list.length}件`:"候補なし"}</span>
       </summary>
-      <div class="fetch-game-body check-result-body">
-        ${pixelFrameMarkup(candidatePanel,16,"candidate-list-pixel-table")}
+      <div class="fetch-game-body check-result-body check-result-candidate-panel">
+        <div class="check-result-count">候補イベント：${list.length}件</div>
+        <div class="fetch-candidates" id="candidates-${game.id}">
+          ${candidateMarkup(game.id)}
+        </div>
       </div>
     </details>`;
+
     wrapper.innerHTML=pixelFrameMarkup(detailsMarkup,16,"check-result-pixel-table");
     host.appendChild(wrapper);
   });
