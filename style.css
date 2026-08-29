@@ -2401,28 +2401,10 @@ button{font:inherit}
    v22: fixed import sheet / editing / compact synced calendar
    ========================================================= */
 
-/* iOS: double tap zoom suppression while keeping normal panning */
-html,body,.app-shell{
-  touch-action:manipulation;
-}
-
-/* scrollbars stay hidden everywhere while scrolling still works */
-*{
-  scrollbar-width:none;
-  -ms-overflow-style:none;
-}
-*::-webkit-scrollbar{
-  width:0 !important;
-  height:0 !important;
-  display:none !important;
-}
-
 /* event edit trigger */
 .event-icon.event-edit-trigger{
   position:relative;
   cursor:pointer;
-  user-select:none;
-  -webkit-user-select:none;
 }
 .event-game-mark{
   display:grid;
@@ -3058,7 +3040,6 @@ html,body,.app-shell{
   padding:5px 48px 5px 10px;
   cursor:pointer;
   list-style:none;
-  user-select:none;
 }
 .check-progress-title{
   min-width:0;
@@ -3193,18 +3174,13 @@ html,body,.app-shell{
 .calendar-game-scroll{
   overscroll-behavior:none !important;
   -webkit-overflow-scrolling:auto !important;
-  scrollbar-width:none;
 }
-.calendar-game-scroll::-webkit-scrollbar{display:none;}
 
 .header-scroll,
 .body-scroll{
   overscroll-behavior:none !important;
   -webkit-overflow-scrolling:auto !important;
-  scrollbar-width:none;
 }
-.header-scroll::-webkit-scrollbar,
-.body-scroll::-webkit-scrollbar{display:none;}
 
 /* 日付は上部に常時固定。左右だけ動く */
 .calendar-right{
@@ -3412,9 +3388,7 @@ html,body,.app-shell{
 /* 各ゲーム結果フレームも16px minidot TABLE */
 .check-result-list{
   overscroll-behavior:none !important;
-  scrollbar-width:none;
 }
-.check-result-list::-webkit-scrollbar{display:none;}
 .check-result-frame{
   width:100%;
   margin:0 0 5px;
@@ -3730,5 +3704,250 @@ html,body,.app-shell{
   .edit-sheet{
     width:calc(100% - 14px) !important;
     bottom:max(7px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+
+/* =========================================================
+   v27: centered detail/edit modals + unified smartphone UX
+   ========================================================= */
+
+/* Shared smartphone interaction set.
+   Scrollbars stay hidden while scrolling remains enabled.
+   The viewport meta + touch-action suppress double-tap/pinch zoom.
+   Long-press selection/callout and iOS tap highlight are disabled.
+*/
+html,
+body,
+.app-shell{
+  touch-action:manipulation;
+  overscroll-behavior:none;
+}
+
+*{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  user-select:none;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+
+*::-webkit-scrollbar{
+  width:0 !important;
+  height:0 !important;
+  display:none !important;
+}
+
+button,
+a,
+summary,
+label,
+input,
+textarea,
+select{
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+/* Centered modal overlays. Frames are fixed in the viewport; only the
+   inner content areas scroll. */
+.detail-overlay,
+.edit-overlay{
+  inset:0 !important;
+  background:#24275873 !important;
+}
+
+.detail-sheet,
+.edit-sheet{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  top:50% !important;
+  bottom:auto !important;
+  padding:0 !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  pointer-events:none;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.96) !important;
+  transition:opacity .16s ease,transform .18s ease !important;
+}
+
+.detail-sheet{
+  width:min(calc(100% - 24px),520px) !important;
+  height:min(calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)),720px) !important;
+  z-index:81 !important;
+}
+
+.edit-sheet{
+  width:min(calc(100% - 24px),560px) !important;
+  height:min(calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom)),760px) !important;
+  z-index:89 !important;
+}
+
+.detail-sheet.open,
+.edit-sheet.open{
+  pointer-events:auto;
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1) !important;
+}
+
+/* Outer frames: minidot-8 at 16px. */
+.detail-outer-frame,
+.edit-outer-frame,
+.detail-outer-frame > .pixel-frame-table,
+.edit-outer-frame > .pixel-frame-table{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+}
+
+.detail-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2),
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px) !important;
+}
+
+.detail-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content,
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  height:100% !important;
+  min-height:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+
+/* Detail: fixed outer shell and head, scrollable inner frame. */
+.detail-modal-layout{
+  width:100%;
+  height:100%;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  padding:8px;
+  background:#fff9f2;
+}
+
+.detail-head{
+  flex:0 0 auto;
+  min-height:54px;
+  align-items:flex-start;
+  gap:8px;
+  padding:1px 1px 0;
+}
+
+.detail-head-copy{
+  min-width:0;
+  flex:1 1 auto;
+}
+
+.detail-title{
+  overflow-wrap:anywhere;
+  line-height:1.25;
+}
+
+.detail-inner-frame,
+.edit-inner-frame{
+  flex:1 1 auto;
+  min-height:0 !important;
+  width:100%;
+}
+
+.detail-inner-frame > .pixel-frame-table,
+.edit-inner-frame > .pixel-frame-table{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+}
+
+.detail-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2),
+.edit-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px) !important;
+}
+
+.detail-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content,
+.edit-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  height:100% !important;
+  min-height:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+
+.detail-scroll{
+  width:100%;
+  height:100%;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  padding:10px 12px 14px;
+}
+
+.detail-remain{margin-top:0;}
+.detail-bottom-btn{margin-top:4px;}
+
+/* Edit/Add share the same two-frame centered modal. */
+.edit-form{
+  width:100%;
+  height:100% !important;
+  min-height:0 !important;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  padding:8px !important;
+  overflow:hidden !important;
+  background:#fff9f2;
+}
+
+.edit-sheet-head,
+.edit-actions{
+  flex:0 0 auto !important;
+}
+
+.edit-sheet-head{
+  min-height:52px;
+  margin:0 !important;
+  padding:0 1px;
+}
+
+.edit-inner-frame{display:block;}
+
+.edit-scroll{
+  width:100%;
+  height:100%;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden;
+  overscroll-behavior:contain !important;
+  -webkit-overflow-scrolling:touch;
+  display:grid;
+  align-content:start;
+  gap:10px;
+  padding:10px 11px 14px !important;
+}
+
+.edit-actions{padding:0 1px !important;}
+
+@media(max-width:420px){
+  .detail-sheet,
+  .edit-sheet{
+    width:calc(100% - 16px) !important;
+    height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    max-height:none !important;
+  }
+
+  .detail-modal-layout,
+  .edit-form{
+    padding:6px !important;
+    gap:5px;
+  }
+
+  .detail-scroll,
+  .edit-scroll{
+    padding:8px 9px 12px !important;
   }
 }

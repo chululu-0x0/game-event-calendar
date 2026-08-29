@@ -117,3 +117,10 @@ v26 changes:
 - Calendar game icon is above the game name.
 - Removed 本日 label; enlarged ongoing event title/date and game tab labels.
 - Compact top chrome and removed top border/shadow line from bottom navigation.
+
+
+[v27]
+- 詳細画面・追加/編集画面を中央モーダル化。外枠は画面内に固定し、内側だけスクロール。
+- 詳細と追加/編集を外枠+内枠の二重16px minidotフレーム構成に変更。
+- すべての静的フレームを16px表示に統一。
+- スマホ操作対策を共通化（スクロールバー非表示、ズーム抑制、長押し選択/Callout抑制、タップハイライト非表示）。

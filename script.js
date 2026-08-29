@@ -1,4 +1,4 @@
-const APP_VERSION="v26";
+const APP_VERSION="v27";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -88,8 +88,7 @@ function upgradeStaticFrames(){
     const oldCenter=frame.querySelector(":scope > .frame9-grid > .f5");
     if(!oldCenter)return;
     const html=oldCenter.innerHTML;
-    const size=frame.classList.contains("detail-panel")?32:16;
-    frame.innerHTML=pixelFrameMarkup(html,size);
+    frame.innerHTML=pixelFrameMarkup(html,16);
   });
 }
 
@@ -105,6 +104,11 @@ function upgradeTopTabTables(){
 
 upgradeStaticFrames();
 upgradeTopTabTables();
+
+/* Unified smartphone zoom suppression for iOS gesture events. */
+["gesturestart","gesturechange","gestureend"].forEach(type=>{
+  document.addEventListener(type,event=>event.preventDefault(),{passive:false});
+});
 
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const screens={ongoing:$("#screen-ongoing"),calendar:$("#screen-calendar"),favorites:$("#screen-favorites"),settings:$("#screen-settings")};
