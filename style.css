@@ -4800,3 +4800,60 @@ select{
   padding-left:0 !important;
   padding-right:0 !important;
 }
+
+
+/* =========================================================
+   v35: v34ベース / 更新・追加の外枠だけ16px化
+   - 更新画面(fetch)の外枠: 32px -> 16px
+   - 追加画面(add-mode)の外枠: 32px -> 16px
+   - 編集画面は32pxのまま
+   - 詳細 / 進捗 / 結果 / 開催中 / カレンダー等はv34のまま
+   ========================================================= */
+
+/* 更新画面: 外枠の上下左右と中央行計算を16px基準へ。 */
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:first-child,
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:last-child{
+  height:16px !important;
+  min-height:16px !important;
+  max-height:16px !important;
+}
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px) !important;
+}
+.fetch-outer-frame > .pixel-frame-table .pf-corner,
+.fetch-outer-frame > .pixel-frame-table .pf-edge-y{
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+}
+.fetch-outer-frame > .pixel-frame-table .pixel-tile-img{
+  width:16px !important;
+  height:16px !important;
+}
+.fetch-outer-frame > .pixel-frame-table .pf-center{
+  background-size:16px 16px !important;
+}
+
+/* 追加画面だけ: 共用の編集シート外枠を16px表示へ上書き。 */
+.edit-sheet.add-mode .edit-outer-frame > .pixel-frame-table > tbody > tr:first-child,
+.edit-sheet.add-mode .edit-outer-frame > .pixel-frame-table > tbody > tr:last-child{
+  height:16px !important;
+  min-height:16px !important;
+  max-height:16px !important;
+}
+.edit-sheet.add-mode .edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px) !important;
+}
+.edit-sheet.add-mode .edit-outer-frame > .pixel-frame-table .pf-corner,
+.edit-sheet.add-mode .edit-outer-frame > .pixel-frame-table .pf-edge-y{
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+}
+.edit-sheet.add-mode .edit-outer-frame > .pixel-frame-table .pixel-tile-img{
+  width:16px !important;
+  height:16px !important;
+}
+.edit-sheet.add-mode .edit-outer-frame > .pixel-frame-table .pf-center{
+  background-size:16px 16px !important;
+}

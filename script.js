@@ -1,4 +1,4 @@
-const APP_VERSION="v34";
+const APP_VERSION="v35";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -88,9 +88,10 @@ function upgradeStaticFrames(){
     const oldCenter=frame.querySelector(":scope > .frame9-grid > .f5");
     if(!oldCenter)return;
     const html=oldCenter.innerHTML;
-    // v28: 更新画面と追加/編集画面の外枠だけ32px。
-    // 詳細画面の外枠と、各画面の内枠は16pxのまま。
-    const size=(frame.classList.contains("fetch-outer-frame") || frame.classList.contains("edit-outer-frame")) ? 32 : 16;
+    // v35: 更新画面の外枠は16px。
+    // 追加画面は同じ編集シートを使うため、開いた時だけCSSで16px表示へ切り替える。
+    // 編集画面そのものはv34同様32pxを維持する。
+    const size=frame.classList.contains("edit-outer-frame") ? 32 : 16;
     frame.innerHTML=pixelFrameMarkup(html,size);
   });
 }
@@ -1068,6 +1069,14 @@ function getStoredEvent(gameId,eventId){
 
 function openEditSheetBase(){
   $("#editStatus").textContent="";
+  // v35: 追加時だけ外枠を16px表示にする。編集時はv34の32pxのまま。
+  const isAddMode=editMode==="add";
+  $("#editSheet").classList.toggle("add-mode",isAddMode);
+  const editOuterTable=$("#editSheet .edit-outer-frame > .pixel-frame-table");
+  if(editOuterTable){
+    editOuterTable.classList.toggle("pixel-size-16",isAddMode);
+    editOuterTable.classList.toggle("pixel-size-32",!isAddMode);
+  }
   $("#editOverlay").classList.add("open");
   $("#editSheet").classList.add("open");
   $("#editOverlay").setAttribute("aria-hidden","false");
@@ -1121,6 +1130,12 @@ function openEditEvent(gameId,eventId){
 function closeEditEvent(){
   $("#editOverlay").classList.remove("open");
   $("#editSheet").classList.remove("open");
+  $("#editSheet").classList.remove("add-mode");
+  const editOuterTable=$("#editSheet .edit-outer-frame > .pixel-frame-table");
+  if(editOuterTable){
+    editOuterTable.classList.remove("pixel-size-16");
+    editOuterTable.classList.add("pixel-size-32");
+  }
   $("#editOverlay").setAttribute("aria-hidden","true");
   $("#editSheet").setAttribute("aria-hidden","true");
   editingEventRef=null;
