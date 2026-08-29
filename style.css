@@ -4555,3 +4555,96 @@ select{
     margin-right:-6px !important;
   }
 }
+
+
+/* =========================================================
+   v32: ゲーム結果フレームを「枠レイヤー + 内容レイヤー」化
+   - アコーディオン(details/summary)はそのまま維持
+   - 16px minidot枠は背面で親の高さへ追従
+   - 内容は前面に置き、枠へ少し食い込ませても隠れない
+   - 更新画面の外枠32px / 進捗フレーム16px はv31を維持
+   ========================================================= */
+
+/* v31のTABLE中央セル内に内容を置く前提の食い込み指定を、この結果枠では無効化 */
+.check-result-frame.layered-result-frame > .pixel-frame-table{
+  display:none !important;
+}
+
+.check-result-frame.layered-result-frame{
+  position:relative;
+  isolation:isolate;
+  width:100%;
+  min-width:0;
+  margin:0 0 4px !important;
+  overflow:visible;
+}
+
+/* 背面のminidot枠。detailsの開閉で親が伸縮すると、その高さへ自動追従 */
+.layered-result-frame-art{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  overflow:hidden;
+}
+.layered-result-frame-art > .pixel-frame-table{
+  width:100% !important;
+  height:100% !important;
+  min-height:100% !important;
+}
+.layered-result-frame-art > .pixel-frame-table > tbody{
+  height:100%;
+}
+.layered-result-frame-art > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:auto !important;
+}
+.layered-result-frame-art .pf-center > .pf-content{
+  padding:0 !important;
+  min-height:0 !important;
+}
+
+/* 前面の内容レイヤー。16px枠の内側へ約6px食い込ませる */
+.layered-result-frame-content{
+  position:relative;
+  z-index:2;
+  min-width:0;
+  padding:7px 9px !important;
+}
+
+/* v31のnegative marginは不要。レイヤー側のpaddingで食い込み量を管理する */
+.check-result-frame.layered-result-frame .check-result-game{
+  margin:0 !important;
+  min-width:0;
+}
+.check-result-frame.layered-result-frame .check-result-game summary{
+  min-height:31px !important;
+  padding:0 1px !important;
+}
+.check-result-frame.layered-result-frame .check-result-body,
+.check-result-frame.layered-result-frame .check-result-candidate-panel,
+.check-result-frame.layered-result-frame .fetch-candidates{
+  margin:0 !important;
+  padding:0 !important;
+}
+.check-result-frame.layered-result-frame .check-result-count{
+  padding:1px 1px !important;
+}
+.check-result-frame.layered-result-frame .check-result-candidate{
+  padding:4px 1px !important;
+  gap:4px !important;
+}
+.check-result-frame.layered-result-frame .fetch-candidate-empty{
+  padding:3px 1px !important;
+}
+
+@media(max-width:420px){
+  .layered-result-frame-content{
+    /* 16px枠のうち左右7pxだけ残し、内容を9pxぶん枠側へ寄せる */
+    padding-left:7px !important;
+    padding-right:7px !important;
+  }
+  .check-result-frame.layered-result-frame .check-result-game{
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+}

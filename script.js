@@ -1,4 +1,4 @@
-const APP_VERSION="v31";
+const APP_VERSION="v32";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -616,7 +616,17 @@ function renderFetchAccordions(){
       </div>
     </details>`;
 
-    wrapper.innerHTML=pixelFrameMarkup(detailsMarkup,16,"check-result-pixel-table");
+    // v32: 枠画像とアコーディオン内容を別レイヤーに分離。
+    // details 自体が親の高さを決め、背景側のTABLEフレームはその高さへ追従する。
+    // 内容を手前に置くことで、16px枠へ少し食い込ませても文字が枠セルの下に隠れない。
+    wrapper.classList.add("layered-result-frame");
+    wrapper.innerHTML=`
+      <div class="layered-result-frame-art" aria-hidden="true">
+        ${pixelFrameMarkup("",16,"check-result-pixel-table layered-result-frame-table")}
+      </div>
+      <div class="layered-result-frame-content">
+        ${detailsMarkup}
+      </div>`;
     host.appendChild(wrapper);
   });
 
