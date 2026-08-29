@@ -4648,3 +4648,103 @@ select{
     margin-right:0 !important;
   }
 }
+
+
+/* =========================================================
+   v33: レイヤー式ゲーム結果フレームの縦辺追従修正
+   - 内容レイヤーは前面(z-index:3)
+   - 16px minidot枠は背面(z-index:1)
+   - 背面TABLEだけを3行×3列のCSS Gridとして固定し、
+     中央行を親の残り高さへ必ず伸ばす
+   - details/summary の開閉構造は変更しない
+   ========================================================= */
+
+.check-result-frame.layered-result-frame{
+  position:relative !important;
+  isolation:isolate !important;
+  overflow:visible !important;
+}
+
+/* 背面フレームは親の実高さ全体を覆う */
+.check-result-frame.layered-result-frame > .layered-result-frame-art{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  pointer-events:none !important;
+  overflow:hidden !important;
+}
+
+/*
+  table-layout に任せると、中央セルが空なので中央行が0px近くまで
+  潰れることがある。背景フレームに限って grid 化し、
+  16px / 残り / 16px を明示する。
+*/
+.layered-result-frame-art > .pixel-frame-table.layered-result-frame-table{
+  position:absolute !important;
+  inset:0 !important;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:100% !important;
+  table-layout:auto !important;
+  overflow:hidden !important;
+}
+
+.layered-result-frame-art > .pixel-frame-table.layered-result-frame-table > tbody{
+  display:grid !important;
+  grid-template-rows:16px minmax(0,1fr) 16px !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+}
+
+.layered-result-frame-art > .pixel-frame-table.layered-result-frame-table > tbody > tr{
+  display:grid !important;
+  grid-template-columns:16px minmax(0,1fr) 16px !important;
+  width:100% !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  height:auto !important;
+}
+
+.layered-result-frame-art > .pixel-frame-table.layered-result-frame-table > tbody > tr:nth-child(2){
+  height:100% !important;
+  min-height:0 !important;
+}
+
+.layered-result-frame-art > .pixel-frame-table.layered-result-frame-table > tbody > tr > td{
+  display:block !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  height:100% !important;
+}
+
+/* 左右の4/6画像列を中央行いっぱいに描画 */
+.layered-result-frame-art .pf-edge-y{
+  position:relative !important;
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+  height:100% !important;
+  overflow:hidden !important;
+}
+
+.layered-result-frame-art .pf-edge-y > .pf-strip-y{
+  position:absolute !important;
+  top:0 !important;
+  left:0 !important;
+  bottom:0 !important;
+  width:16px !important;
+  height:100% !important;
+  min-height:100% !important;
+  display:flex !important;
+  flex-direction:column !important;
+  flex-wrap:nowrap !important;
+  overflow:hidden !important;
+}
+
+/* 内容は必ず枠より手前。食い込み量はv32を維持 */
+.check-result-frame.layered-result-frame > .layered-result-frame-content{
+  position:relative !important;
+  z-index:3 !important;
+}
