@@ -1,4 +1,4 @@
-const APP_VERSION="v33";
+const APP_VERSION="v34";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -616,7 +616,7 @@ function renderFetchAccordions(){
       </div>
     </details>`;
 
-    // v33: 枠画像とアコーディオン内容を別レイヤーに分離し、背面枠の縦辺を親高へ追従。
+    // v34: レイヤー構造は維持。外側32pxフレームのクリッピング領域を広げ、内側フレームの縦辺を見切れさせない。
     // details 自体が親の高さを決め、背景側のTABLEフレームはその高さへ追従する。
     // 内容を手前に置くことで、16px枠へ少し食い込ませても文字が枠セルの下に隠れない。
     wrapper.classList.add("layered-result-frame");

@@ -4748,3 +4748,55 @@ select{
   position:relative !important;
   z-index:3 !important;
 }
+
+
+/* =========================================================
+   v34: 更新モーダル内フレームの横クリッピング修正
+   - 外枠32pxは維持
+   - v31以降の左右 -8px 食い込みも維持
+   - ただし外枠TABLE中央セルの overflow:hidden で
+     内側16pxフレームの左右縁まで切られていたため、
+     更新モーダルに限って中央セルの横方向クリップを解除する
+   - 結果一覧そのものは overflow-x:hidden のままなので、
+     モーダル外へ内容が飛び出すことは防ぐ
+   ========================================================= */
+
+/* 32px外枠の中央セルを「表示窓」として8pxだけ外へ使えるようにする。
+   これで .fetch-check-content の margin-left/right:-8px が
+   親TABLEセルに切られず、進捗/結果フレームの左右16px辺まで描画できる。 */
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center,
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  overflow:visible !important;
+}
+
+/* v31のコンパクト化は維持するが、幅を明示して左右の表示領域を確保。 */
+.fetch-check-content{
+  width:calc(100% + 16px) !important;
+  max-width:none !important;
+  margin-left:-8px !important;
+  margin-right:-8px !important;
+}
+
+/* 内側フレーム自体は必ず更新コンテンツの表示幅以内に収める。 */
+.fetch-progress-frame,
+.check-result-heading,
+.check-result-list,
+.check-register-actions{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+}
+
+.check-result-frame.layered-result-frame{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+}
+
+/* 結果一覧のスクロールは縦のみ。フレームは100%内に収まるため
+   左右縁を切らずに表示できる。 */
+.check-result-list{
+  box-sizing:border-box !important;
+  padding-left:0 !important;
+  padding-right:0 !important;
+}
