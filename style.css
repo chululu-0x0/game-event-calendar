@@ -4367,3 +4367,85 @@ select{
   .check-result-candidate .fetch-candidate-title-row strong{font-size:13.5px !important;}
   .check-result-date{padding-left:0 !important;font-size:10.5px !important;}
 }
+
+
+/* =========================================================
+   v30: 更新画面の内側余白をさらに圧縮
+   - 更新モーダル全体（32px外枠）の中央領域を広く使う
+   - ゲームごとの結果フレーム（16px）の内容を枠寄りへ
+   ========================================================= */
+
+/* 更新画面全体: 32pxフレームの内側に追加していた余白をほぼ撤去 */
+.fetch-check-content{
+  gap:1px !important;
+  padding:1px 1px calc(2px + env(safe-area-inset-bottom)) !important;
+}
+.check-sheet-topline{
+  padding-left:1px !important;
+}
+.fetch-progress-frame,
+.check-result-heading,
+.check-result-list,
+.check-register-actions{
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+
+/* ゲーム結果フレーム: 枠とsummary/候補一覧の間をさらに詰める */
+.check-result-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:0 !important;
+}
+.check-result-game{
+  margin:0 !important;
+  padding:0 !important;
+}
+.check-result-game summary{
+  min-height:33px !important;
+  grid-template-columns:24px minmax(0,1fr) auto !important;
+  gap:3px !important;
+  padding:1px 2px !important;
+}
+.check-result-game .fetch-game-count{
+  margin-right:18px !important;
+}
+.check-result-body{
+  padding:0 !important;
+  margin:0 !important;
+}
+.check-result-candidate-panel{
+  margin:0 !important;
+  padding:0 !important;
+}
+.check-result-candidate-panel .check-result-count{
+  min-height:24px !important;
+  padding:2px 2px !important;
+}
+.check-result-candidate-panel .fetch-candidates{
+  margin:0 !important;
+  padding:0 !important;
+}
+.check-result-candidate-panel .check-result-candidate{
+  padding:5px 2px !important;
+  gap:4px !important;
+}
+.check-result-candidate-panel .fetch-candidate-empty{
+  min-height:36px !important;
+  padding:4px 2px !important;
+}
+
+@media(max-width:420px){
+  .fetch-check-content{
+    padding-left:1px !important;
+    padding-right:1px !important;
+  }
+  .check-result-game summary{
+    padding-left:1px !important;
+    padding-right:1px !important;
+  }
+  .check-result-candidate-panel .check-result-count,
+  .check-result-candidate-panel .check-result-candidate,
+  .check-result-candidate-panel .fetch-candidate-empty{
+    padding-left:1px !important;
+    padding-right:1px !important;
+  }
+}
