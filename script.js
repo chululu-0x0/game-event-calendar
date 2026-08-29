@@ -1,4 +1,4 @@
-const APP_VERSION="v30";
+const APP_VERSION="v31";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();

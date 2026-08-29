@@ -4449,3 +4449,109 @@ select{
     padding-right:1px !important;
   }
 }
+
+
+/* =========================================================
+   v31: 更新画面フレーム密度の再調整
+   - 更新画面の外枠は32pxのまま
+   - チェック進捗フレームは16px
+   - ゲームごとの結果フレームは16px
+   - 内容をフレーム側へ少し食い込ませて余白感を減らす
+   ========================================================= */
+
+/* 更新画面の最外枠は32pxを維持 */
+.fetch-outer-frame > .pixel-frame-table.pixel-size-32 tr:first-child,
+.fetch-outer-frame > .pixel-frame-table.pixel-size-32 tr:last-child{
+  height:32px !important;
+}
+.fetch-outer-frame > .pixel-frame-table.pixel-size-32 .pf-corner,
+.fetch-outer-frame > .pixel-frame-table.pixel-size-32 .pf-edge-y{
+  width:32px !important;
+  min-width:32px !important;
+  max-width:32px !important;
+}
+.fetch-outer-frame > .pixel-frame-table.pixel-size-32 .pixel-tile-img{
+  width:32px !important;
+  height:32px !important;
+}
+
+/* 32px外枠の中央領域へ内容を少し食い込ませる */
+.fetch-check-content{
+  margin:-4px -8px -4px !important;
+  padding:0 0 env(safe-area-inset-bottom) !important;
+  gap:0 !important;
+}
+
+/* 進捗フレームは16pxで固定 */
+.fetch-progress-frame > .pixel-frame-table.pixel-size-16 tr:first-child,
+.fetch-progress-frame > .pixel-frame-table.pixel-size-16 tr:last-child,
+.check-result-frame > .pixel-frame-table.pixel-size-16 tr:first-child,
+.check-result-frame > .pixel-frame-table.pixel-size-16 tr:last-child{
+  height:16px !important;
+}
+.fetch-progress-frame > .pixel-frame-table.pixel-size-16 .pf-corner,
+.fetch-progress-frame > .pixel-frame-table.pixel-size-16 .pf-edge-y,
+.check-result-frame > .pixel-frame-table.pixel-size-16 .pf-corner,
+.check-result-frame > .pixel-frame-table.pixel-size-16 .pf-edge-y{
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+}
+.fetch-progress-frame > .pixel-frame-table.pixel-size-16 .pixel-tile-img,
+.check-result-frame > .pixel-frame-table.pixel-size-16 .pixel-tile-img{
+  width:16px !important;
+  height:16px !important;
+}
+
+/* 進捗の内容を16px枠へ少し食い込ませる */
+.fetch-progress-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:0 !important;
+}
+.fetch-progress-frame .check-progress-details{
+  margin:-3px -6px !important;
+}
+
+/* ゲーム結果の内容も16px枠へ食い込ませる */
+.check-result-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  padding:0 !important;
+}
+.check-result-frame .check-result-game{
+  margin:-4px -6px !important;
+}
+
+/* 食い込ませたぶん、内部の余白も最小限に */
+.check-result-game summary{
+  padding:0 1px !important;
+  min-height:31px !important;
+}
+.check-result-body,
+.check-result-candidate-panel,
+.check-result-candidate-panel .fetch-candidates{
+  margin:0 !important;
+  padding:0 !important;
+}
+.check-result-candidate-panel .check-result-count{
+  padding:1px 1px !important;
+}
+.check-result-candidate-panel .check-result-candidate{
+  padding:4px 1px !important;
+  gap:4px !important;
+}
+.check-result-candidate-panel .fetch-candidate-empty{
+  padding:3px 1px !important;
+}
+
+@media(max-width:420px){
+  .fetch-check-content{
+    margin-left:-8px !important;
+    margin-right:-8px !important;
+  }
+  .fetch-progress-frame .check-progress-details{
+    margin-left:-6px !important;
+    margin-right:-6px !important;
+  }
+  .check-result-frame .check-result-game{
+    margin-left:-6px !important;
+    margin-right:-6px !important;
+  }
+}
