@@ -4857,3 +4857,116 @@ select{
 .edit-sheet.add-mode .edit-outer-frame > .pixel-frame-table .pf-center{
   background-size:16px 16px !important;
 }
+
+
+/* =========================================================
+   v36: 追加 / 編集モーダル統一（外枠16px・内容のみ縦スクロール）
+   ========================================================= */
+
+/* 追加 / 編集とも外枠は16px。 */
+.edit-outer-frame > .pixel-frame-table > tbody > tr:first-child,
+.edit-outer-frame > .pixel-frame-table > tbody > tr:last-child{
+  height:16px !important;
+  min-height:16px !important;
+  max-height:16px !important;
+}
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px) !important;
+  min-height:0 !important;
+}
+.edit-outer-frame > .pixel-frame-table .pf-corner,
+.edit-outer-frame > .pixel-frame-table .pf-edge-y{
+  width:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+}
+.edit-outer-frame > .pixel-frame-table .pixel-tile-img{
+  width:16px !important;
+  height:16px !important;
+}
+.edit-outer-frame > .pixel-frame-table .pf-center{
+  background-size:16px 16px !important;
+}
+
+/* 外枠はviewport内の固定サイズ。内容量では伸ばさない。 */
+.edit-sheet,
+.edit-outer-frame,
+.edit-outer-frame > .pixel-frame-table{
+  overflow:hidden !important;
+}
+.edit-outer-frame,
+.edit-outer-frame > .pixel-frame-table,
+.edit-outer-frame > .pixel-frame-table > tbody{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+}
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center,
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+
+/* ヘッダー / 下段ボタンは固定、中央の内容枠だけ残り高さを使用。 */
+.edit-form{
+  display:flex !important;
+  flex-direction:column !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+.edit-sheet-head,
+.edit-actions{
+  flex:0 0 auto !important;
+}
+.edit-inner-frame{
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  height:auto !important;
+  overflow:hidden !important;
+}
+.edit-inner-frame > .pixel-frame-table,
+.edit-inner-frame > .pixel-frame-table > tbody{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+}
+.edit-inner-frame > .pixel-frame-table > tbody > tr:first-child,
+.edit-inner-frame > .pixel-frame-table > tbody > tr:last-child{
+  height:16px !important;
+  min-height:16px !important;
+  max-height:16px !important;
+}
+.edit-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px) !important;
+  min-height:0 !important;
+}
+.edit-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center,
+.edit-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+.edit-scroll{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+}
+
+/* 保存/追加・キャンセルはスクロール領域の外なので常時表示。 */
+.edit-actions{
+  position:relative !important;
+  z-index:5 !important;
+  flex:0 0 auto !important;
+  background:#fff9f2 !important;
+}

@@ -163,7 +163,7 @@ v34 update:
 - 背面16pxフレームの中央行を親の高さへ追従させ、左右の縦枠がアコーディオン開閉時も描画されるよう修正。
 
 
-v35 targeted update (based strictly on GitHub v34):
+v36 targeted update (based strictly on GitHub v34):
 - Update screen outer pixel frame: 32px -> 16px.
 - Add-event screen outer pixel frame: 32px -> 16px.
 - Edit-event screen remains 32px; all other v34 UI/behavior is unchanged.

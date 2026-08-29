@@ -1,4 +1,4 @@
-const APP_VERSION="v35";
+const APP_VERSION="v36";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -88,10 +88,8 @@ function upgradeStaticFrames(){
     const oldCenter=frame.querySelector(":scope > .frame9-grid > .f5");
     if(!oldCenter)return;
     const html=oldCenter.innerHTML;
-    // v35: 更新画面の外枠は16px。
-    // 追加画面は同じ編集シートを使うため、開いた時だけCSSで16px表示へ切り替える。
-    // 編集画面そのものはv34同様32pxを維持する。
-    const size=frame.classList.contains("edit-outer-frame") ? 32 : 16;
+    // v36: 追加・編集を含め、この静的フレームは16px。
+    const size=16;
     frame.innerHTML=pixelFrameMarkup(html,size);
   });
 }
@@ -1069,13 +1067,13 @@ function getStoredEvent(gameId,eventId){
 
 function openEditSheetBase(){
   $("#editStatus").textContent="";
-  // v35: 追加時だけ外枠を16px表示にする。編集時はv34の32pxのまま。
+  // v36: 追加・編集とも外枠は16pxで統一。
   const isAddMode=editMode==="add";
   $("#editSheet").classList.toggle("add-mode",isAddMode);
   const editOuterTable=$("#editSheet .edit-outer-frame > .pixel-frame-table");
   if(editOuterTable){
-    editOuterTable.classList.toggle("pixel-size-16",isAddMode);
-    editOuterTable.classList.toggle("pixel-size-32",!isAddMode);
+    editOuterTable.classList.remove("pixel-size-32");
+    editOuterTable.classList.add("pixel-size-16");
   }
   $("#editOverlay").classList.add("open");
   $("#editSheet").classList.add("open");
@@ -1097,8 +1095,6 @@ function openAddEvent(){
   $("#editReward").value="";
   $("#editStart").value="";
   $("#editEnd").value="";
-  $("#editStartText").value="";
-  $("#editEndText").value="";
   $("#editMemo").value="";
   $("#editSource").value="";
   openEditSheetBase();
@@ -1120,8 +1116,6 @@ function openEditEvent(gameId,eventId){
   $("#editReward").value=event.limitedReward||"";
   $("#editStart").value=toLocalInputValue(event.start);
   $("#editEnd").value=toLocalInputValue(event.end);
-  $("#editStartText").value=event.startText||"";
-  $("#editEndText").value=event.endText||"";
   $("#editMemo").value=event.memo||"";
   $("#editSource").value=event.source||event.sourceUrl||"";
   openEditSheetBase();
@@ -1133,8 +1127,8 @@ function closeEditEvent(){
   $("#editSheet").classList.remove("add-mode");
   const editOuterTable=$("#editSheet .edit-outer-frame > .pixel-frame-table");
   if(editOuterTable){
-    editOuterTable.classList.remove("pixel-size-16");
-    editOuterTable.classList.add("pixel-size-32");
+    editOuterTable.classList.remove("pixel-size-32");
+    editOuterTable.classList.add("pixel-size-16");
   }
   $("#editOverlay").setAttribute("aria-hidden","true");
   $("#editSheet").setAttribute("aria-hidden","true");
@@ -1162,8 +1156,6 @@ function readEditFormValues(){
     limitedReward:cleanText($("#editReward").value)||null,
     start:start?start.toISOString():null,
     end:end?end.toISOString():null,
-    startText:cleanText($("#editStartText").value)||null,
-    endText:cleanText($("#editEndText").value)||null,
     memo:$("#editMemo").value.trim(),
     source,
     sourceUrl:source
