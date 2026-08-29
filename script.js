@@ -1,4 +1,4 @@
-const APP_VERSION="v36";
+const APP_VERSION="v34";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -60,12 +60,9 @@ function tileImgs(i,count){
 }
 
 function pixelFrameMarkup(html,size=16,extraClass=""){
-  // v35: TABLEで描画する画像フレームはすべて16pxに統一。
-  // 既存呼び出し側が32を渡しても、ここで16pxへ正規化する。
-  size=16;
   const hCount=48;
-  const vCount=72;
-  return `<table class="pixel-frame-table pixel-size-16 ${extraClass}" role="presentation">
+  const vCount=size===32?40:72;
+  return `<table class="pixel-frame-table ${size===32?"pixel-size-32":"pixel-size-16"} ${extraClass}" role="presentation">
     <tbody>
       <tr>
         <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(1)}" alt="" class="pixel-tile-img"></td>
@@ -91,8 +88,10 @@ function upgradeStaticFrames(){
     const oldCenter=frame.querySelector(":scope > .frame9-grid > .f5");
     if(!oldCenter)return;
     const html=oldCenter.innerHTML;
-    // v35: 更新・追加/編集・詳細を含め、TABLE画像フレームはすべて16px。
-    frame.innerHTML=pixelFrameMarkup(html,16);
+    // v28: 更新画面と追加/編集画面の外枠だけ32px。
+    // 詳細画面の外枠と、各画面の内枠は16pxのまま。
+    const size=(frame.classList.contains("fetch-outer-frame") || frame.classList.contains("edit-outer-frame")) ? 32 : 16;
+    frame.innerHTML=pixelFrameMarkup(html,size);
   });
 }
 
