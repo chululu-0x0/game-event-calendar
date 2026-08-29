@@ -3951,3 +3951,239 @@ select{
     padding:8px 9px 12px !important;
   }
 }
+
+/* =========================================================
+   v28: viewport-safe fixed modals + 32px outer frames
+   ========================================================= */
+
+/*
+  モーダルは上下を viewport の内側へ直接固定する。
+  内容量では外枠の高さを伸ばさず、外枠そのものは常に画面内。
+  iOS の safe-area も確保する。
+*/
+.detail-sheet,
+.edit-sheet,
+.fetch-check-sheet{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  top:max(12px, env(safe-area-inset-top)) !important;
+  bottom:max(12px, env(safe-area-inset-bottom)) !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+
+/* 詳細 / 編集は中央からふわっと。縦方向の translate は使わない。 */
+.detail-sheet,
+.edit-sheet{
+  pointer-events:none;
+  opacity:0;
+  transform:translateX(-50%) scale(.97) !important;
+  transition:opacity .16s ease, transform .18s ease !important;
+}
+.detail-sheet.open,
+.edit-sheet.open{
+  pointer-events:auto;
+  opacity:1;
+  transform:translateX(-50%) scale(1) !important;
+}
+
+/* 更新も画面内に収まるモーダル扱い。 */
+.fetch-check-sheet{
+  width:min(calc(100% - 24px),602px) !important;
+  pointer-events:none;
+  opacity:0;
+  transform:translateX(-50%) scale(.97) !important;
+  transition:opacity .16s ease, transform .18s ease !important;
+}
+.fetch-check-sheet:not(.open){
+  transform:translateX(-50%) scale(.97) !important;
+}
+.fetch-check-sheet.open{
+  pointer-events:auto;
+  opacity:1;
+  transform:translateX(-50%) scale(1) !important;
+}
+
+.detail-sheet{width:min(calc(100% - 24px),520px) !important;}
+.edit-sheet{width:min(calc(100% - 24px),560px) !important;}
+
+/*
+  外枠TABLEをシートの固定高さに厳密に合わせる。
+  detail outer = 16px、edit/fetch outer = 32px。
+*/
+.detail-outer-frame,
+.edit-outer-frame,
+.fetch-outer-frame,
+.detail-outer-frame > .pixel-frame-table,
+.edit-outer-frame > .pixel-frame-table,
+.fetch-outer-frame > .pixel-frame-table{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+
+.detail-outer-frame > .pixel-frame-table > tbody > tr:first-child,
+.detail-outer-frame > .pixel-frame-table > tbody > tr:last-child{
+  height:16px !important;
+}
+.detail-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 32px) !important;
+}
+
+.edit-outer-frame > .pixel-frame-table > tbody > tr:first-child,
+.edit-outer-frame > .pixel-frame-table > tbody > tr:last-child,
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:first-child,
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:last-child{
+  height:32px !important;
+}
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2),
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2){
+  height:calc(100% - 64px) !important;
+}
+
+.detail-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center,
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center,
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center{
+  height:100% !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+.detail-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content,
+.edit-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content,
+.fetch-outer-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+
+/* ---------- 詳細: 外枠固定 / 内枠だけスクロール ---------- */
+.detail-modal-layout{
+  height:100% !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+.detail-inner-frame{
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+.detail-inner-frame > .pixel-frame-table,
+.detail-inner-frame > .pixel-frame-table > tbody,
+.detail-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2),
+.detail-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center,
+.detail-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  min-height:0 !important;
+  max-height:100% !important;
+}
+.detail-scroll{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  overscroll-behavior:contain !important;
+}
+
+/* ---------- 追加 / 編集: 外枠32px固定 / 入力欄だけスクロール ---------- */
+.edit-form{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+.edit-inner-frame{
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+}
+.edit-inner-frame > .pixel-frame-table,
+.edit-inner-frame > .pixel-frame-table > tbody,
+.edit-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2),
+.edit-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center,
+.edit-inner-frame > .pixel-frame-table > tbody > tr:nth-child(2) > .pf-center > .pf-content{
+  min-height:0 !important;
+  max-height:100% !important;
+}
+.edit-scroll{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  overscroll-behavior:contain !important;
+}
+.edit-sheet-head,
+.edit-actions{
+  flex:0 0 auto !important;
+}
+
+/* ---------- 更新: 外枠32px固定 / 結果だけスクロール / 登録ボタン常時表示 ---------- */
+.fetch-check-content{
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+  display:flex !important;
+  flex-direction:column !important;
+}
+.fetch-progress-frame,
+.check-result-heading,
+.fetch-status,
+.check-register-actions{
+  flex:0 0 auto !important;
+}
+.check-result-list{
+  flex:1 1 0 !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  overscroll-behavior:contain !important;
+}
+.check-register-actions{
+  position:relative !important;
+  inset:auto !important;
+  z-index:6;
+  margin-top:4px !important;
+  padding:5px 0 0 !important;
+  background:#fff9f2 !important;
+}
+.check-register-btn{
+  width:100% !important;
+  min-height:42px !important;
+  flex:0 0 auto !important;
+}
+
+/* 狭いiPhoneでも上下左右に必ず少し余白を残す。 */
+@media(max-width:420px){
+  .detail-sheet,
+  .edit-sheet,
+  .fetch-check-sheet{
+    left:50% !important;
+    width:calc(100% - 16px) !important;
+    top:max(8px, env(safe-area-inset-top)) !important;
+    bottom:max(8px, env(safe-area-inset-bottom)) !important;
+    height:auto !important;
+    max-height:none !important;
+  }
+
+  /* 32px外枠ぶん中央領域が狭くなるので、内側余白は少しだけ圧縮。 */
+  .edit-form,
+  .fetch-check-content{
+    padding-left:5px !important;
+    padding-right:5px !important;
+  }
+}

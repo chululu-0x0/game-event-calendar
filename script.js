@@ -1,4 +1,4 @@
-const APP_VERSION="v27";
+const APP_VERSION="v28";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -88,7 +88,10 @@ function upgradeStaticFrames(){
     const oldCenter=frame.querySelector(":scope > .frame9-grid > .f5");
     if(!oldCenter)return;
     const html=oldCenter.innerHTML;
-    frame.innerHTML=pixelFrameMarkup(html,16);
+    // v28: 更新画面と追加/編集画面の外枠だけ32px。
+    // 詳細画面の外枠と、各画面の内枠は16pxのまま。
+    const size=(frame.classList.contains("fetch-outer-frame") || frame.classList.contains("edit-outer-frame")) ? 32 : 16;
+    frame.innerHTML=pixelFrameMarkup(html,size);
   });
 }
 
