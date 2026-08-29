@@ -4926,3 +4926,21 @@ select{
   height:100% !important;
   min-height:0 !important;
 }
+
+
+/* =========================================================
+   v37: 上段タブの下側を画像1枚分削るテスト
+   - 開催中 / イベントカレンダーのテーブル枠の最下段(7〜9)を非表示
+   - タブ高さも2段ぶん(32px)に固定
+   ========================================================= */
+.top-tabs .top-tab{
+  height:32px !important;
+}
+
+.top-tabs .tab-frame-img-table tbody > tr:nth-child(2){
+  height:16px !important;
+}
+
+.top-tabs .tab-frame-img-table tbody > tr:last-child{
+  display:none !important;
+}
