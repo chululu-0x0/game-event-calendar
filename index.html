@@ -13,7 +13,7 @@
 <div class="app-shell">
 
   <header class="top-chrome">
-    <div class="app-version" aria-label="バージョン">v36</div>
+    <div class="app-version" aria-label="バージョン">v37</div>
     <div class="checker-line checker-line-top" aria-hidden="true"></div>
 
     <div class="title-row">
@@ -306,59 +306,50 @@
             <button id="closeEditBtn" class="fetch-close" type="button" aria-label="閉じる">×</button>
           </div>
 
-          <section class="frame9 edit-inner-frame">
-            <div class="frame9-grid">
-              <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-              <div class="f f4"></div>
-              <div class="f f5">
-                <div class="edit-scroll">
-                  <label id="editGameField" class="edit-field edit-game-field" hidden>
-                    <span>ゲーム</span>
-                    <select id="editGameSelect"></select>
-                  </label>
+          <div class="edit-content-scroll edit-scroll">
+            <label id="editGameField" class="edit-field edit-game-field" hidden>
+              <span>ゲーム</span>
+              <select id="editGameSelect"></select>
+            </label>
 
-                  <label class="edit-field">
-                    <span>イベント名</span>
-                    <input id="editTitle" type="text" required>
-                  </label>
+            <label class="edit-field">
+              <span>イベント名</span>
+              <input id="editTitle" type="text" required>
+            </label>
 
-                  <label class="edit-field">
-                    <span>種類</span>
-                    <input id="editType" type="text" placeholder="未設定">
-                  </label>
+            <label class="edit-field">
+              <span>種類</span>
+              <input id="editType" type="text" placeholder="未設定">
+            </label>
 
-                  <label class="edit-field">
-                    <span>限定報酬</span>
-                    <textarea id="editReward" rows="3" placeholder="未設定"></textarea>
-                  </label>
+            <label class="edit-field">
+              <span>限定報酬</span>
+              <textarea id="editReward" rows="3" placeholder="未設定"></textarea>
+            </label>
 
-                  <div class="edit-two-col">
-                    <label class="edit-field">
-                      <span>開始日時</span>
-                      <input id="editStart" type="datetime-local">
-                    </label>
-                    <label class="edit-field">
-                      <span>終了日時</span>
-                      <input id="editEnd" type="datetime-local">
-                    </label>
-                  </div>
-<label class="edit-field">
-                    <span>メモ</span>
-                    <textarea id="editMemo" rows="4"></textarea>
-                  </label>
-
-                  <label class="edit-field">
-                    <span>出典URL</span>
-                    <input id="editSource" type="url" inputmode="url" placeholder="https://...">
-                  </label>
-
-                  <div id="editStatus" class="edit-status" aria-live="polite"></div>
-                </div>
-              </div>
-              <div class="f f6"></div>
-              <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+            <div class="edit-two-col">
+              <label class="edit-field">
+                <span>開始日時</span>
+                <input id="editStart" type="datetime-local">
+              </label>
+              <label class="edit-field">
+                <span>終了日時</span>
+                <input id="editEnd" type="datetime-local">
+              </label>
             </div>
-          </section>
+
+            <label class="edit-field">
+              <span>メモ</span>
+              <textarea id="editMemo" rows="4"></textarea>
+            </label>
+
+            <label class="edit-field">
+              <span>出典URL</span>
+              <input id="editSource" type="url" inputmode="url" placeholder="https://...">
+            </label>
+
+            <div id="editStatus" class="edit-status" aria-live="polite"></div>
+          </div>
 
           <div class="edit-actions">
             <button id="editSubmitBtn" class="fetch-apply-btn" type="submit">保存</button>

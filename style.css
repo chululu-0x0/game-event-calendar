@@ -4970,3 +4970,58 @@ select{
   flex:0 0 auto !important;
   background:#fff9f2 !important;
 }
+
+
+/* =========================================================
+   v37: 追加 / 編集 - 内側画像フレーム撤去 + 内容領域全体スクロール
+   - 外枠のminidot TABLEだけを残す
+   - 上段タイトルと下段アクションは固定
+   - その間の入力内容領域だけ縦スクロール
+   ========================================================= */
+
+.edit-form{
+  display:flex !important;
+  flex-direction:column !important;
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:100% !important;
+  overflow:hidden !important;
+}
+
+.edit-sheet-head,
+.edit-actions{
+  flex:0 0 auto !important;
+}
+
+/* 旧edit-inner-frameはDOMから削除。中央領域そのものをスクロールコンテナにする。 */
+.edit-content-scroll.edit-scroll{
+  flex:1 1 0 !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior:contain !important;
+  display:grid !important;
+  align-content:start !important;
+  gap:10px !important;
+  padding:8px 9px 12px !important;
+}
+
+/* 保存/追加・キャンセルはスクロール外に残し、常時表示。 */
+.edit-actions{
+  position:relative !important;
+  z-index:5 !important;
+  margin:0 !important;
+  padding:6px 1px 0 !important;
+  background:#fff9f2 !important;
+}
+
+@media(max-width:420px){
+  .edit-content-scroll.edit-scroll{
+    padding:7px 7px 10px !important;
+  }
+}

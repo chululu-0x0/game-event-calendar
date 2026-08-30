@@ -167,3 +167,11 @@ v36 targeted update (based strictly on GitHub v34):
 - Update screen outer pixel frame: 32px -> 16px.
 - Add-event screen outer pixel frame: 32px -> 16px.
 - Edit-event screen remains 32px; all other v34 UI/behavior is unchanged.
+
+
+v37 targeted update (based strictly on GitHub v36):
+- Removed the minidot image TABLE from the inner content area of Add/Edit.
+- Kept only the 16px image TABLE outer frame.
+- Add/Edit header and bottom action buttons stay fixed.
+- The entire middle form-content area scrolls vertically only when needed.
+- Start/end display-text fields remain removed; date-time inputs are unchanged.
