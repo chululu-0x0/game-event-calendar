@@ -1,4 +1,4 @@
-const APP_VERSION="v37";
+const APP_VERSION="v38";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -52,6 +52,26 @@ function saveEventData(){
 }
 
 let eventData=loadEventData();
+
+// v38: 終了日時から24時間を過ぎたイベントは自動削除。
+// 終了日時が不明なイベントは対象外。
+function pruneExpiredEvents(){
+  const cutoff=Date.now()-24*60*60*1000;
+  let changed=false;
+  eventData.forEach(group=>{
+    const before=group.events.length;
+    group.events=group.events.filter(event=>{
+      if(!event?.end)return true;
+      const endMs=new Date(event.end).getTime();
+      return Number.isNaN(endMs) || endMs>cutoff;
+    });
+    if(group.events.length!==before)changed=true;
+  });
+  if(changed)saveEventData();
+  return changed;
+}
+
+pruneExpiredEvents();
 
 const PIXEL_FRAME_SRC=i=>`assets/ui/frames/minidot-8-${i}.png`;
 
@@ -335,7 +355,7 @@ function renderCalendar(){
     totalHeight+=groupHeight;
   });
 
-  const bodyHeight=Math.max(totalHeight,calendarBodyScroll.clientHeight);
+  const bodyHeight=totalHeight;
   calendarBody.style.height=`${bodyHeight}px`;
   calendarGameRows.style.height=`${totalHeight}px`;
 
@@ -390,21 +410,46 @@ function setScreen(name){
 
 function syncCalendar(){
   let lock=false;
+  let verticalRaf=0;
+
+  const syncVertical=()=>{
+    cancelAnimationFrame(verticalRaf);
+    verticalRaf=requestAnimationFrame(()=>{
+      const y=calendarGameScroll.scrollTop;
+      if(Math.abs(calendarBodyScroll.scrollTop-y)>.5){
+        calendarBodyScroll.scrollTop=y;
+      }
+    });
+  };
+
   calendarBodyScroll.addEventListener("scroll",()=>{
-    if(lock)return;
-    lock=true;
-    calendarHeaderScroll.scrollLeft=calendarBodyScroll.scrollLeft;
-    lock=false;
+    if(!lock){
+      lock=true;
+      calendarHeaderScroll.scrollLeft=calendarBodyScroll.scrollLeft;
+      lock=false;
+    }
+    // Safariで横スクロールした時に縦位置が再計算されても、
+    // 左ゲーム欄のscrollTopを正として即座に戻す。
+    syncVertical();
   });
+
   calendarHeaderScroll.addEventListener("scroll",()=>{
     if(lock)return;
     lock=true;
     calendarBodyScroll.scrollLeft=calendarHeaderScroll.scrollLeft;
     lock=false;
+    syncVertical();
   });
+
   calendarGameScroll.addEventListener("scroll",()=>{
     calendarBodyScroll.scrollTop=calendarGameScroll.scrollTop;
   });
+
+  calendarBodyScroll.addEventListener("touchend",syncVertical,{passive:true});
+  calendarBodyScroll.addEventListener("pointerup",syncVertical,{passive:true});
+  if("onscrollend" in window){
+    calendarBodyScroll.addEventListener("scrollend",syncVertical);
+  }
 }
 
 function preventScrollBounce(el,axis){
@@ -1087,6 +1132,8 @@ function openAddEvent(){
   editingEventRef=null;
   $("#editSheetTitle").textContent="イベント追加";
   $("#editSubmitBtn").textContent="追加";
+  $("#cancelEditBtn").textContent="キャンセル";
+  $("#cancelEditBtn").classList.remove("is-delete");
   $("#editGameLabel").hidden=true;
   $("#editGameField").hidden=false;
   $("#editGameSelect").innerHTML=GAME_DEFS.map(game=>`<option value="${game.id}">${escapeHtml(game.game)}</option>`).join("");
@@ -1108,6 +1155,8 @@ function openEditEvent(gameId,eventId){
   editingEventRef={gameId,eventId};
   $("#editSheetTitle").textContent="イベント編集";
   $("#editSubmitBtn").textContent="保存";
+  $("#cancelEditBtn").textContent="削除";
+  $("#cancelEditBtn").classList.add("is-delete");
   $("#editGameLabel").hidden=false;
   $("#editGameField").hidden=true;
   $("#editGameLabel").textContent=group.game;
@@ -1134,6 +1183,33 @@ function closeEditEvent(){
   $("#editSheet").setAttribute("aria-hidden","true");
   editingEventRef=null;
   editMode="edit";
+}
+
+function deleteEditingEvent(){
+  if(editMode!=="edit" || !editingEventRef){
+    closeEditEvent();
+    return;
+  }
+
+  const {group,event}=getStoredEvent(editingEventRef.gameId,editingEventRef.eventId);
+  if(!group||!event){
+    $("#editStatus").textContent="削除対象が見つかりませんでした。";
+    return;
+  }
+
+  if(!window.confirm(`「${event.title}」を削除しますか？`))return;
+
+  const detailWasOpen=detailSheet.classList.contains("open") &&
+    currentDetailRef?.gameId===group.id &&
+    currentDetailRef?.eventId===event.id;
+
+  group.events=group.events.filter(item=>item.id!==event.id);
+  saveEventData();
+  renderOngoing();
+  renderCalendar();
+  setupGameTabWidths();
+  closeEditEvent();
+  if(detailWasOpen)closeDetail();
 }
 
 function readEditFormValues(){
@@ -1215,6 +1291,7 @@ function saveEditedEvent(ev){
 
 /* current date keeps changing even if app stays open across midnight */
 setInterval(()=>{
+  pruneExpiredEvents();
   todayLabel.textContent=formatTodayLabel(now());
   renderOngoing();
   setupGameTabWidths();
@@ -1244,6 +1321,9 @@ window.addEventListener("load",()=>{
   });
   $("#editOverlay").addEventListener("click",closeEditEvent);
   $("#closeEditBtn").addEventListener("click",closeEditEvent);
-  $("#cancelEditBtn").addEventListener("click",closeEditEvent);
+  $("#cancelEditBtn").addEventListener("click",()=>{
+    if(editMode==="edit")deleteEditingEvent();
+    else closeEditEvent();
+  });
   $("#editEventForm").addEventListener("submit",saveEditedEvent);
 });

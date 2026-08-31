@@ -5025,3 +5025,116 @@ select{
     padding:7px 7px 10px !important;
   }
 }
+
+/* =========================================================
+   v38: header / edit / calendar sync / update-sheet tuning
+   ========================================================= */
+
+/* ---------- 上段: タイトル行を撤去したぶんタブ枠を上へ ---------- */
+html,
+body{
+  background:var(--chrome-fill) !important;
+}
+.top-chrome{
+  background:var(--chrome-fill) !important;
+  padding-top:calc(14px + env(safe-area-inset-top)) !important;
+  padding-bottom:6px !important;
+}
+.top-tabs{
+  margin-top:0 !important;
+  padding-top:0 !important;
+  background:var(--chrome-fill) !important;
+}
+.title-row{
+  display:none !important;
+}
+
+/* ---------- 追加 / 編集: datetimeも他欄と同じ横幅に固定 ---------- */
+.edit-content-scroll,
+.edit-two-col,
+.edit-field,
+.edit-field input,
+.edit-field textarea,
+.edit-field select{
+  min-width:0 !important;
+  max-width:100% !important;
+  box-sizing:border-box !important;
+}
+.edit-two-col{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) !important;
+  width:100% !important;
+  gap:10px !important;
+}
+.edit-field{
+  width:100% !important;
+}
+.edit-field input[type="datetime-local"]{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+}
+
+/* 編集時の下段第2ボタンは削除。追加時はJSでキャンセルへ戻す。 */
+.edit-actions .fetch-sub-btn.is-delete{
+  border-color:#b85a73 !important;
+  background:#fff0f4 !important;
+  color:#a43e5d !important;
+  font-weight:700 !important;
+}
+
+/* ---------- カレンダー: 左列を唯一の縦スクロール基準に ---------- */
+.calendar-body-track{
+  box-sizing:border-box !important;
+}
+.body-scroll{
+  overscroll-behavior-y:none !important;
+}
+
+/* ---------- 更新画面: 進捗・結果を少し下へ ---------- */
+.fetch-progress-frame{
+  margin-top:7px !important;
+}
+.check-result-heading{
+  margin-top:7px !important;
+}
+.check-result-list{
+  padding-top:3px !important;
+}
+
+/* 候補件数をゲーム名の左寄せ領域へ。＋/－は専用の右列へ。 */
+.check-result-game summary{
+  grid-template-columns:28px minmax(0,1fr) 24px !important;
+  grid-template-rows:auto auto !important;
+  column-gap:6px !important;
+  row-gap:1px !important;
+  min-height:42px !important;
+  padding:3px 5px !important;
+}
+.check-result-game summary > .fetch-game-icon{
+  grid-column:1 !important;
+  grid-row:1 / span 2 !important;
+  align-self:center !important;
+}
+.check-result-game-name{
+  grid-column:2 !important;
+  grid-row:1 !important;
+  justify-self:start !important;
+}
+.check-result-game .fetch-game-count{
+  grid-column:2 !important;
+  grid-row:2 !important;
+  justify-self:start !important;
+  margin:0 !important;
+  padding:0 !important;
+  text-align:left !important;
+  line-height:1.1 !important;
+}
+.fetch-game.check-result-game summary::after{
+  grid-column:3 !important;
+  grid-row:1 / span 2 !important;
+  align-self:center !important;
+  justify-self:center !important;
+  margin:0 !important;
+}

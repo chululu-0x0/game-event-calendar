@@ -37,7 +37,7 @@ https://wikiwiki.jp/zenless/イベント
 https://arknights.wikiru.jp/?イベント一覧
 
 FF14
-https://ff14wiki.info/?公式イベント
+https://game8.jp/ff14/296664
 
 【重要：先にSupabaseを更新】
 supabase/fetch-wiki-events/index.ts
@@ -175,3 +175,14 @@ v37 targeted update (based strictly on GitHub v36):
 - Add/Edit header and bottom action buttons stay fixed.
 - The entire middle form-content area scrolls vertically only when needed.
 - Start/end display-text fields remain removed; date-time inputs are unchanged.
+
+
+[v38]
+- イベント編集画面の下段「キャンセル」を「削除」に変更。追加画面では従来どおりキャンセル。削除前に確認ダイアログを表示。
+- 開始日時 / 終了日時を1列の全幅表示にし、他入力欄と同じ横幅へ統一。
+- 終了日時から24時間経過したイベントを起動時および1分ごとの更新時に自動削除。終了日時不明は対象外。
+- カレンダーの左ゲーム欄を縦位置の基準にし、右側の横スクロール時にもscrollTopを再同期して縦ずれを抑止。
+- 上段のEvent Calendarタイトルとアイコンを削除し、上段タブを上へ移動。上段背景をchrome-fill 1色へ統一。
+- 更新画面のチェック進捗と結果領域を少し下へ移動し、両者の間隔を少し拡大。
+- 結果欄の候補件数をゲーム名の下・左寄せへ移し、＋/－ボタン専用の右列を確保。
+- FF14取得元はGame8 (https://game8.jp/ff14/296664) を維持。
