@@ -1,4 +1,4 @@
-const APP_VERSION="v39";
+const APP_VERSION="v40";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -92,7 +92,7 @@ function pixelFrameMarkup(html,size=16,extraClass="",src=PIXEL_FRAME_SRC){
       </tr>
       <tr>
         <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,vCount,src)}</div></td>
-        <td class="pf-center"><div class="pf-content">${html}</div></td>
+        <td class="pf-center" style="background-image:url('${src(5)}')"><div class="pf-content">${html}</div></td>
         <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,vCount,src)}</div></td>
       </tr>
       <tr>
@@ -455,6 +455,106 @@ function syncCalendar(){
   if("onscrollend" in window){
     calendarBodyScroll.addEventListener("scrollend",syncVertical);
   }
+}
+
+// v40: モーダル表示時も上段を暗幕で変色させないため、実際の上段高さをCSS変数へ反映。
+function syncTopChromeHeight(){
+  const chrome=document.querySelector(".top-chrome");
+  if(!chrome)return;
+  document.documentElement.style.setProperty("--top-chrome-height",`${Math.ceil(chrome.getBoundingClientRect().height)}px`);
+}
+
+// v40: カレンダー右側を指の速度に応じて惰性移動させるカスタム慣性スクロール。
+// iOSのネイティブ慣性が同期処理で弱くなるため、横方向だけ自前で速度を保持する。
+function enableCalendarKineticScroll(el){
+  if(!el || el.dataset.kineticReady==="1")return;
+  el.dataset.kineticReady="1";
+
+  let lastX=0;
+  let lastT=0;
+  let startX=0;
+  let velocity=0; // px / ms (scrollLeft方向)
+  let dragging=false;
+  let momentumRaf=0;
+  let suppressClickUntil=0;
+
+  const stopMomentum=()=>{
+    if(momentumRaf){cancelAnimationFrame(momentumRaf);momentumRaf=0;}
+  };
+
+  const maxScroll=()=>Math.max(0,el.scrollWidth-el.clientWidth);
+  const clampScroll=value=>Math.max(0,Math.min(maxScroll(),value));
+
+  el.addEventListener("touchstart",event=>{
+    if(event.touches.length!==1)return;
+    stopMomentum();
+    const touch=event.touches[0];
+    startX=lastX=touch.clientX;
+    lastT=performance.now();
+    velocity=0;
+    dragging=false;
+  },{passive:true});
+
+  el.addEventListener("touchmove",event=>{
+    if(event.touches.length!==1)return;
+    const touch=event.touches[0];
+    const nowT=performance.now();
+    const dx=touch.clientX-lastX;
+    const totalDx=touch.clientX-startX;
+    const dt=Math.max(1,nowT-lastT);
+
+    if(!dragging && Math.abs(totalDx)<4)return;
+    dragging=true;
+    event.preventDefault();
+
+    const before=el.scrollLeft;
+    const next=clampScroll(before-dx);
+    el.scrollLeft=next;
+
+    const moved=next-before;
+    const instant=moved/dt;
+    velocity=velocity*.68+instant*.32;
+    lastX=touch.clientX;
+    lastT=nowT;
+  },{passive:false});
+
+  const startMomentum=()=>{
+    if(!dragging)return;
+    suppressClickUntil=Date.now()+220;
+    dragging=false;
+    if(Math.abs(velocity)<0.015)return;
+
+    let prev=performance.now();
+    const tick=nowT=>{
+      const dt=Math.min(32,Math.max(1,nowT-prev));
+      prev=nowT;
+
+      const before=el.scrollLeft;
+      const next=clampScroll(before+velocity*dt);
+      el.scrollLeft=next;
+
+      // 約0.94/16.7ms。強いフリックほど長く、弱い操作は短く止まる。
+      velocity*=Math.pow(.94,dt/16.67);
+      const hitEdge=Math.abs(next-before)<.01 && (next<=0 || next>=maxScroll());
+      if(Math.abs(velocity)>.012 && !hitEdge){
+        momentumRaf=requestAnimationFrame(tick);
+      }else{
+        momentumRaf=0;
+      }
+    };
+    momentumRaf=requestAnimationFrame(tick);
+  };
+
+  el.addEventListener("touchend",startMomentum,{passive:true});
+  el.addEventListener("touchcancel",()=>{dragging=false;stopMomentum();},{passive:true});
+
+  // フリック直後にイベントバーを誤タップ扱いしない。
+  el.addEventListener("click",event=>{
+    if(Date.now()<suppressClickUntil){
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  },true);
 }
 
 function preventScrollBounce(el,axis){
@@ -1303,13 +1403,18 @@ setInterval(()=>{
   if(screens.calendar.classList.contains("active"))renderCalendar();
 },60000);
 
+window.addEventListener("resize",()=>requestAnimationFrame(syncTopChromeHeight),{passive:true});
+window.addEventListener("orientationchange",()=>setTimeout(syncTopChromeHeight,120),{passive:true});
+
 window.addEventListener("load",()=>{
   document.querySelector(".app-version").textContent=APP_VERSION;
   todayLabel.textContent=formatTodayLabel(now());
   setupGameTabWidths();
+  syncTopChromeHeight();
+  enableCalendarKineticScroll(calendarBodyScroll);
 
   preventScrollBounce(calendarGameScroll,"y");
-  preventScrollBounce(calendarBodyScroll,"x");
+  // v40: body側はカスタム慣性スクロールが境界処理も担当。
   preventScrollBounce(calendarHeaderScroll,"x");
 
   $("#fetchOverlay").addEventListener("click",closeFetchSheet);

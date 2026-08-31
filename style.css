@@ -5227,3 +5227,72 @@ body,
 .top-tab{
   background-color:transparent !important;
 }
+
+
+/* =========================================================
+   v40: pink center tile / datetime clip / modal chrome / kinetic calendar
+   ========================================================= */
+
+/* ---------- 開催中イベントカード: 中央5番も各TABLEの指定画像を使用 ----------
+   script側で .pf-center に inline background-image を設定する。
+   ここではrepeat/sizeだけ担当し、minidot-8pink-5も16pxで正しく敷き詰める。 */
+.pixel-frame-table.pixel-size-16 .pf-center{
+  background-repeat:repeat !important;
+  background-size:16px 16px !important;
+  background-position:0 0 !important;
+  image-rendering:pixelated !important;
+}
+
+/* ---------- 追加 / 編集: datetimeの見た目の外枠をラッパー側へ固定 ---------- */
+.edit-date-field{
+  min-width:0 !important;
+  width:100% !important;
+  overflow:hidden !important;
+}
+.datetime-input-wrap{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  height:41px !important;
+  border:2px solid #a1a4cf !important;
+  background:#fff !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+.datetime-input-wrap > input[type="datetime-local"]{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  height:100% !important;
+  margin:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  padding:6px 8px !important;
+  background:transparent !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+  -webkit-appearance:none !important;
+  appearance:none !important;
+}
+
+/* ---------- モーダル/更新画面: 上段は暗幕をかけず常に単色 ----------
+   overlay自体は全画面でクリックを受けるが、背景色はtop-chrome実測高さまでは透明。 */
+.detail-overlay,
+.edit-overlay,
+.fetch-overlay{
+  background:linear-gradient(
+    to bottom,
+    transparent 0 var(--top-chrome-height,80px),
+    #24275873 var(--top-chrome-height,80px) 100%
+  ) !important;
+}
+
+/* ---------- カレンダー右側: JSカスタム慣性に一本化 ---------- */
+.body-scroll{
+  -webkit-overflow-scrolling:auto !important;
+  touch-action:none !important;
+  scroll-behavior:auto !important;
+  overscroll-behavior-x:none !important;
+}
