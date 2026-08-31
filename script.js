@@ -22,7 +22,7 @@ const GAME_DEFS=[
   },
   {
     id:"ff14",game:"FF14",icon:"◆",color:"purple",
-    sourceUrl:"https://ff14wiki.info/?%E5%85%AC%E5%BC%8F%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88"
+    sourceUrl:"https://game8.jp/ff14/296664"
   }
 ];
 
