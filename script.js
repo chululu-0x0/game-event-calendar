@@ -1,4 +1,4 @@
-const APP_VERSION="v38";
+const APP_VERSION="v39";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -74,30 +74,31 @@ function pruneExpiredEvents(){
 pruneExpiredEvents();
 
 const PIXEL_FRAME_SRC=i=>`assets/ui/frames/minidot-8-${i}.png`;
+const PIXEL_FRAME_PINK_SRC=i=>`assets/ui/frames/minidot-8pink-${i}.png`;
 
-function tileImgs(i,count){
-  return Array.from({length:count},()=>`<img src="${PIXEL_FRAME_SRC(i)}" alt="" class="pixel-tile-img">`).join("");
+function tileImgs(i,count,src=PIXEL_FRAME_SRC){
+  return Array.from({length:count},()=>`<img src="${src(i)}" alt="" class="pixel-tile-img">`).join("");
 }
 
-function pixelFrameMarkup(html,size=16,extraClass=""){
+function pixelFrameMarkup(html,size=16,extraClass="",src=PIXEL_FRAME_SRC){
   const hCount=48;
   const vCount=size===32?40:72;
   return `<table class="pixel-frame-table ${size===32?"pixel-size-32":"pixel-size-16"} ${extraClass}" role="presentation">
     <tbody>
       <tr>
-        <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(1)}" alt="" class="pixel-tile-img"></td>
-        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(2,hCount)}</div></td>
-        <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(3)}" alt="" class="pixel-tile-img"></td>
+        <td class="pf-corner"><img src="${src(1)}" alt="" class="pixel-tile-img"></td>
+        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(2,hCount,src)}</div></td>
+        <td class="pf-corner"><img src="${src(3)}" alt="" class="pixel-tile-img"></td>
       </tr>
       <tr>
-        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,vCount)}</div></td>
+        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,vCount,src)}</div></td>
         <td class="pf-center"><div class="pf-content">${html}</div></td>
-        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,vCount)}</div></td>
+        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,vCount,src)}</div></td>
       </tr>
       <tr>
-        <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(7)}" alt="" class="pixel-tile-img"></td>
-        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(8,hCount)}</div></td>
-        <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(9)}" alt="" class="pixel-tile-img"></td>
+        <td class="pf-corner"><img src="${src(7)}" alt="" class="pixel-tile-img"></td>
+        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(8,hCount,src)}</div></td>
+        <td class="pf-corner"><img src="${src(9)}" alt="" class="pixel-tile-img"></td>
       </tr>
     </tbody>
   </table>`;
@@ -164,7 +165,11 @@ function remain(end){
   if(d<2)return{prefix:"明日",big:"終了",tone:"pink"};
   return{prefix:"残り",big:`${d}日`,tone:d<=3?"pink":"blue"};
 }
-function frame9(cls,html){return `<div class="frame9 ${cls}">${pixelFrameMarkup(html,16)}</div>`}
+function frame9(cls,html){
+  // v39: 開催中のイベントカード内枠だけ、16pxのpink minidotを使う。
+  const src=cls.split(/\s+/).includes("game-card")?PIXEL_FRAME_PINK_SRC:PIXEL_FRAME_SRC;
+  return `<div class="frame9 ${cls}">${pixelFrameMarkup(html,16,"",src)}</div>`;
+}
 
 function openChipTab(label){
   return `<div class="game-chip-tab-open">

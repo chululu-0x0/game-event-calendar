@@ -5138,3 +5138,92 @@ body{
   justify-self:center !important;
   margin:0 !important;
 }
+
+
+/* =========================================================
+   v39: datetime width / calendar momentum / solid top chrome
+   ========================================================= */
+
+/* ---------- 追加 / 編集: iOSのdatetime-local固有の最小幅を抑える ---------- */
+.edit-content-scroll.edit-scroll{
+  grid-template-columns:minmax(0,1fr) !important;
+  inline-size:100% !important;
+  max-inline-size:100% !important;
+  min-inline-size:0 !important;
+}
+.edit-two-col,
+.edit-two-col > .edit-field{
+  inline-size:100% !important;
+  max-inline-size:100% !important;
+  min-inline-size:0 !important;
+}
+.edit-two-col > .edit-field{
+  overflow:hidden !important;
+}
+.edit-field input[type="datetime-local"]{
+  display:block !important;
+  inline-size:100% !important;
+  width:100% !important;
+  max-inline-size:100% !important;
+  max-width:100% !important;
+  min-inline-size:0 !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  font-size:16px !important;
+  padding:8px !important;
+}
+.edit-field input[type="datetime-local"]::-webkit-date-and-time-value{
+  min-width:0 !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  text-align:left !important;
+}
+.edit-field input[type="datetime-local"]::-webkit-datetime-edit{
+  min-width:0 !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+  padding:0 !important;
+}
+.edit-field input[type="datetime-local"]::-webkit-calendar-picker-indicator{
+  flex:0 0 auto !important;
+  margin:0 0 0 4px !important;
+  padding:0 !important;
+}
+
+/* ---------- カレンダー: 右イベント一覧はスワイプ強度に応じた慣性スクロール ---------- */
+.body-scroll,
+.header-scroll{
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior-x:contain !important;
+  scroll-snap-type:none !important;
+}
+.body-scroll{
+  touch-action:pan-x !important;
+}
+
+/* ---------- 上段: 画面切替に左右されず同一色の単色背景へ固定 ---------- */
+html,
+body,
+.top-chrome,
+.top-tabs{
+  background-color:var(--chrome-fill) !important;
+  background-image:none !important;
+}
+.top-chrome{
+  isolation:isolate;
+}
+.top-chrome::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:var(--chrome-fill) !important;
+  pointer-events:none;
+}
+.top-tab{
+  background-color:transparent !important;
+}
