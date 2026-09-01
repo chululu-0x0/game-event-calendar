@@ -200,3 +200,9 @@ v37 targeted update (based strictly on GitHub v36):
 - 追加/編集の開始日時・終了日時は外側ラッパーに見た目のボーダーを持たせ、iOS datetime-local の内部最小幅が大きくても右端が枠外へ出ないようクリップ。
 - 詳細/編集/追加/更新のオーバーレイ表示中も、上段top-chrome領域には暗幕をかけず背景色を単色維持。上段高さはJSで実測。
 - カレンダー右イベント一覧はタッチ速度から慣性を算出するカスタム横スクロールへ変更。弱いスワイプは短く、強いフリックは長く滑って減速。
+
+
+[v42]
+- Fixed UI asset paths after folder split.
+- Button frame assets: assets/ui/button/minidot-button-pink-on-1..9.png
+- Add/Update icon asset: assets/ui/icon/icon-1.png

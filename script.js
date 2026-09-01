@@ -1,4 +1,4 @@
-const APP_VERSION="v41";
+const APP_VERSION="v42";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -76,7 +76,7 @@ pruneExpiredEvents();
 const PIXEL_FRAME_SRC=i=>`assets/ui/frames/minidot-8-${i}.png`;
 const PIXEL_FRAME_PINK_SRC=i=>`assets/ui/frames/minidot-8pink-${i}.png`;
 const PIXEL_FRAME_PURPLE_SRC=i=>`assets/ui/frames/minidot-16purple-${i}.png`;
-const PIXEL_BUTTON_PINK_ON_SRC=i=>`assets/ui/frames/minidot-button-pink-on-${i}.png`;
+const PIXEL_BUTTON_PINK_ON_SRC=i=>`assets/ui/button/minidot-button-pink-on-${i}.png`;
 
 function tileImgs(i,count,src=PIXEL_FRAME_SRC){
   return Array.from({length:count},()=>`<img src="${src(i)}" alt="" class="pixel-tile-img">`).join("");
