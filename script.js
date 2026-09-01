@@ -1,4 +1,4 @@
-const APP_VERSION="v40";
+const APP_VERSION="v41";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -75,6 +75,8 @@ pruneExpiredEvents();
 
 const PIXEL_FRAME_SRC=i=>`assets/ui/frames/minidot-8-${i}.png`;
 const PIXEL_FRAME_PINK_SRC=i=>`assets/ui/frames/minidot-8pink-${i}.png`;
+const PIXEL_FRAME_PURPLE_SRC=i=>`assets/ui/frames/minidot-16purple-${i}.png`;
+const PIXEL_BUTTON_PINK_ON_SRC=i=>`assets/ui/frames/minidot-button-pink-on-${i}.png`;
 
 function tileImgs(i,count,src=PIXEL_FRAME_SRC){
   return Array.from({length:count},()=>`<img src="${src(i)}" alt="" class="pixel-tile-img">`).join("");
@@ -104,14 +106,21 @@ function pixelFrameMarkup(html,size=16,extraClass="",src=PIXEL_FRAME_SRC){
   </table>`;
 }
 
+function frameSrcForStaticFrame(frame){
+  if(frame.classList.contains("detail-outer-frame") || frame.classList.contains("detail-inner-frame") || frame.classList.contains("edit-outer-frame")){
+    return PIXEL_FRAME_PURPLE_SRC;
+  }
+  return PIXEL_FRAME_SRC;
+}
+
 function upgradeStaticFrames(){
   [...document.querySelectorAll(".frame9")].reverse().forEach(frame=>{
     const oldCenter=frame.querySelector(":scope > .frame9-grid > .f5");
     if(!oldCenter)return;
     const html=oldCenter.innerHTML;
-    // v36: 追加・編集を含め、この静的フレームは16px。
     const size=16;
-    frame.innerHTML=pixelFrameMarkup(html,size);
+    const src=frameSrcForStaticFrame(frame);
+    frame.innerHTML=pixelFrameMarkup(html,size,"",src);
   });
 }
 
@@ -128,6 +137,49 @@ function upgradeTopTabTables(){
 upgradeStaticFrames();
 upgradeTopTabTables();
 
+function pixelButtonMarkup(html,widthTiles=10,size=16,extraClass="",src=PIXEL_BUTTON_PINK_ON_SRC){
+  const safeWidth=Math.max(4,widthTiles|0);
+  const vCount=4;
+  return `<table class="pixel-frame-table ${size===32?"pixel-size-32":"pixel-size-16"} pixel-button-table ${extraClass}" role="presentation">
+    <tbody>
+      <tr>
+        <td class="pf-corner"><img src="${src(1)}" alt="" class="pixel-tile-img"></td>
+        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(2,safeWidth,src)}</div></td>
+        <td class="pf-corner"><img src="${src(3)}" alt="" class="pixel-tile-img"></td>
+      </tr>
+      <tr>
+        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,vCount,src)}</div></td>
+        <td class="pf-center" style="background-image:url('${src(5)}')"><div class="pf-content">${html}</div></td>
+        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,vCount,src)}</div></td>
+      </tr>
+      <tr>
+        <td class="pf-corner"><img src="${src(7)}" alt="" class="pixel-tile-img"></td>
+        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(8,safeWidth,src)}</div></td>
+        <td class="pf-corner"><img src="${src(9)}" alt="" class="pixel-tile-img"></td>
+      </tr>
+    </tbody>
+  </table>`;
+}
+
+function setPixelButtonHTML(button,html,widthTiles=10){
+  if(!button)return;
+  button.classList.add("pixel-action-btn");
+  button.innerHTML=pixelButtonMarkup(`<span class="pixel-button-label">${html}</span>`,widthTiles,16);
+}
+
+function setPixelButtonText(button,text,widthTiles=10){
+  setPixelButtonHTML(button,escapeHtml(text),widthTiles);
+}
+
+function upgradeStaticButtons(){
+  setPixelButtonHTML($("#editDetailBtn"),'<span class="pixel-btn-icon">✎</span>',4);
+  setPixelButtonText($("#closeDetailBtnBottom"),"閉じる",10);
+  setPixelButtonText($("#fetchAllGamesBtn"),cleanText($("#fetchAllGamesBtn")?.textContent)||"全ゲームチェック",12);
+  setPixelButtonText($("#applyFetchedEventsBtn"),cleanText($("#applyFetchedEventsBtn")?.textContent)||"選択したイベントを登録（0件）",18);
+  setPixelButtonText($("#editSubmitBtn"),cleanText($("#editSubmitBtn")?.textContent)||"保存",8);
+  setPixelButtonText($("#cancelEditBtn"),cleanText($("#cancelEditBtn")?.textContent)||"削除",8);
+}
+
 /* Unified smartphone zoom suppression for iOS gesture events. */
 ["gesturestart","gesturechange","gestureend"].forEach(type=>{
   document.addEventListener(type,event=>event.preventDefault(),{passive:false});
@@ -138,6 +190,8 @@ const screens={ongoing:$("#screen-ongoing"),calendar:$("#screen-calendar"),favor
 const ongoingList=$("#ongoingList"),todayLabel=$("#todayLabel"),contentScroll=$("#contentScroll");
 const calendarHeader=$("#calendarHeader"),calendarBody=$("#calendarBody"),calendarGameRows=$("#calendarGameRows"),calendarGameScroll=$("#calendarGameScroll"),calendarHeaderScroll=$("#calendarHeaderScroll"),calendarBodyScroll=$("#calendarBodyScroll");
 const detailSheet=$("#detailSheet"),detailOverlay=$("#detailOverlay"),detailTitle=$("#detailTitle"),detailGame=$("#detailGame"),detailRemain=$("#detailRemain"),detailDate=$("#detailDate"),detailType=$("#detailType"),detailReward=$("#detailReward"),detailRelated=$("#detailRelated"),detailMemo=$("#detailMemo"),detailSource=$("#detailSource");
+
+upgradeStaticButtons();
 
 const toDate=s=>(s==null||s==="")?new Date(NaN):new Date(s);
 function formatTodayLabel(d){const w=["日","月","火","水","木","金","土"];return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}（${w[d.getDay()]}）`}
@@ -579,7 +633,7 @@ function preventScrollBounce(el,axis){
 
 todayLabel.textContent=formatTodayLabel(now());renderOngoing();renderCalendar();syncCalendar();
 $$(".top-tab,.bottom-nav-btn").forEach(b=>b.addEventListener("click",()=>setScreen(b.dataset.screen)));
-$("#addEventBtn").addEventListener("click",openAddEvent);$("#refreshMockBtn").addEventListener("click",openFetchSheet);$("#closeDetailBtn").addEventListener("click",closeDetail);$("#closeDetailBtnBottom").addEventListener("click",closeDetail);detailOverlay.addEventListener("click",closeDetail);setScreen("ongoing");
+$("#addEventBtn").addEventListener("click",event=>{event.preventDefault();openAddEvent();});$("#refreshMockBtn").addEventListener("click",event=>{event.preventDefault();openFetchSheet();});$("#closeDetailBtn").addEventListener("click",closeDetail);$("#closeDetailBtnBottom").addEventListener("click",closeDetail);detailOverlay.addEventListener("click",closeDetail);setScreen("ongoing");
 
 
 
@@ -721,6 +775,8 @@ function renderFetchProgress(){
   }).join("");
 
   host.querySelectorAll("[data-check-game]").forEach(btn=>{
+    const icon=cleanText(btn.textContent)||"•";
+    setPixelButtonHTML(btn,`<span class="pixel-btn-icon">${escapeHtml(icon)}</span>`,4);
     btn.addEventListener("click",()=>{
       if(fetchAllRunning)return;
       fetchGameCandidates(btn.dataset.checkGame);
@@ -736,7 +792,7 @@ function renderFetchProgress(){
   const allBtn=$("#fetchAllGamesBtn");
   if(allBtn){
     allBtn.disabled=fetchAllRunning;
-    allBtn.textContent=fetchAllRunning?"チェック中…":"全ゲームチェック";
+    setPixelButtonText(allBtn,fetchAllRunning?"チェック中…":"全ゲームチェック",12);
   }
 }
 
@@ -825,7 +881,7 @@ function candidateMarkup(gameId){
 function updateFetchSelectionCount(){
   const selected=$$('#fetchGameAccordions input[type="checkbox"][data-candidate-game]:checked').length;
   const button=$("#applyFetchedEventsBtn");
-  if(button)button.textContent=`選択したイベントを登録（${selected}件）`;
+  if(button)setPixelButtonText(button,`選択したイベントを登録（${selected}件）`,18);
 }
 
 async function fetchGameCandidates(gameId){
@@ -1236,8 +1292,8 @@ function openAddEvent(){
   editMode="add";
   editingEventRef=null;
   $("#editSheetTitle").textContent="イベント追加";
-  $("#editSubmitBtn").textContent="追加";
-  $("#cancelEditBtn").textContent="キャンセル";
+  setPixelButtonText($("#editSubmitBtn"),"追加",8);
+  setPixelButtonText($("#cancelEditBtn"),"キャンセル",8);
   $("#cancelEditBtn").classList.remove("is-delete");
   $("#editGameLabel").hidden=true;
   $("#editGameField").hidden=false;
@@ -1259,8 +1315,8 @@ function openEditEvent(gameId,eventId){
   editMode="edit";
   editingEventRef={gameId,eventId};
   $("#editSheetTitle").textContent="イベント編集";
-  $("#editSubmitBtn").textContent="保存";
-  $("#cancelEditBtn").textContent="削除";
+  setPixelButtonText($("#editSubmitBtn"),"保存",8);
+  setPixelButtonText($("#cancelEditBtn"),"削除",8);
   $("#cancelEditBtn").classList.add("is-delete");
   $("#editGameLabel").hidden=false;
   $("#editGameField").hidden=true;

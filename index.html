@@ -104,8 +104,14 @@
             <strong id="todayLabel"></strong>
           </div>
           <div class="today-actions">
-            <button id="addEventBtn" class="mini-action-btn mini-add-btn" type="button">追加</button>
-            <button id="refreshMockBtn" class="mini-action-btn" type="button">更新</button>
+            <a id="addEventBtn" class="mini-action-link mini-add-link" href="#" aria-label="イベントを追加" title="追加">
+              <img src="assets/ui/frames/icon-1.png" alt="" class="mini-action-icon mini-action-icon-add">
+              <span class="visually-hidden">追加</span>
+            </a>
+            <a id="refreshMockBtn" class="mini-action-link mini-refresh-link" href="#" aria-label="イベントを更新" title="更新">
+              <img src="assets/ui/frames/icon-1.png" alt="" class="mini-action-icon mini-action-icon-refresh">
+              <span class="visually-hidden">更新</span>
+            </a>
           </div>
         </div>
         <div id="ongoingList" class="game-list"></div>

@@ -5296,3 +5296,130 @@ body,
   scroll-behavior:auto !important;
   overscroll-behavior-x:none !important;
 }
+
+
+/* =========================================================
+   v41: purple modal frames + pink pixel buttons + icon links
+   ========================================================= */
+.visually-hidden{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+
+.today-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.mini-action-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  background:transparent;
+  border:0;
+  padding:0;
+  line-height:0;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.mini-action-icon{display:block;image-rendering:pixelated}
+.mini-action-icon-add{width:16px;height:16px}
+.mini-action-icon-refresh{width:32px;height:32px}
+
+.detail-edit-btn,
+.detail-bottom-btn,
+.fetch-apply-btn,
+.fetch-sub-btn,
+.fetch-all-btn,
+.check-game-icon-btn{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+  color:inherit!important;
+}
+
+.pixel-action-btn{
+  appearance:none;
+  -webkit-appearance:none;
+  display:inline-flex;
+  align-items:stretch;
+  justify-content:center;
+  min-width:0;
+  line-height:1;
+  text-decoration:none;
+  cursor:pointer;
+}
+
+.pixel-action-btn .pixel-button-table{
+  width:100%;
+}
+
+.pixel-button-table .pf-content{
+  min-height:16px;
+  padding:2px 8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background-repeat:repeat;
+  background-size:16px 16px;
+}
+
+.pixel-button-label{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  color:#fff;
+  font-weight:700;
+  font-size:12px;
+  white-space:nowrap;
+  text-shadow:1px 1px rgba(117,32,71,.55);
+}
+
+.pixel-btn-icon{font-size:14px;line-height:1}
+
+.detail-bottom-btn.pixel-action-btn,
+.fetch-apply-btn.pixel-action-btn,
+.fetch-sub-btn.pixel-action-btn{
+  width:100%;
+}
+
+.detail-edit-btn.pixel-action-btn{
+  width:52px;
+  flex:0 0 52px;
+}
+
+.detail-edit-btn.pixel-action-btn .pf-content,
+.check-game-icon-btn.pixel-action-btn .pf-content{
+  padding:2px 4px;
+}
+
+.check-game-icon-btn.pixel-action-btn{
+  width:44px;
+  flex:0 0 44px;
+}
+
+.fetch-all-btn.pixel-action-btn{
+  min-width:150px;
+}
+
+.edit-actions .fetch-apply-btn.pixel-action-btn,
+.edit-actions .fetch-sub-btn.pixel-action-btn{
+  flex:1 1 0;
+}
+
+.pixel-action-btn:disabled{
+  opacity:.65;
+  filter:saturate(.8);
+}
