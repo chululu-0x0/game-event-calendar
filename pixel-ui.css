@@ -1,0 +1,198 @@
+/*
+  ============================================================
+  CSS-LAYER EXPERIMENT
+  ============================================================
+  The box/layout is CSS. The 9-slice PNGs are decoration only.
+  They are position:absolute and therefore never determine the
+  width, height, scrolling, or padding of the actual content.
+
+  Important knobs:
+    --pixel-size  : visual frame thickness
+    padding       : CSS spacing of the box itself
+
+  Safari crispness:
+    corners/edges remain real <img> tiles at integer pixel sizes.
+*/
+
+.pixel-box{
+  --pixel-size:16px;
+  position:relative;
+  width:100%;
+  min-width:0;
+  padding:var(--pixel-size);
+  box-sizing:border-box;
+}
+.pixel-box-content{
+  position:relative;
+  z-index:1;
+  min-width:0;
+  box-sizing:border-box;
+}
+
+.pixel-skin{
+  --pixel-size:16px;
+  position:absolute;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.pixel-skin-corner,
+.pixel-skin-tile{
+  display:block;
+  width:var(--pixel-size);
+  height:var(--pixel-size);
+  min-width:var(--pixel-size);
+  min-height:var(--pixel-size);
+  max-width:var(--pixel-size);
+  max-height:var(--pixel-size);
+  flex:0 0 var(--pixel-size);
+  object-fit:fill;
+  image-rendering:pixelated;
+}
+.pixel-skin-corner{position:absolute;z-index:3}
+.pixel-skin-corner.is-tl{left:0;top:0}
+.pixel-skin-corner.is-tr{right:0;top:0}
+.pixel-skin-corner.is-bl{left:0;bottom:0}
+.pixel-skin-corner.is-br{right:0;bottom:0}
+
+.pixel-skin-edge{
+  position:absolute;
+  z-index:2;
+  display:flex;
+  overflow:hidden;
+}
+.pixel-skin-edge.is-top,
+.pixel-skin-edge.is-bottom{
+  left:var(--pixel-size);
+  right:var(--pixel-size);
+  height:var(--pixel-size);
+  flex-direction:row;
+}
+.pixel-skin-edge.is-top{top:0}
+.pixel-skin-edge.is-bottom{bottom:0}
+.pixel-skin-edge.is-left,
+.pixel-skin-edge.is-right{
+  top:var(--pixel-size);
+  bottom:var(--pixel-size);
+  width:var(--pixel-size);
+  flex-direction:column;
+}
+.pixel-skin-edge.is-left{left:0}
+.pixel-skin-edge.is-right{right:0}
+
+.pixel-skin-fill{
+  position:absolute;
+  z-index:1;
+  inset:var(--pixel-size);
+  background-repeat:repeat;
+  background-position:0 0;
+  background-size:var(--pixel-size) var(--pixel-size);
+}
+
+/* game title tab is intentionally open on the bottom edge */
+.pixel-skin-open-bottom .is-left,
+.pixel-skin-open-bottom .is-right{bottom:0}
+.pixel-skin-open-bottom .pixel-skin-fill{bottom:0}
+
+/* Top tabs: original button dimensions remain CSS-controlled. */
+.pixel-tab-skin{position:absolute!important;inset:0!important;display:block!important}
+.pixel-tab-skin>.pixel-skin{inset:0}
+
+/* Dynamic game frames. */
+.game-shell>.pixel-box{padding:16px!important}
+.game-shell>.pixel-box>.pixel-box-content{padding:2px!important}
+.game-card>.pixel-box{padding:16px!important}
+.game-card>.pixel-box>.pixel-box-content{padding:0!important}
+.simple-panel>.pixel-box{padding:16px!important}
+.simple-panel>.pixel-box>.pixel-box-content{min-height:190px;padding:22px 18px!important}
+
+.game-chip-tab-open>.pixel-skin{position:absolute;inset:0}
+.game-chip-tab-open>.game-chip-text-overlay{position:relative;z-index:2}
+
+/* Fixed modal boxes: CSS owns the dimensions; PNG skin just follows. */
+.detail-outer-frame,
+.edit-outer-frame,
+.fetch-outer-frame{width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important}
+.detail-outer-frame>.pixel-box,
+.edit-outer-frame>.pixel-box,
+.fetch-outer-frame>.pixel-box{width:100%!important;height:100%!important;min-height:0!important;max-height:100%!important;padding:16px!important;overflow:hidden!important}
+.detail-outer-frame>.pixel-box>.pixel-box-content,
+.edit-outer-frame>.pixel-box>.pixel-box-content,
+.fetch-outer-frame>.pixel-box>.pixel-box-content{height:100%!important;min-height:0!important;max-height:100%!important;padding:0!important;overflow:hidden!important}
+
+.detail-inner-frame{flex:1 1 0!important;min-height:0!important;overflow:hidden!important}
+.detail-inner-frame>.pixel-box{height:100%!important;min-height:0!important;padding:16px!important;overflow:hidden!important}
+.detail-inner-frame>.pixel-box>.pixel-box-content{height:100%!important;min-height:0!important;overflow:hidden!important}
+
+.fetch-progress-frame>.pixel-box{padding:16px!important}
+.fetch-progress-frame>.pixel-box>.pixel-box-content{padding:3px 6px!important}
+
+/* Result frame art is a pure overlay: no content box at all. */
+.layered-result-frame-art>.pixel-skin{position:absolute;inset:0;width:100%;height:100%}
+
+/* Buttons: native <button> remains the layout/click target. Skin is overlay only. */
+.pixel-action-btn{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  min-width:0;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.pixel-button-box{
+  --pixel-size:16px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-width:min(100%,var(--pixel-button-min,64px));
+  min-height:48px;
+  padding:16px;
+  box-sizing:border-box;
+}
+.pixel-button-box>.pixel-skin{position:absolute;inset:0}
+.pixel-button-content{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-width:0;
+}
+.pixel-button-label{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  color:#fff;
+  font-weight:700;
+  font-size:12px;
+  line-height:1.15;
+  white-space:nowrap;
+  text-shadow:1px 1px rgba(117,32,71,.55);
+}
+.pixel-btn-icon{font-size:14px;line-height:1}
+
+.detail-bottom-btn.pixel-action-btn,
+.fetch-apply-btn.pixel-action-btn,
+.fetch-sub-btn.pixel-action-btn{width:100%}
+.detail-edit-btn.pixel-action-btn{width:52px;flex:0 0 52px}
+.check-game-icon-btn.pixel-action-btn{width:48px;flex:0 0 48px}
+.fetch-all-btn.pixel-action-btn{min-width:150px}
+.edit-actions .fetch-apply-btn.pixel-action-btn,
+.edit-actions .fetch-sub-btn.pixel-action-btn{flex:1 1 0}
+.pixel-action-btn:disabled{opacity:.65;filter:saturate(.8)}
+
+/* The experiment should contain no layout TABLE for pixel frames. */
+.pixel-frame-table{display:none!important}

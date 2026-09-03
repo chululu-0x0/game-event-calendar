@@ -1,370 +1,274 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Event Calendar</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Event Calendar</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;family=Zen+Maru+Gothic:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/><link href="pixel-ui.css" rel="stylesheet"/>
 </head>
-<body>
+<body class="css-layer-experiment">
 <div class="app-shell">
-
-  <header class="top-chrome">
-    <div class="app-version" aria-label="バージョン">v40</div>
-    <div class="checker-line checker-line-top" aria-hidden="true"></div>
-
-
-    <nav class="top-tabs" aria-label="メイン画面">
-      <button class="top-tab active" data-screen="ongoing" type="button">
-        
-        <span class="tab-skin tab-skin-imgtiles" aria-hidden="true">
-          <table class="tab-frame-img-table" role="presentation">
-            <tbody>
-              <tr>
-                <td class="corner-cell"><img src="assets/ui/frames/minidot-8-1.png" alt="" class="corner-img"></td>
-                <td class="edge-x-cell">
-                  <div class="tile-strip-x"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"></div>
-                </td>
-                <td class="corner-cell"><img src="assets/ui/frames/minidot-8-3.png" alt="" class="corner-img"></td>
-              </tr>
-              <tr>
-                <td class="edge-y-cell">
-                  <div class="tile-strip-y"><img src="assets/ui/frames/minidot-8-4.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-4.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-4.png" alt="" class="tile-img tile-64"></div>
-                </td>
-                <td class="fill-cell">
-                  <div class="tile-fill"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"></div>
-                </td>
-                <td class="edge-y-cell">
-                  <div class="tile-strip-y"><img src="assets/ui/frames/minidot-8-6.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-6.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-6.png" alt="" class="tile-img tile-64"></div>
-                </td>
-              </tr>
-              <tr>
-                <td class="corner-cell"><img src="assets/ui/frames/minidot-8-7.png" alt="" class="corner-img"></td>
-                <td class="edge-x-cell">
-                  <div class="tile-strip-x"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"></div>
-                </td>
-                <td class="corner-cell"><img src="assets/ui/frames/minidot-8-9.png" alt="" class="corner-img"></td>
-              </tr>
-            </tbody>
-          </table>
-        </span>
-          <span class="top-tab-label">開催中</span>
-      </button>
-
-      <button class="top-tab" data-screen="calendar" type="button">
-        
-        <span class="tab-skin tab-skin-imgtiles" aria-hidden="true">
-          <table class="tab-frame-img-table" role="presentation">
-            <tbody>
-              <tr>
-                <td class="corner-cell"><img src="assets/ui/frames/minidot-8-1.png" alt="" class="corner-img"></td>
-                <td class="edge-x-cell">
-                  <div class="tile-strip-x"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-2.png" alt="" class="tile-img tile-64"></div>
-                </td>
-                <td class="corner-cell"><img src="assets/ui/frames/minidot-8-3.png" alt="" class="corner-img"></td>
-              </tr>
-              <tr>
-                <td class="edge-y-cell">
-                  <div class="tile-strip-y"><img src="assets/ui/frames/minidot-8-4.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-4.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-4.png" alt="" class="tile-img tile-64"></div>
-                </td>
-                <td class="fill-cell">
-                  <div class="tile-fill"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-5.png" alt="" class="tile-img tile-64"></div>
-                </td>
-                <td class="edge-y-cell">
-                  <div class="tile-strip-y"><img src="assets/ui/frames/minidot-8-6.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-6.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-6.png" alt="" class="tile-img tile-64"></div>
-                </td>
-              </tr>
-              <tr>
-                <td class="corner-cell"><img src="assets/ui/frames/minidot-8-7.png" alt="" class="corner-img"></td>
-                <td class="edge-x-cell">
-                  <div class="tile-strip-x"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"><img src="assets/ui/frames/minidot-8-8.png" alt="" class="tile-img tile-64"></div>
-                </td>
-                <td class="corner-cell"><img src="assets/ui/frames/minidot-8-9.png" alt="" class="corner-img"></td>
-              </tr>
-            </tbody>
-          </table>
-        </span>
-          <span class="top-tab-label">イベントカレンダー</span>
-      </button>
-    </nav>
-
-    <div class="lace-divider" aria-hidden="true"></div>
-  </header>
-
-  <main id="contentScroll" class="content-scroll">
-    <div class="content-inner">
-
-      <section id="screen-ongoing" class="screen active">
-        <div class="today-row">
-          <div class="today-title">
-            <span class="today-calendar-icon">▣</span>
-            <strong id="todayLabel"></strong>
-          </div>
-          <div class="today-actions">
-            <a id="addEventBtn" class="mini-action-link mini-add-link" href="#" aria-label="イベントを追加" title="追加">
-              <img src="assets/ui/icon/icon-1.png" alt="" class="mini-action-icon mini-action-icon-add">
-              <span class="visually-hidden">追加</span>
-            </a>
-            <a id="refreshMockBtn" class="mini-action-link mini-refresh-link" href="#" aria-label="イベントを更新" title="更新">
-              <img src="assets/ui/icon/icon-1.png" alt="" class="mini-action-icon mini-action-icon-refresh">
-              <span class="visually-hidden">更新</span>
-            </a>
-          </div>
-        </div>
-        <div id="ongoingList" class="game-list"></div>
-      </section>
-
-      <section id="screen-calendar" class="screen">
-        <div class="calendar-board calendar-board-full">
-          <div class="calendar-grid">
-            <div class="calendar-left">
-              <div class="calendar-corner">ゲーム</div>
-              <div id="calendarGameScroll" class="calendar-game-scroll">
-                <div id="calendarGameRows"></div>
-              </div>
-            </div>
-
-            <div class="calendar-right">
-              <div id="calendarHeaderScroll" class="calendar-scroll header-scroll">
-                <div id="calendarHeader" class="calendar-header-track"></div>
-              </div>
-
-              <div id="calendarBodyScroll" class="calendar-scroll body-scroll">
-                <div id="calendarBody" class="calendar-body-track"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="screen-favorites" class="screen">
-        <section class="frame9 frame-main simple-panel">
-          <div class="frame9-grid">
-            <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-            <div class="f f4"></div>
-            <div class="f f5">
-              <span class="section-kicker">お気に入り</span>
-              <h2>お気に入りイベント</h2>
-              <p>お気に入り登録したイベントを並べる予定の仮画面です。</p>
-            </div>
-            <div class="f f6"></div>
-            <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
-          </div>
-        </section>
-      </section>
-
-      <section id="screen-settings" class="screen">
-        <section class="frame9 frame-main simple-panel">
-          <div class="frame9-grid">
-            <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-            <div class="f f4"></div>
-            <div class="f f5">
-              <span class="section-kicker">設定</span>
-              <h2>設定</h2>
-              <p>背景画像や表示設定を追加する予定の仮画面です。</p>
-            </div>
-            <div class="f f6"></div>
-            <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
-          </div>
-        </section>
-      </section>
-
-    </div>
-  </main>
-
-  <nav class="bottom-chrome" aria-label="下部ナビゲーション">
-    <button class="bottom-nav-btn active" data-screen="ongoing"><span class="bottom-icon">▤</span><span>開催中</span></button>
-    <button class="bottom-nav-btn" data-screen="calendar"><span class="bottom-icon">▦</span><span>カレンダー</span></button>
-    <button class="bottom-nav-btn" data-screen="favorites"><span class="bottom-icon">☆</span><span>お気に入り</span></button>
-    <button class="bottom-nav-btn" data-screen="settings"><span class="bottom-icon">⚙</span><span>設定</span></button>
-  </nav>
+<header class="top-chrome">
+<div aria-label="バージョン" class="app-version">CSS-LAYER 1</div>
+<div aria-hidden="true" class="checker-line checker-line-top"></div>
+<nav aria-label="メイン画面" class="top-tabs">
+<button class="top-tab active" data-screen="ongoing" type="button">
+<span aria-hidden="true" class="tab-skin pixel-tab-skin" data-skin="standard"></span>
+<span class="top-tab-label">開催中</span>
+</button>
+<button class="top-tab" data-screen="calendar" type="button">
+<span aria-hidden="true" class="tab-skin pixel-tab-skin" data-skin="standard"></span>
+<span class="top-tab-label">イベントカレンダー</span>
+</button>
+</nav>
+<div aria-hidden="true" class="lace-divider"></div>
+</header>
+<main class="content-scroll" id="contentScroll">
+<div class="content-inner">
+<section class="screen active" id="screen-ongoing">
+<div class="today-row">
+<div class="today-title">
+<span class="today-calendar-icon">▣</span>
+<strong id="todayLabel"></strong>
 </div>
-
-<div id="detailOverlay" class="detail-overlay" aria-hidden="true"></div>
-<aside id="detailSheet" class="detail-sheet modal-card" aria-hidden="true" aria-label="イベント詳細">
-  <section class="frame9 detail-outer-frame">
-    <div class="frame9-grid">
-      <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-      <div class="f f4"></div>
-      <div class="f f5">
-        <div class="detail-modal-layout">
-          <div class="detail-head">
-            <div class="detail-head-copy">
-              <div id="detailGame" class="detail-game">ゲーム</div>
-              <h2 id="detailTitle" class="detail-title">イベント名</h2>
-            </div>
-            <div class="detail-head-actions">
-              <button id="editDetailBtn" class="detail-edit-btn" type="button" aria-label="イベントを編集" title="編集">✎</button>
-              <button id="closeDetailBtn" class="detail-close" type="button" aria-label="閉じる">×</button>
-            </div>
-          </div>
-
-          <section class="frame9 detail-inner-frame">
-            <div class="frame9-grid">
-              <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-              <div class="f f4"></div>
-              <div class="f f5">
-                <div class="detail-scroll">
-                  <div id="detailRemain" class="detail-remain"></div>
-                  <div id="detailDate" class="detail-date"></div>
-                  <div class="detail-section"><div class="detail-label">種類</div><div id="detailType"></div></div>
-                  <div class="detail-section"><div class="detail-label">限定報酬</div><div id="detailReward"></div></div>
-                  <div class="detail-section"><div class="detail-label">関連</div><div id="detailRelated"></div></div>
-                  <div class="detail-section"><div class="detail-label">メモ</div><p id="detailMemo"></p></div>
-                  <div class="detail-section"><div class="detail-label">出典</div><a id="detailSource" href="#" target="_blank" rel="noopener noreferrer">Wikiを開く</a></div>
-                  <button id="closeDetailBtnBottom" class="detail-bottom-btn" type="button">閉じる</button>
-                </div>
-              </div>
-              <div class="f f6"></div>
-              <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
-            </div>
-          </section>
-        </div>
-      </div>
-      <div class="f f6"></div>
-      <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
-    </div>
-  </section>
+<div class="today-actions">
+<a aria-label="イベントを追加" class="mini-action-link mini-add-link" href="#" id="addEventBtn" title="追加">
+<img alt="" class="mini-action-icon mini-action-icon-add" src="assets/ui/icon/icon-1.png"/>
+<span class="visually-hidden">追加</span>
+</a>
+<a aria-label="イベントを更新" class="mini-action-link mini-refresh-link" href="#" id="refreshMockBtn" title="更新">
+<img alt="" class="mini-action-icon mini-action-icon-refresh" src="assets/ui/icon/icon-1.png"/>
+<span class="visually-hidden">更新</span>
+</a>
+</div>
+</div>
+<div class="game-list" id="ongoingList"></div>
+</section>
+<section class="screen" id="screen-calendar">
+<div class="calendar-board calendar-board-full">
+<div class="calendar-grid">
+<div class="calendar-left">
+<div class="calendar-corner">ゲーム</div>
+<div class="calendar-game-scroll" id="calendarGameScroll">
+<div id="calendarGameRows"></div>
+</div>
+</div>
+<div class="calendar-right">
+<div class="calendar-scroll header-scroll" id="calendarHeaderScroll">
+<div class="calendar-header-track" id="calendarHeader"></div>
+</div>
+<div class="calendar-scroll body-scroll" id="calendarBodyScroll">
+<div class="calendar-body-track" id="calendarBody"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="screen" id="screen-favorites">
+<section class="frame9 frame-main simple-panel">
+<div class="frame9-grid">
+<div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+<div class="f f4"></div>
+<div class="f f5">
+<span class="section-kicker">お気に入り</span>
+<h2>お気に入りイベント</h2>
+<p>お気に入り登録したイベントを並べる予定の仮画面です。</p>
+</div>
+<div class="f f6"></div>
+<div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+</div>
+</section>
+</section>
+<section class="screen" id="screen-settings">
+<section class="frame9 frame-main simple-panel">
+<div class="frame9-grid">
+<div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+<div class="f f4"></div>
+<div class="f f5">
+<span class="section-kicker">設定</span>
+<h2>設定</h2>
+<p>背景画像や表示設定を追加する予定の仮画面です。</p>
+</div>
+<div class="f f6"></div>
+<div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+</div>
+</section>
+</section>
+</div>
+</main>
+<nav aria-label="下部ナビゲーション" class="bottom-chrome">
+<button class="bottom-nav-btn active" data-screen="ongoing"><span class="bottom-icon">▤</span><span>開催中</span></button>
+<button class="bottom-nav-btn" data-screen="calendar"><span class="bottom-icon">▦</span><span>カレンダー</span></button>
+<button class="bottom-nav-btn" data-screen="favorites"><span class="bottom-icon">☆</span><span>お気に入り</span></button>
+<button class="bottom-nav-btn" data-screen="settings"><span class="bottom-icon">⚙</span><span>設定</span></button>
+</nav>
+</div>
+<div aria-hidden="true" class="detail-overlay" id="detailOverlay"></div>
+<aside aria-hidden="true" aria-label="イベント詳細" class="detail-sheet modal-card" id="detailSheet">
+<section class="frame9 detail-outer-frame">
+<div class="frame9-grid">
+<div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+<div class="f f4"></div>
+<div class="f f5">
+<div class="detail-modal-layout">
+<div class="detail-head">
+<div class="detail-head-copy">
+<div class="detail-game" id="detailGame">ゲーム</div>
+<h2 class="detail-title" id="detailTitle">イベント名</h2>
+</div>
+<div class="detail-head-actions">
+<button aria-label="イベントを編集" class="detail-edit-btn" id="editDetailBtn" title="編集" type="button">✎</button>
+<button aria-label="閉じる" class="detail-close" id="closeDetailBtn" type="button">×</button>
+</div>
+</div>
+<section class="frame9 detail-inner-frame">
+<div class="frame9-grid">
+<div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+<div class="f f4"></div>
+<div class="f f5">
+<div class="detail-scroll">
+<div class="detail-remain" id="detailRemain"></div>
+<div class="detail-date" id="detailDate"></div>
+<div class="detail-section"><div class="detail-label">種類</div><div id="detailType"></div></div>
+<div class="detail-section"><div class="detail-label">限定報酬</div><div id="detailReward"></div></div>
+<div class="detail-section"><div class="detail-label">関連</div><div id="detailRelated"></div></div>
+<div class="detail-section"><div class="detail-label">メモ</div><p id="detailMemo"></p></div>
+<div class="detail-section"><div class="detail-label">出典</div><a href="#" id="detailSource" rel="noopener noreferrer" target="_blank">Wikiを開く</a></div>
+<button class="detail-bottom-btn" id="closeDetailBtnBottom" type="button">閉じる</button>
+</div>
+</div>
+<div class="f f6"></div>
+<div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+</div>
+</section>
+</div>
+</div>
+<div class="f f6"></div>
+<div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+</div>
+</section>
 </aside>
-
-
-<div id="fetchOverlay" class="fetch-overlay" aria-hidden="true"></div>
-<aside id="fetchSheet" class="fetch-sheet fetch-check-sheet" aria-hidden="true" aria-label="イベントチェック">
-  <section class="frame9 fetch-outer-frame">
-    <div class="frame9-grid">
-      <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-      <div class="f f4"></div>
-      <div class="f f5">
-        <div class="fetch-check-content">
-          <div class="check-sheet-topline">
-            <span class="fetch-kicker">EVENT CHECK</span>
-            <button id="closeFetchBtn" class="fetch-close check-sheet-close" type="button" aria-label="閉じる">×</button>
-          </div>
-
-          <section class="frame9 fetch-progress-frame">
-            <div class="frame9-grid">
-              <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-              <div class="f f4"></div>
-              <div class="f f5">
-                <details id="checkProgressDetails" class="check-progress-details" open>
-                  <summary class="check-progress-titlebar">
-                    <span class="check-progress-title">チェック進捗</span>
-                    <button id="fetchAllGamesBtn" class="fetch-all-btn" type="button">全ゲームチェック</button>
-                    <span class="check-progress-chevron" aria-hidden="true"></span>
-                  </summary>
-
-                  <div class="check-progress-panel" aria-labelledby="checkProgressTitle">
-                    <div class="check-progress-summary">
-                      <strong id="checkProgressTitle">全体進捗</strong>
-                      <div class="check-progress-track" aria-hidden="true"><div id="checkProgressFill" class="check-progress-fill"></div></div>
-                      <span id="checkProgressCount" class="check-progress-count">0 / 5 ゲーム</span>
-                    </div>
-                    <div id="fetchProgressGames" class="check-game-list"></div>
-                  </div>
-                </details>
-              </div>
-              <div class="f f6"></div>
-              <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
-            </div>
-          </section>
-
-          <div class="check-result-heading">
-            <h2>チェック結果</h2>
-            <span class="check-result-note">チェックを外した候補は次回から除外</span>
-          </div>
-
-          <div id="fetchGameAccordions" class="fetch-game-accordions check-result-list"></div>
-
-          <div id="fetchStatus" class="fetch-status fetch-status-sr" aria-live="polite"></div>
-
-          <div class="fetch-actions check-register-actions">
-            <button id="applyFetchedEventsBtn" class="fetch-apply-btn check-register-btn" type="button">選択したイベントを登録（0件）</button>
-          </div>
-        </div>
-      </div>
-      <div class="f f6"></div>
-      <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
-    </div>
-  </section>
+<div aria-hidden="true" class="fetch-overlay" id="fetchOverlay"></div>
+<aside aria-hidden="true" aria-label="イベントチェック" class="fetch-sheet fetch-check-sheet" id="fetchSheet">
+<section class="frame9 fetch-outer-frame">
+<div class="frame9-grid">
+<div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+<div class="f f4"></div>
+<div class="f f5">
+<div class="fetch-check-content">
+<div class="check-sheet-topline">
+<span class="fetch-kicker">EVENT CHECK</span>
+<button aria-label="閉じる" class="fetch-close check-sheet-close" id="closeFetchBtn" type="button">×</button>
+</div>
+<section class="frame9 fetch-progress-frame">
+<div class="frame9-grid">
+<div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+<div class="f f4"></div>
+<div class="f f5">
+<details class="check-progress-details" id="checkProgressDetails" open="">
+<summary class="check-progress-titlebar">
+<span class="check-progress-title">チェック進捗</span>
+<button class="fetch-all-btn" id="fetchAllGamesBtn" type="button">全ゲームチェック</button>
+<span aria-hidden="true" class="check-progress-chevron"></span>
+</summary>
+<div aria-labelledby="checkProgressTitle" class="check-progress-panel">
+<div class="check-progress-summary">
+<strong id="checkProgressTitle">全体進捗</strong>
+<div aria-hidden="true" class="check-progress-track"><div class="check-progress-fill" id="checkProgressFill"></div></div>
+<span class="check-progress-count" id="checkProgressCount">0 / 5 ゲーム</span>
+</div>
+<div class="check-game-list" id="fetchProgressGames"></div>
+</div>
+</details>
+</div>
+<div class="f f6"></div>
+<div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+</div>
+</section>
+<div class="check-result-heading">
+<h2>チェック結果</h2>
+<span class="check-result-note">チェックを外した候補は次回から除外</span>
+</div>
+<div class="fetch-game-accordions check-result-list" id="fetchGameAccordions"></div>
+<div aria-live="polite" class="fetch-status fetch-status-sr" id="fetchStatus"></div>
+<div class="fetch-actions check-register-actions">
+<button class="fetch-apply-btn check-register-btn" id="applyFetchedEventsBtn" type="button">選択したイベントを登録（0件）</button>
+</div>
+</div>
+</div>
+<div class="f f6"></div>
+<div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+</div>
+</section>
 </aside>
-
-<div id="editOverlay" class="edit-overlay" aria-hidden="true"></div>
-<aside id="editSheet" class="edit-sheet modal-card" aria-hidden="true" aria-label="イベント編集">
-  <section class="frame9 edit-outer-frame">
-    <div class="frame9-grid">
-      <div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
-      <div class="f f4"></div>
-      <div class="f f5">
-        <form id="editEventForm" class="edit-form">
-          <div class="edit-sheet-head">
-            <div>
-              <span class="fetch-kicker">EVENT EDIT</span>
-              <h2 id="editSheetTitle">イベント編集</h2>
-              <div id="editGameLabel" class="edit-game-label"></div>
-            </div>
-            <button id="closeEditBtn" class="fetch-close" type="button" aria-label="閉じる">×</button>
-          </div>
-
-          <div class="edit-content-scroll edit-scroll">
-            <label id="editGameField" class="edit-field edit-game-field" hidden>
-              <span>ゲーム</span>
-              <select id="editGameSelect"></select>
-            </label>
-
-            <label class="edit-field">
-              <span>イベント名</span>
-              <input id="editTitle" type="text" required>
-            </label>
-
-            <label class="edit-field">
-              <span>種類</span>
-              <input id="editType" type="text" placeholder="未設定">
-            </label>
-
-            <label class="edit-field">
-              <span>限定報酬</span>
-              <textarea id="editReward" rows="3" placeholder="未設定"></textarea>
-            </label>
-
-            <div class="edit-two-col">
-              <label class="edit-field edit-date-field">
-                <span>開始日時</span>
-                <span class="datetime-input-wrap"><input id="editStart" type="datetime-local"></span>
-              </label>
-              <label class="edit-field edit-date-field">
-                <span>終了日時</span>
-                <span class="datetime-input-wrap"><input id="editEnd" type="datetime-local"></span>
-              </label>
-            </div>
-
-            <label class="edit-field">
-              <span>メモ</span>
-              <textarea id="editMemo" rows="4"></textarea>
-            </label>
-
-            <label class="edit-field">
-              <span>出典URL</span>
-              <input id="editSource" type="url" inputmode="url" placeholder="https://...">
-            </label>
-
-            <div id="editStatus" class="edit-status" aria-live="polite"></div>
-          </div>
-
-          <div class="edit-actions">
-            <button id="editSubmitBtn" class="fetch-apply-btn" type="submit">保存</button>
-            <button id="cancelEditBtn" class="fetch-sub-btn is-delete" type="button">削除</button>
-          </div>
-        </form>
-      </div>
-      <div class="f f6"></div>
-      <div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
-    </div>
-  </section>
+<div aria-hidden="true" class="edit-overlay" id="editOverlay"></div>
+<aside aria-hidden="true" aria-label="イベント編集" class="edit-sheet modal-card" id="editSheet">
+<section class="frame9 edit-outer-frame">
+<div class="frame9-grid">
+<div class="f f1"></div><div class="f f2"></div><div class="f f3"></div>
+<div class="f f4"></div>
+<div class="f f5">
+<form class="edit-form" id="editEventForm">
+<div class="edit-sheet-head">
+<div>
+<span class="fetch-kicker">EVENT EDIT</span>
+<h2 id="editSheetTitle">イベント編集</h2>
+<div class="edit-game-label" id="editGameLabel"></div>
+</div>
+<button aria-label="閉じる" class="fetch-close" id="closeEditBtn" type="button">×</button>
+</div>
+<div class="edit-content-scroll edit-scroll">
+<label class="edit-field edit-game-field" hidden="" id="editGameField">
+<span>ゲーム</span>
+<select id="editGameSelect"></select>
+</label>
+<label class="edit-field">
+<span>イベント名</span>
+<input id="editTitle" required="" type="text"/>
+</label>
+<label class="edit-field">
+<span>種類</span>
+<input id="editType" placeholder="未設定" type="text"/>
+</label>
+<label class="edit-field">
+<span>限定報酬</span>
+<textarea id="editReward" placeholder="未設定" rows="3"></textarea>
+</label>
+<div class="edit-two-col">
+<label class="edit-field edit-date-field">
+<span>開始日時</span>
+<span class="datetime-input-wrap"><input id="editStart" type="datetime-local"/></span>
+</label>
+<label class="edit-field edit-date-field">
+<span>終了日時</span>
+<span class="datetime-input-wrap"><input id="editEnd" type="datetime-local"/></span>
+</label>
+</div>
+<label class="edit-field">
+<span>メモ</span>
+<textarea id="editMemo" rows="4"></textarea>
+</label>
+<label class="edit-field">
+<span>出典URL</span>
+<input id="editSource" inputmode="url" placeholder="https://..." type="url"/>
+</label>
+<div aria-live="polite" class="edit-status" id="editStatus"></div>
+</div>
+<div class="edit-actions">
+<button class="fetch-apply-btn" id="editSubmitBtn" type="submit">保存</button>
+<button class="fetch-sub-btn is-delete" id="cancelEditBtn" type="button">削除</button>
+</div>
+</form>
+</div>
+<div class="f f6"></div>
+<div class="f f7"></div><div class="f f8"></div><div class="f f9"></div>
+</div>
+</section>
 </aside>
-
 <script src="script.js"></script>
 </body>
 </html>

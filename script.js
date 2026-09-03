@@ -1,4 +1,4 @@
-const APP_VERSION="v42";
+const APP_VERSION="css-layer-test-1";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -73,44 +73,53 @@ function pruneExpiredEvents(){
 
 pruneExpiredEvents();
 
-const PIXEL_FRAME_SRC=i=>`assets/ui/frames/minidot-8-${i}.png`;
-const PIXEL_FRAME_PINK_SRC=i=>`assets/ui/frames/minidot-8pink-${i}.png`;
-const PIXEL_FRAME_PURPLE_SRC=i=>`assets/ui/frames/minidot-16purple-${i}.png`;
-const PIXEL_BUTTON_PINK_ON_SRC=i=>`assets/ui/button/minidot-button-pink-on-${i}.png`;
+const PIXEL_SKINS={
+  standard:i=>`assets/ui/frames/minidot-8-${i}.png`,
+  pink:i=>`assets/ui/frames/minidot-8pink-${i}.png`,
+  purple:i=>`assets/ui/frames/minidot-16purple-${i}.png`,
+  buttonPink:i=>`assets/ui/button/minidot-button-pink-on-${i}.png`
+};
 
-function tileImgs(i,count,src=PIXEL_FRAME_SRC){
-  return Array.from({length:count},()=>`<img src="${src(i)}" alt="" class="pixel-tile-img">`).join("");
+function skinSrc(skin,i){
+  return (PIXEL_SKINS[skin]||PIXEL_SKINS.standard)(i);
 }
 
-function pixelFrameMarkup(html,size=16,extraClass="",src=PIXEL_FRAME_SRC){
+/*
+  CSS-LAYER TEST:
+  枠画像はレイアウトを作らない。普通の .pixel-box が箱を作り、
+  .pixel-skin は position:absolute でその上に重なるだけ。
+  横/縦辺はSafariのドットぼけ回避のため実IMGを整数倍で並べる。
+*/
+function pixelTileStrip(skin,i,count){
+  return Array.from({length:count},()=>`<img src="${skinSrc(skin,i)}" alt="" class="pixel-skin-tile">`).join("");
+}
+
+function pixelSkinMarkup(skin="standard",size=16,extraClass="",openBottom=false){
   const hCount=48;
-  const vCount=size===32?40:72;
-  return `<table class="pixel-frame-table ${size===32?"pixel-size-32":"pixel-size-16"} ${extraClass}" role="presentation">
-    <tbody>
-      <tr>
-        <td class="pf-corner"><img src="${src(1)}" alt="" class="pixel-tile-img"></td>
-        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(2,hCount,src)}</div></td>
-        <td class="pf-corner"><img src="${src(3)}" alt="" class="pixel-tile-img"></td>
-      </tr>
-      <tr>
-        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,vCount,src)}</div></td>
-        <td class="pf-center" style="background-image:url('${src(5)}')"><div class="pf-content">${html}</div></td>
-        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,vCount,src)}</div></td>
-      </tr>
-      <tr>
-        <td class="pf-corner"><img src="${src(7)}" alt="" class="pixel-tile-img"></td>
-        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(8,hCount,src)}</div></td>
-        <td class="pf-corner"><img src="${src(9)}" alt="" class="pixel-tile-img"></td>
-      </tr>
-    </tbody>
-  </table>`;
+  const vCount=72;
+  return `<span class="pixel-skin skin-${skin} ${openBottom?"pixel-skin-open-bottom":""} ${extraClass}" style="--pixel-size:${size}px" aria-hidden="true">
+    <img src="${skinSrc(skin,1)}" alt="" class="pixel-skin-corner is-tl">
+    <span class="pixel-skin-edge is-top">${pixelTileStrip(skin,2,hCount)}</span>
+    <img src="${skinSrc(skin,3)}" alt="" class="pixel-skin-corner is-tr">
+    <span class="pixel-skin-edge is-left">${pixelTileStrip(skin,4,vCount)}</span>
+    <span class="pixel-skin-fill" style="background-image:url('${skinSrc(skin,5)}')"></span>
+    <span class="pixel-skin-edge is-right">${pixelTileStrip(skin,6,vCount)}</span>
+    ${openBottom?"":`<img src="${skinSrc(skin,7)}" alt="" class="pixel-skin-corner is-bl">
+    <span class="pixel-skin-edge is-bottom">${pixelTileStrip(skin,8,hCount)}</span>
+    <img src="${skinSrc(skin,9)}" alt="" class="pixel-skin-corner is-br">`}
+  </span>`;
 }
 
-function frameSrcForStaticFrame(frame){
-  if(frame.classList.contains("detail-outer-frame") || frame.classList.contains("detail-inner-frame") || frame.classList.contains("edit-outer-frame")){
-    return PIXEL_FRAME_PURPLE_SRC;
-  }
-  return PIXEL_FRAME_SRC;
+function pixelBoxMarkup(html,size=16,extraClass="",skin="standard"){
+  return `<div class="pixel-box pixel-size-${size} skin-${skin} ${extraClass}" style="--pixel-size:${size}px">
+    ${pixelSkinMarkup(skin,size)}
+    <div class="pixel-box-content pf-content">${html}</div>
+  </div>`;
+}
+
+function frameSkinForStaticFrame(frame){
+  if(frame.classList.contains("detail-outer-frame") || frame.classList.contains("detail-inner-frame") || frame.classList.contains("edit-outer-frame"))return "purple";
+  return "standard";
 }
 
 function upgradeStaticFrames(){
@@ -118,47 +127,24 @@ function upgradeStaticFrames(){
     const oldCenter=frame.querySelector(":scope > .frame9-grid > .f5");
     if(!oldCenter)return;
     const html=oldCenter.innerHTML;
-    const size=16;
-    const src=frameSrcForStaticFrame(frame);
-    frame.innerHTML=pixelFrameMarkup(html,size,"",src);
+    frame.innerHTML=pixelBoxMarkup(html,16,"",frameSkinForStaticFrame(frame));
   });
 }
 
-function upgradeTopTabTables(){
-  document.querySelectorAll(".tab-frame-img-table").forEach(table=>{
-    table.classList.add("pixel-frame-table","pixel-size-16","top-pixel-table");
-    table.querySelectorAll("img").forEach(img=>{
-      const m=img.src.match(/minidot-8-([1-9])\.png/);
-      if(m) img.classList.add("pixel-tile-img");
-    });
+function upgradeTopTabSkins(){
+  document.querySelectorAll(".pixel-tab-skin").forEach(host=>{
+    host.innerHTML=pixelSkinMarkup(host.dataset.skin||"standard",16,"top-tab-pixel-skin");
   });
 }
 
 upgradeStaticFrames();
-upgradeTopTabTables();
+upgradeTopTabSkins();
 
-function pixelButtonMarkup(html,widthTiles=10,size=16,extraClass="",src=PIXEL_BUTTON_PINK_ON_SRC){
-  const safeWidth=Math.max(4,widthTiles|0);
-  const vCount=4;
-  return `<table class="pixel-frame-table ${size===32?"pixel-size-32":"pixel-size-16"} pixel-button-table ${extraClass}" role="presentation">
-    <tbody>
-      <tr>
-        <td class="pf-corner"><img src="${src(1)}" alt="" class="pixel-tile-img"></td>
-        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(2,safeWidth,src)}</div></td>
-        <td class="pf-corner"><img src="${src(3)}" alt="" class="pixel-tile-img"></td>
-      </tr>
-      <tr>
-        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,vCount,src)}</div></td>
-        <td class="pf-center" style="background-image:url('${src(5)}')"><div class="pf-content">${html}</div></td>
-        <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,vCount,src)}</div></td>
-      </tr>
-      <tr>
-        <td class="pf-corner"><img src="${src(7)}" alt="" class="pixel-tile-img"></td>
-        <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(8,safeWidth,src)}</div></td>
-        <td class="pf-corner"><img src="${src(9)}" alt="" class="pixel-tile-img"></td>
-      </tr>
-    </tbody>
-  </table>`;
+function pixelButtonMarkup(html,widthTiles=10,size=16,extraClass=""){
+  return `<span class="pixel-button-box ${extraClass}" style="--pixel-size:${size}px;--pixel-button-min:${Math.max(4,widthTiles|0)*size}px">
+    ${pixelSkinMarkup("buttonPink",size,"pixel-button-skin")}
+    <span class="pixel-button-content">${html}</span>
+  </span>`;
 }
 
 function setPixelButtonHTML(button,html,widthTiles=10){
@@ -220,27 +206,13 @@ function remain(end){
   return{prefix:"残り",big:`${d}日`,tone:d<=3?"pink":"blue"};
 }
 function frame9(cls,html){
-  // v39: 開催中のイベントカード内枠だけ、16pxのpink minidotを使う。
-  const src=cls.split(/\s+/).includes("game-card")?PIXEL_FRAME_PINK_SRC:PIXEL_FRAME_SRC;
-  return `<div class="frame9 ${cls}">${pixelFrameMarkup(html,16,"",src)}</div>`;
+  const skin=cls.split(/\s+/).includes("game-card")?"pink":"standard";
+  return `<div class="frame9 ${cls}">${pixelBoxMarkup(html,16,"",skin)}</div>`;
 }
 
 function openChipTab(label){
   return `<div class="game-chip-tab-open">
-    <table class="pixel-frame-table pixel-size-16 game-tab-open-table" role="presentation">
-      <tbody>
-        <tr>
-          <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(1)}" alt="" class="pixel-tile-img"></td>
-          <td class="pf-edge-x"><div class="pf-strip-x">${tileImgs(2,32)}</div></td>
-          <td class="pf-corner"><img src="${PIXEL_FRAME_SRC(3)}" alt="" class="pixel-tile-img"></td>
-        </tr>
-        <tr>
-          <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(4,12)}</div></td>
-          <td class="pf-center"><div class="pf-content"></div></td>
-          <td class="pf-edge-y"><div class="pf-strip-y">${tileImgs(6,12)}</div></td>
-        </tr>
-      </tbody>
-    </table>
+    ${pixelSkinMarkup("standard",16,"game-tab-open-skin",true)}
     <div class="game-chip-text-overlay">${label}</div>
   </div>`;
 }
@@ -827,7 +799,7 @@ function renderFetchAccordions(){
     wrapper.classList.add("layered-result-frame");
     wrapper.innerHTML=`
       <div class="layered-result-frame-art" aria-hidden="true">
-        ${pixelFrameMarkup("",16,"check-result-pixel-table layered-result-frame-table")}
+        ${pixelSkinMarkup("standard",16,"check-result-pixel-skin layered-result-frame-skin")}
       </div>
       <div class="layered-result-frame-content">
         ${detailsMarkup}
@@ -1276,11 +1248,6 @@ function openEditSheetBase(){
   // v36: 追加・編集とも外枠は16pxで統一。
   const isAddMode=editMode==="add";
   $("#editSheet").classList.toggle("add-mode",isAddMode);
-  const editOuterTable=$("#editSheet .edit-outer-frame > .pixel-frame-table");
-  if(editOuterTable){
-    editOuterTable.classList.remove("pixel-size-32");
-    editOuterTable.classList.add("pixel-size-16");
-  }
   $("#editOverlay").classList.add("open");
   $("#editSheet").classList.add("open");
   $("#editOverlay").setAttribute("aria-hidden","false");
@@ -1335,11 +1302,6 @@ function closeEditEvent(){
   $("#editOverlay").classList.remove("open");
   $("#editSheet").classList.remove("open");
   $("#editSheet").classList.remove("add-mode");
-  const editOuterTable=$("#editSheet .edit-outer-frame > .pixel-frame-table");
-  if(editOuterTable){
-    editOuterTable.classList.remove("pixel-size-32");
-    editOuterTable.classList.add("pixel-size-16");
-  }
   $("#editOverlay").setAttribute("aria-hidden","true");
   $("#editSheet").setAttribute("aria-hidden","true");
   editingEventRef=null;
