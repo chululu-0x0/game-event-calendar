@@ -43,3 +43,9 @@ index.html
   assets/ui/icon/
 
 ※これは比較テスト用です。実機iPhone Safariでの表示確認は行っていません。
+
+
+[v2 adjustments]
+- Top tabs switched to assets/ui/button/minidot-button-pink-on-1..9
+- Fetch progress/result inner frames switched to assets/ui/frames/minidot-8pink-1..9
+- Fetch sheet negative bleed removed; content padding/z-index adjusted to prevent content clipping under frame art.

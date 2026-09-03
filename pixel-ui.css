@@ -196,3 +196,99 @@
 
 /* The experiment should contain no layout TABLE for pixel frames. */
 .pixel-frame-table{display:none!important}
+
+
+/* =========================================================
+   css-layer-test v2: pink top tabs + pink fetch inner frames
+   ========================================================= */
+/* top tabs use button skin */
+.top-tab .top-tab-pixel-skin.skin-buttonPink .pixel-skin-fill,
+.top-tab .top-tab-pixel-skin.skin-buttonPink .pixel-button-skin .pixel-skin-fill{
+  background-size:16px 16px;
+}
+.top-tab .top-tab-pixel-skin.skin-buttonPink .pixel-skin-corner,
+.top-tab .top-tab-pixel-skin.skin-buttonPink .pixel-skin-tile{
+  filter:none;
+}
+
+/* Fetch sheet inner spacing: remove old negative bleed and keep content above art */
+.fetch-check-content{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:2px 4px 0 !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+.fetch-progress-frame,
+.check-result-heading,
+.check-result-list,
+.check-register-actions{
+  position:relative;
+  z-index:2;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+}
+.fetch-progress-frame{
+  margin-top:0 !important;
+}
+.check-result-heading{
+  margin-top:8px !important;
+}
+.check-result-list{
+  padding-top:2px !important;
+  padding-inline:0 !important;
+}
+
+/* pink inner frame art in fetch sheet */
+.fetch-progress-frame > .pixel-box,
+.fetch-progress-frame > .pixel-box > .pixel-box-content{
+  overflow:visible !important;
+}
+.fetch-progress-frame > .pixel-box > .pixel-box-content{
+  padding:8px 10px !important;
+}
+.fetch-progress-frame > .pixel-box > .pixel-skin .pixel-skin-fill{
+  background-image:url("assets/ui/frames/minidot-8pink-5.png") !important;
+}
+
+.check-result-frame.layered-result-frame{
+  overflow:visible !important;
+}
+.layered-result-frame-art,
+.layered-result-frame-content{
+  position:relative;
+  z-index:1;
+}
+.layered-result-frame-content{
+  z-index:2;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  padding:9px 10px 10px !important;
+}
+.check-result-frame.layered-result-frame .check-result-game,
+.check-result-frame.layered-result-frame .check-result-game summary,
+.check-result-frame.layered-result-frame .check-result-body,
+.check-result-frame.layered-result-frame .check-result-candidate-panel,
+.check-result-frame.layered-result-frame .fetch-candidates{
+  min-width:0 !important;
+}
+.check-result-frame.layered-result-frame .check-result-game summary{
+  padding:0 2px 4px !important;
+}
+.check-result-frame.layered-result-frame .check-result-body,
+.check-result-frame.layered-result-frame .check-result-candidate-panel,
+.check-result-frame.layered-result-frame .fetch-candidates{
+  padding-left:2px !important;
+  padding-right:2px !important;
+}
+
+/* candidate list items should stay fully visible */
+.fetch-candidate,
+.check-result-candidate{
+  position:relative;
+  z-index:2;
+}

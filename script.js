@@ -1,4 +1,4 @@
-const APP_VERSION="css-layer-test-1";
+const APP_VERSION="css-layer-test-2";
 const FETCH_WIKI_EVENTS_ENDPOINT="https://vdcnicyobhnqwqswsspw.supabase.co/functions/v1/fetch-wiki-events";
 const now=()=>new Date();
 const today=now();
@@ -119,6 +119,7 @@ function pixelBoxMarkup(html,size=16,extraClass="",skin="standard"){
 
 function frameSkinForStaticFrame(frame){
   if(frame.classList.contains("detail-outer-frame") || frame.classList.contains("detail-inner-frame") || frame.classList.contains("edit-outer-frame"))return "purple";
+  if(frame.classList.contains("fetch-progress-frame") || frame.classList.contains("fetch-result-frame") || frame.classList.contains("fetch-inner-frame"))return "pink";
   return "standard";
 }
 
@@ -799,7 +800,7 @@ function renderFetchAccordions(){
     wrapper.classList.add("layered-result-frame");
     wrapper.innerHTML=`
       <div class="layered-result-frame-art" aria-hidden="true">
-        ${pixelSkinMarkup("standard",16,"check-result-pixel-skin layered-result-frame-skin")}
+        ${pixelSkinMarkup("pink",16,"check-result-pixel-skin layered-result-frame-skin")}
       </div>
       <div class="layered-result-frame-content">
         ${detailsMarkup}
